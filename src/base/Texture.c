@@ -140,6 +140,12 @@ void Texture_Draw(Texture *const this, const SDL_Rect *srcrect, const SDL_Rect *
         SDL_RenderCopy(this->renderer, this->texture, srcrect, dstrect ? dstrect : &this->rect);
 }
 
+void Texture_DrawEx(Texture *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
+{
+    if (this->texture)
+        SDL_RenderCopyEx(this->renderer, this->texture, srcrect, dstrect ? dstrect : &this->rect, angle, NULL, SDL_FLIP_NONE);
+}
+
 bool Texture_CreateTexture(Texture *const this, SDL_Surface *surface)
 {
     if (surface)

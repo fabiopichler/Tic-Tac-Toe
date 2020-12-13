@@ -42,6 +42,7 @@ void Texture_SetTextSize(Texture *const this, int ptsize);
 void Texture_SetTextColor(Texture *const this, SDL_Color color);
 
 void Texture_Draw(Texture *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect);
+void Texture_DrawEx(Texture *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
 void Texture_SetPos(Texture *const this, int x, int y);
 void Texture_SetRect(Texture *const this, SDL_Rect rect);
 int Texture_GetWidth(Texture *const this);

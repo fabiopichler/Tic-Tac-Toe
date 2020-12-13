@@ -60,6 +60,7 @@ struct Button
     ButtonPressedEvent pressedEvent;
 };
 
+void Button_Draw_(Button *const this);
 bool Button_PointerIsHovering(Button *const this, const SDL_Event *event);
 void Button_UpdateTextureRect(Button *const this);
 
@@ -180,6 +181,22 @@ void Button_ProcessEvent(Button *const this, const SDL_Event *event)
 
 void Button_Draw(Button *const this)
 {
+    Button_Draw_(this);
+
+    if (this->imageTexture)
+        Texture_Draw(this->imageTexture, NULL, &this->textureRect);
+}
+
+void Button_DrawEx(Button *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
+{
+    Button_Draw_(this);
+
+    if (this->imageTexture)
+        Texture_DrawEx(this->imageTexture, srcrect, dstrect ? dstrect : &this->textureRect, angle);
+}
+
+void Button_Draw_(Button *const this)
+{
     if (this->state == Hover)
     {
         SDL_SetRenderDrawColor(this->renderer, this->colorHover.r,
@@ -196,9 +213,6 @@ void Button_Draw(Button *const this)
     }
 
     SDL_RenderFillRect(this->renderer, &this->rect);
-
-    if (this->imageTexture)
-        Texture_Draw(this->imageTexture, NULL, &this->textureRect);
 
     if (this->textTexture)
         Texture_Draw(this->textTexture, NULL, &this->textureRect);

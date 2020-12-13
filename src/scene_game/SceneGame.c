@@ -106,6 +106,7 @@ void SceneGame_ProcessEvent(SceneGame *const this, const SDL_Event *event)
 void SceneGame_Update(SceneGame *const this, double deltaTime)
 {
     Header_Update(this->header, deltaTime);
+    GameBoard_Update(this->game, deltaTime);
 }
 
 void SceneGame_Draw(SceneGame *const this)

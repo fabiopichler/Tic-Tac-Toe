@@ -53,6 +53,8 @@ struct GameBoard
 
     Texture *player1Texture;
     Texture *player2Texture;
+
+    double p1Angle;
 };
 
 void Game_SetupBoard(GameBoard *const this);
@@ -80,6 +82,7 @@ GameBoard *Game_New(SDL_Renderer *renderer, SceneGameRect *rect)
     this->gameEvent = (GameEvent) {NULL, NULL};
     this->player1Texture = Texture_New(renderer);
     this->player2Texture = Texture_New(renderer);
+    this->p1Angle = 0.0;
 
     Texture_LoadImageFromFile(this->player1Texture, "images/player_1.png");
     Texture_LoadImageFromFile(this->player2Texture, "images/player_2.png");
@@ -110,14 +113,28 @@ void Game_ProcessEvent(GameBoard *const this, const SDL_Event *event)
             Button_ProcessEvent(this->board[row][col].button, event);
 }
 
+void GameBoard_Update(GameBoard *const this, double deltaTime)
+{
+    this->p1Angle = this->p1Angle + 0.03 * deltaTime;
+
+    if (this->p1Angle > 360)
+        this->p1Angle = 0;
+}
+
 void Game_Draw(GameBoard *const this)
 {
     SDL_SetRenderDrawColor(this->renderer, 80, 160, 160, 255);
     SDL_RenderFillRect(this->renderer, &this->board_rect);
 
     for (int row = 0; row < 3; ++row)
+    {
         for (int col = 0; col < 3; ++col)
-            Button_Draw(this->board[row][col].button);
+        {
+            BoardItem *item = &this->board[row][col];
+
+            Button_DrawEx(item->button, NULL, NULL, item->player == Player_1 ? this->p1Angle : 0);
+        }
+    }
 }
 
 void Game_SetGameEvent(GameBoard *const this, GameEventHandler callback, void *user)

@@ -46,3 +46,4 @@ void Button_SetRect(Button *const this, SDL_Rect rect);
 void Button_SetOnPressEvent(Button *const this, ButtonOnPressEvent callback, void *user);
 void Button_ProcessEvent(Button *const this, const SDL_Event *event);
 void Button_Draw(Button *const this);
+void Button_DrawEx(Button *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
