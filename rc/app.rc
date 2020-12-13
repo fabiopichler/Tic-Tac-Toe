@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 FÃ¡bio Pichler
+// Copyright (c) 2020 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,60 +22,42 @@ SOFTWARE.
 
 -------------------------------------------------------------------------------*/
 
-#include "Window.h"
+#include <windows.h>
 
-#include <SDL2/SDL_image.h>
+MAIN_ICON ICON "icon.ico"
 
-#include <stdio.h>
+#define PRODUCT_VERSION 1,0,0,0
 
-struct Window
-{
-    SDL_Window *window;
-    SDL_Rect rect;
-};
-
-Window *Window_New(int width, int height)
-{
-    Window *const this = malloc(sizeof (Window));
-
-    this->rect = (SDL_Rect) { .x = 0, .y = 0, .w = width, .h = height };
-
-    this->window = SDL_CreateWindow("Tic Tac Toe",
-                                SDL_WINDOWPOS_UNDEFINED,
-                                SDL_WINDOWPOS_UNDEFINED,
-                                this->rect.w,
-                                this->rect.h,
-                                SDL_WINDOW_SHOWN);
-
-    if (!this->window)
-    {
-        printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        exit(-1);
-    }
-
-    SDL_Surface *icon = IMG_Load("images/window-icon.png");
-    SDL_SetWindowIcon(this->window, icon);
-    SDL_FreeSurface(icon);
-
-    return this;
-}
-
-void Window_Delete(Window *const this)
-{
-    if (!this)
-        return;
-
-    SDL_DestroyWindow(this->window);
-    free(this);
-}
-
-SDL_Window *Window_GetSDLWindow(Window *const this)
-{
-    return this->window;
-}
-
-SDL_Rect Window_GetRect(Window *const this)
-{
-    return this->rect;
-}
+1 VERSIONINFO
+ FILEVERSION PRODUCT_VERSION
+ PRODUCTVERSION PRODUCT_VERSION
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS VOS__WINDOWS32
+ FILETYPE VFT_APP
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName",       "Fábio Pichler"
+            VALUE "FileDescription",   "Um simples Jogo da Velha"
+            VALUE "FileVersion",       "1.0.0"
+            VALUE "InternalName",      "Tic-Tac-Toe"
+            VALUE "LegalCopyright",    "Copyright © 2020, Fábio Pichler"
+            VALUE "OriginalFilename",  "Tic-Tac-Toe.exe"
+            VALUE "ProductName",       "Tic-Tac-Toe"
+            VALUE "ProductVersion",    "1.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0416, 1200
+    END
+END
+ 

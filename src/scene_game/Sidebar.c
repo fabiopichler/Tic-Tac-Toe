@@ -26,6 +26,7 @@ SOFTWARE.
 #include "../base/Texture.h"
 
 #include <malloc.h>
+#include <stdio.h>
 
 struct Sidebar
 {

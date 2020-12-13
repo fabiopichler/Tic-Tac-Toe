@@ -29,6 +29,8 @@ SOFTWARE.
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include <stdio.h>
+
 struct Texture
 {
     SDL_Renderer *renderer;

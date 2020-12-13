@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "Graphics.h"
 
+#include <stdio.h>
+
 struct Graphics
 {
     SDL_Renderer *renderer;

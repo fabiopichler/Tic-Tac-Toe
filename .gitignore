@@ -3,4 +3,5 @@
 /bin
 /cmake-*
 .idea
-*.txt.user
+*.txt.user*
+.env.cmake
