@@ -19,7 +19,7 @@ include(.env.cmake)
 if(WIN32)
     include_directories(${WIN32_INC_DIR})
 else()
-    find_package(SDL2 REQUIRED)
+    #find_package(SDL2 REQUIRED)
 endif()
 
 set(SRC_FILES
