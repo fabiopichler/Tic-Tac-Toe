@@ -1,6 +1,21 @@
 # Tic-Tac-Toe
 
-Um simples Jogo da Velha desenvolvido com a linguagem C e SDL 2.
+Um simples Jogo da Velha desenvolvido com a linguagem C e SDL 2 para Linux, Android e Windows.
+
+100% desenvolvido em C.
+
+## Informações
+
+Desenvolvido com:
+
+* Linguagem de programação C;
+* SDL 2
+
+Compatível com:
+
+* Linux;
+* Android;
+* Windows
 
 ## Baixar/compilar
 
@@ -17,7 +32,6 @@ cmake . && make
 ![Screenshot](/screenshots/screenshot_01.png?raw=true)
 
 ![Screenshot](/screenshots/screenshot_02.png?raw=true)
-
 
 ## Licença
 
