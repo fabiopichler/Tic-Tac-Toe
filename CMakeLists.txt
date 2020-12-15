@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
+include(.env.cmake)
+
 project(tic-tac-toe LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
@@ -9,54 +11,53 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
-
-include(.env.cmake)
+if(NOT ANDROID)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
+endif()
 
 if(WIN32)
     include_directories(${WIN32_INC_DIR})
-else()
-    #find_package(SDL2 REQUIRED)
+elseif(ANDROID)
+    include_directories(${ANDROID_INC_DIR})
 endif()
 
-set(SRC_FILES
-    src/main.c
-    src/App.c
-    src/App.h
-    src/base/Window.c
-    src/base/Window.h
-    src/base/Graphics.c
-    src/base/Graphics.h
-    src/base/Texture.c
-    src/base/Texture.h
-    src/base/Button.c
-    src/base/Button.h
-    src/scene_game/SceneGameRect.h
-    src/scene_game/SceneGame.c
-    src/scene_game/SceneGame.h
-    src/scene_game/game_board/GameBoard.c
-    src/scene_game/game_board/GameBoard.h
-    src/scene_game/game_board/board.c
-    src/scene_game/game_board/board.h
-    src/scene_game/Sidebar.c
-    src/scene_game/Sidebar.h
-    src/scene_game/Footer.c
-    src/scene_game/Footer.h
-    src/scene_game/Header.c
-    src/scene_game/Header.h)
+if(ANDROID)
+    add_library(tic-tac-toe SHARED)
+else()
+    add_executable(tic-tac-toe)
+endif()
+
+include(src/sources.cmake)
 
 if(WIN32)
     set(SRC_FILES ${SRC_FILES} rc/app.rc)
 endif()
 
-add_executable(tic-tac-toe ${SRC_FILES})
-
-target_link_libraries(tic-tac-toe PRIVATE SDL2 SDL2_image SDL2_ttf)
+target_sources(tic-tac-toe PRIVATE ${SRC_FILES})
 
 if(WIN32)
     target_link_directories(tic-tac-toe PRIVATE ${WIN32_LINK_DIR})
     target_link_libraries(tic-tac-toe PRIVATE SDL2main)
+elseif(ANDROID)
+    set(LIBS ${ANDROID_LINK_DIR}/${ANDROID_ABI})
+
+    add_library(SDL2 SHARED IMPORTED)
+    set_target_properties(SDL2 PROPERTIES IMPORTED_LOCATION ${LIBS}/libSDL2.so)
+
+    add_library(SDL2_image SHARED IMPORTED)
+    set_target_properties(SDL2_image PROPERTIES IMPORTED_LOCATION ${LIBS}/libSDL2_image.so)
+
+    add_library(SDL2_ttf SHARED IMPORTED)
+    set_target_properties(SDL2_ttf PROPERTIES IMPORTED_LOCATION ${LIBS}/libSDL2_ttf.so)
+
+    add_library(hidapi SHARED IMPORTED)
+    set_target_properties(hidapi PROPERTIES IMPORTED_LOCATION ${LIBS}/libhidapi.so)
+
+    target_link_libraries(tic-tac-toe PRIVATE hidapi)
+    set_target_properties(tic-tac-toe PROPERTIES OUTPUT_NAME "main")
 endif()
+
+target_link_libraries(tic-tac-toe PRIVATE SDL2 SDL2_image SDL2_ttf)

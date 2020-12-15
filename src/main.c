@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "App.h"
 
+#include "SDL2/SDL_main.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
