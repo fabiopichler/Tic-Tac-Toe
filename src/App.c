@@ -42,6 +42,7 @@ struct App
     SceneGame *sceneGame;
 
     uint64_t lastPerformanceCounter;
+    SDL_Rect bgRect;
 };
 
 void App_Update(App *const this);
@@ -54,12 +55,16 @@ App *App_New()
 
     App_InitSDL();
 
-    this->window = Window_New(640, 480);
+    int width = 640;
+    int height = 480;
+
+    this->window = Window_New(width, height);
     this->graphics = Graphics_New(this->window);
     this->renderer = Graphics_GetRenderer(this->graphics);
     this->sceneGame = SceneGame_New(this->renderer, Window_GetRect(this->window));
 
     this->lastPerformanceCounter = SDL_GetPerformanceCounter();
+    this->bgRect = (SDL_Rect) { 0, 0, width, height };
 
     return this;
 }
@@ -88,7 +93,7 @@ void App_Run(App *const this)
     {
         while (SDL_PollEvent(&event))
         {
-            if (event.type == SDL_QUIT)
+            if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_AC_BACK)
                 running = false;
 
             SceneGame_ProcessEvent(this->sceneGame, &event);
@@ -110,8 +115,11 @@ void App_Update(App *const this)
 
 void App_Draw(App *const this)
 {
-    SDL_SetRenderDrawColor(this->renderer, 190, 225, 225, 255);
+    SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
     SDL_RenderClear(this->renderer);
+
+    SDL_SetRenderDrawColor(this->renderer, 190, 225, 225, 255);
+    SDL_RenderFillRect(this->renderer, &this->bgRect);
 
     SceneGame_Draw(this->sceneGame);
 
