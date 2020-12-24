@@ -57,12 +57,12 @@ struct GameBoard
     double p1Angle;
 };
 
-void Game_SetupBoard(GameBoard *const this);
-void Game_OnItemPress(Button *const button, void *user);
-void Game_Check(GameBoard *const this, BoardItem *item);
-Player Game_CheckWinner(GameBoard *const this);
+void GameBoard_SetupBoard(GameBoard *const this);
+void GameBoard_OnItemPress(Button *const button, void *user);
+void GameBoard_Check(GameBoard *const this, BoardItem *item);
+Player GameBoard_CheckWinner(GameBoard *const this);
 
-GameBoard *Game_New(SDL_Renderer *renderer, SceneGameRect *rect)
+GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect)
 {
     GameBoard *const this = malloc(sizeof (GameBoard));
 
@@ -87,12 +87,12 @@ GameBoard *Game_New(SDL_Renderer *renderer, SceneGameRect *rect)
     Texture_LoadImageFromFile(this->player1Texture, "images/player_1.png");
     Texture_LoadImageFromFile(this->player2Texture, "images/player_2.png");
 
-    Game_SetupBoard(this);
+    GameBoard_SetupBoard(this);
 
     return this;
 }
 
-void Game_Delete(GameBoard *const this)
+void GameBoard_Delete(GameBoard *const this)
 {
     if (!this)
         return;
@@ -106,7 +106,7 @@ void Game_Delete(GameBoard *const this)
     free(this);
 }
 
-void Game_ProcessEvent(GameBoard *const this, const SDL_Event *event)
+void GameBoard_ProcessEvent(GameBoard *const this, const SDL_Event *event)
 {
     for (int row = 0; row < 3; ++row)
         for (int col = 0; col < 3; ++col)
@@ -121,7 +121,7 @@ void GameBoard_Update(GameBoard *const this, double deltaTime)
         this->p1Angle = 0;
 }
 
-void Game_Draw(GameBoard *const this)
+void GameBoard_Draw(GameBoard *const this)
 {
     SDL_SetRenderDrawColor(this->renderer, 80, 160, 160, 255);
     SDL_RenderFillRect(this->renderer, &this->board_rect);
@@ -137,23 +137,23 @@ void Game_Draw(GameBoard *const this)
     }
 }
 
-void Game_SetGameEvent(GameBoard *const this, GameEventHandler callback, void *user)
+void GameBoard_SetGameEvent(GameBoard *const this, GameEventHandler callback, void *user)
 {
     this->gameEvent.function = callback;
     this->gameEvent.userdata = user;
 }
 
-int Game_GetCurrentPlayer(GameBoard *const this)
+int GameBoard_GetCurrentPlayer(GameBoard *const this)
 {
     return this->player;
 }
 
-int Game_GetGameResult(GameBoard *const this)
+int GameBoard_GetGameResult(GameBoard *const this)
 {
     return this->gameResult;
 }
 
-void Game_SetupBoard(GameBoard *const this)
+void GameBoard_SetupBoard(GameBoard *const this)
 {
     for (int row = 0; row < 3; ++row)
     {
@@ -171,7 +171,7 @@ void Game_SetupBoard(GameBoard *const this)
                             .h = this->item_size
                         });
 
-            Button_SetOnPressEvent(item->button, Game_OnItemPress, this);
+            Button_SetOnPressEvent(item->button, GameBoard_OnItemPress, this);
             Button_SetBackgroundColor(item->button, (SDL_Color) {210, 240, 240, 255});
             Button_SetBackgroundHoverColor(item->button, (SDL_Color) {225, 255, 255, 255});
             Button_SetBackgroundPressedColor(item->button, (SDL_Color) {180, 230, 230, 255});
@@ -179,7 +179,7 @@ void Game_SetupBoard(GameBoard *const this)
     }
 }
 
-void Game_OnItemPress(Button *const button, void *user)
+void GameBoard_OnItemPress(Button *const button, void *user)
 {
     GameBoard *this = user;
 
@@ -191,21 +191,21 @@ void Game_OnItemPress(Button *const button, void *user)
 
             if (item->button == button)
             {
-                Game_Check(this, item);
+                GameBoard_Check(this, item);
                 return;
             }
         }
     }
 }
 
-void Game_Check(GameBoard *const this, BoardItem *item)
+void GameBoard_Check(GameBoard *const this, BoardItem *item)
 {
     if (item->player != None || this->gameResult != None)
         return;
 
     item->player = this->player;
 
-    this->gameResult = Game_CheckWinner(this);
+    this->gameResult = GameBoard_CheckWinner(this);
 
     this->player = this->player == Player_1 ? Player_2 : Player_1;
 
@@ -217,7 +217,7 @@ void Game_Check(GameBoard *const this, BoardItem *item)
     this->round++;
 }
 
-Player Game_CheckWinner(GameBoard *const this)
+Player GameBoard_CheckWinner(GameBoard *const this)
 {
     Player player = CheckBoardRows(3, this->board);
 
