@@ -26,9 +26,17 @@ SOFTWARE.
 
 #include <SDL2/SDL.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct Window Window;
 
 Window *Window_New(int width, int height);
-void Window_Delete(Window *const this);
-SDL_Window *Window_GetSDLWindow(Window *const this);
-SDL_Rect Window_GetRect(Window *const this);
+void Window_Delete(Window *);
+SDL_Window *Window_GetSDLWindow(Window *);
+SDL_Rect Window_GetRect(Window *);
+
+#ifdef __cplusplus
+}
+#endif

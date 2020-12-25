@@ -154,6 +154,11 @@ void Button_SetOnPressEvent(Button *const this, ButtonOnPressEvent callback, voi
     this->pressedEvent.userdata = user;
 }
 
+void *Button_GetEventUserData(Button *const this)
+{
+    return this->pressedEvent.userdata;
+}
+
 void Button_ProcessEvent(Button *const this, const SDL_Event *event)
 {
     if (event->button.button == SDL_BUTTON_LEFT && Button_PointerIsHovering(this, event))

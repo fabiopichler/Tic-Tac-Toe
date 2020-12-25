@@ -28,8 +28,16 @@ SOFTWARE.
 
 #include <SDL2/SDL.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct Graphics Graphics;
 
 Graphics *Graphics_New(Window *window);
-void Graphics_Delete(Graphics *const this);
-SDL_Renderer *Graphics_GetRenderer(Graphics *const this);
+void Graphics_Delete(Graphics *);
+SDL_Renderer *Graphics_GetRenderer(Graphics *);
+
+#ifdef __cplusplus
+}
+#endif
