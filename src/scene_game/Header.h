@@ -25,7 +25,7 @@ SOFTWARE.
 #pragma once
 
 #include "SceneGameRect.h"
-#include "game_board/board.h"
+#include "board/board_util.h"
 
 #include <SDL2/SDL.h>
 

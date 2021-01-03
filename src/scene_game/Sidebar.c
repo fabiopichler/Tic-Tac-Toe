@@ -33,12 +33,12 @@ struct Sidebar
     SDL_Renderer *renderer;
     const SceneGameRect *rect;
     const int width;
-    const int player1_x;
-    const int player1Win_x;
-    const int player2_x;
-    const int player2Win_x;
-    const int tied_x;
-    const int tiedCount_x;
+    const int player1_y;
+    const int player1Win_y;
+    const int player2_y;
+    const int player2Win_y;
+    const int tied_y;
+    const int tiedCount_y;
     const SDL_Rect sidebarRect;
     const SDL_Rect verticalLine;
     const SDL_Rect horizontalLine1;
@@ -105,17 +105,17 @@ void Sidebar_Draw(Sidebar *const this)
 
 void Sidebar_SetPlayer1WinText(Sidebar *const this, int count)
 {
-    Sidebar_UpdateText(this, this->player1WinText, this->player1Win_x, count);
+    Sidebar_UpdateText(this, this->player1WinText, this->player1Win_y, count);
 }
 
 void Sidebar_SetPlayer2WinText(Sidebar *const this, int count)
 {
-    Sidebar_UpdateText(this, this->player2WinText, this->player2Win_x, count);
+    Sidebar_UpdateText(this, this->player2WinText, this->player2Win_y, count);
 }
 
 void Sidebar_SetTiedCountText(Sidebar *const this, int count)
 {
-    Sidebar_UpdateText(this, this->tiedCountText, this->tiedCount_x, count);
+    Sidebar_UpdateText(this, this->tiedCountText, this->tiedCount_y, count);
 }
 
 void Sidebar_SetupSizes(Sidebar *const this)
@@ -128,12 +128,12 @@ void Sidebar_SetupSizes(Sidebar *const this)
 
     *(int *)&this->width = this->rect->sidebar_w - border_w;
 
-    *(int *)&this->player1_x = title_margin;
-    *(int *)&this->player1Win_x = number_margin;
-    *(int *)&this->player2_x = second_block + title_margin;
-    *(int *)&this->player2Win_x = second_block + number_margin;
-    *(int *)&this->tied_x = third_block + title_margin;
-    *(int *)&this->tiedCount_x = third_block + number_margin;
+    *(int *)&this->player1_y = title_margin;
+    *(int *)&this->player1Win_y = number_margin;
+    *(int *)&this->player2_y = second_block + title_margin;
+    *(int *)&this->player2Win_y = second_block + number_margin;
+    *(int *)&this->tied_y = third_block + title_margin;
+    *(int *)&this->tiedCount_y = third_block + number_margin;
 
     *(SDL_Rect *)&this->sidebarRect = (SDL_Rect) {0, 0, this->width, this->rect->sidebar_h};
     *(SDL_Rect *)&this->verticalLine = (SDL_Rect) {this->width, 0, border_w, this->rect->sidebar_h};
@@ -166,12 +166,12 @@ void Sidebar_CreateTextures(Sidebar *const this)
     Texture_MakeText(this->tiedText);
     Texture_MakeText(this->tiedCountText);
 
-    Sidebar_UpdateTextRect(this, this->player1Text, this->player1_x);
-    Sidebar_UpdateTextRect(this, this->player1WinText, this->player1Win_x);
-    Sidebar_UpdateTextRect(this, this->player2Text, this->player2_x);
-    Sidebar_UpdateTextRect(this, this->player2WinText, this->player2Win_x);
-    Sidebar_UpdateTextRect(this, this->tiedText, this->tied_x);
-    Sidebar_UpdateTextRect(this, this->tiedCountText, this->tiedCount_x);
+    Sidebar_UpdateTextRect(this, this->player1Text, this->player1_y);
+    Sidebar_UpdateTextRect(this, this->player1WinText, this->player1Win_y);
+    Sidebar_UpdateTextRect(this, this->player2Text, this->player2_y);
+    Sidebar_UpdateTextRect(this, this->player2WinText, this->player2Win_y);
+    Sidebar_UpdateTextRect(this, this->tiedText, this->tied_y);
+    Sidebar_UpdateTextRect(this, this->tiedCountText, this->tiedCount_y);
 }
 
 void Sidebar_UpdateTextRect(Sidebar *const this, Texture *texture, int y)

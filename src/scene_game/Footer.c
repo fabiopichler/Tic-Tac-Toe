@@ -74,7 +74,7 @@ void Footer_Draw(Footer *const this)
     Texture_Draw(this->copyrightText, NULL, NULL);
 }
 
-Button *Footer_GeRestartButton(Footer *const this)
+Button *Footer_GetRestartButton(Footer *const this)
 {
     return this->restartButton;
 }

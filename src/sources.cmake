@@ -14,10 +14,10 @@ set(SRC_FILES
     src/scene_game/SceneGameRect.h
     src/scene_game/SceneGame.c
     src/scene_game/SceneGame.h
-    src/scene_game/game_board/GameBoard.c
-    src/scene_game/game_board/GameBoard.h
-    src/scene_game/game_board/board.c
-    src/scene_game/game_board/board.h
+    src/scene_game/board/GameBoard.c
+    src/scene_game/board/GameBoard.h
+    src/scene_game/board/board_util.c
+    src/scene_game/board/board_util.h
     src/scene_game/Sidebar.c
     src/scene_game/Sidebar.h
     src/scene_game/Footer.c

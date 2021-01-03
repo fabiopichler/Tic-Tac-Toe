@@ -24,10 +24,10 @@ SOFTWARE.
 
 #include "SceneGame.h"
 #include "SceneGameRect.h"
-#include "game_board/GameBoard.h"
+#include "board/GameBoard.h"
 #include "../base/Button.h"
 #include "../base/Texture.h"
-#include "game_board/board.h"
+#include "board/board_util.h"
 #include "Sidebar.h"
 #include "Header.h"
 #include "Footer.h"
@@ -75,7 +75,7 @@ SceneGame *SceneGame_New(SDL_Renderer *renderer, SDL_Rect windowRect)
     this->header = Header_New(this->renderer, this->rect);
     this->footer = Footer_New(this->renderer, this->rect);
 
-    Button *restartButton = Footer_GeRestartButton(this->footer);
+    Button *restartButton = Footer_GetRestartButton(this->footer);
     Button_SetOnPressEvent(restartButton, SceneGame_OnPressed, this);
 
     SceneGame_NewGame(this);

@@ -25,7 +25,7 @@ SOFTWARE.
 #include "GameBoard.h"
 #include "../../base/Button.h"
 #include "../../base/Texture.h"
-#include "board.h"
+#include "board_util.h"
 
 typedef struct GameEvent
 {

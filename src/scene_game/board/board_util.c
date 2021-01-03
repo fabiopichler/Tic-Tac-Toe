@@ -22,7 +22,7 @@ SOFTWARE.
 
 -------------------------------------------------------------------------------*/
 
-#include "board.h"
+#include "board_util.h"
 
 bool CheckBoardRow(BoardItem *row, Player player)
 {
