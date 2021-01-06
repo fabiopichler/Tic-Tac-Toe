@@ -164,7 +164,7 @@ void GameBoard_SetupBoard(GameBoard *const this)
 
             Button_SetRect(
                         item->button,
-                        (SDL_Rect) {
+                        &(SDL_Rect) {
                             .x = this->board_x + (col * this->item_size) + (col * this->board_space),
                             .y = this->board_y + (row * this->item_size) + (row * this->board_space),
                             .w = this->item_size,
@@ -172,9 +172,9 @@ void GameBoard_SetupBoard(GameBoard *const this)
                         });
 
             Button_SetOnPressEvent(item->button, GameBoard_OnItemPress, this);
-            Button_SetBackgroundColor(item->button, (SDL_Color) {210, 240, 240, 255});
-            Button_SetBackgroundHoverColor(item->button, (SDL_Color) {225, 255, 255, 255});
-            Button_SetBackgroundPressedColor(item->button, (SDL_Color) {180, 230, 230, 255});
+            Button_SetBackgroundColor(item->button, &(SDL_Color) {210, 240, 240, 255});
+            Button_SetBackgroundHoverColor(item->button, &(SDL_Color) {225, 255, 255, 255});
+            Button_SetBackgroundPressedColor(item->button, &(SDL_Color) {180, 230, 230, 255});
         }
     }
 }

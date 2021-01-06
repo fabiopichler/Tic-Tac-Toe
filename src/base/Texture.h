@@ -40,15 +40,15 @@ void Texture_Delete(Texture *);
 bool Texture_LoadImageFromFile(Texture *, const char *fileName);
 
 bool Texture_MakeText(Texture *);
-void Texture_SetupText(Texture *, const char *text, int ptsize, SDL_Color color);
+void Texture_SetupText(Texture *, const char *text, int ptsize, const SDL_Color *color);
 void Texture_SetText(Texture *, const char *text);
 void Texture_SetTextSize(Texture *, int ptsize);
-void Texture_SetTextColor(Texture *, SDL_Color color);
+void Texture_SetTextColor(Texture *, const SDL_Color *color);
 
 void Texture_Draw(Texture *, const SDL_Rect *srcrect, const SDL_Rect *dstrect);
 void Texture_DrawEx(Texture *, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
 void Texture_SetPos(Texture *, int x, int y);
-void Texture_SetRect(Texture *, SDL_Rect rect);
+void Texture_SetRect(Texture *, const SDL_Rect *rect);
 int Texture_GetWidth(Texture *);
 int Texture_GetHeight(Texture *);
 

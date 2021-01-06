@@ -95,24 +95,28 @@ void Button_Delete(Button *const this)
     free(this);
 }
 
-void Button_SetBackgroundColor(Button *const this, SDL_Color color)
+void Button_SetBackgroundColor(Button *const this, const SDL_Color *color)
 {
-    this->color = color;
+    if (color)
+        this->color = *color;
 }
 
-void Button_SetBackgroundHoverColor(Button *const this, SDL_Color color)
+void Button_SetBackgroundHoverColor(Button *const this, const SDL_Color *color)
 {
-    this->colorHover = color;
+    if (color)
+        this->colorHover = *color;
 }
 
-void Button_SetBackgroundPressedColor(Button *const this, SDL_Color color)
+void Button_SetBackgroundPressedColor(Button *const this, const SDL_Color *color)
 {
-    this->colorPressed = color;
+    if (color)
+        this->colorPressed = *color;
 }
 
-void Button_SetTextColor(Button *const this, SDL_Color color)
+void Button_SetTextColor(Button *const this, const SDL_Color *color)
 {
-    this->textColor = color;
+    if (color)
+        this->textColor = *color;
 }
 
 bool Button_SetText(Button *const this, const char *text, int ptsize)
@@ -120,7 +124,7 @@ bool Button_SetText(Button *const this, const char *text, int ptsize)
     if (!this->textTexture)
         this->textTexture = Texture_New(this->renderer);
 
-    Texture_SetTextColor(this->textTexture, this->textColor);
+    Texture_SetTextColor(this->textTexture, &this->textColor);
     Texture_SetTextSize(this->textTexture, ptsize);
     Texture_SetText(this->textTexture, text);
 
@@ -142,10 +146,13 @@ void Button_SetImage(Button *const this, Texture *texture)
     }
 }
 
-void Button_SetRect(Button *const this, SDL_Rect rect)
+void Button_SetRect(Button *const this, const SDL_Rect *rect)
 {
-    this->rect = rect;
-    Button_UpdateTextureRect(this);
+    if (rect)
+    {
+        this->rect = *rect;
+        Button_UpdateTextureRect(this);
+    }
 }
 
 void Button_SetOnPressEvent(Button *const this, ButtonOnPressEvent callback, void *user)

@@ -103,7 +103,7 @@ bool Texture_MakeText(Texture *const this)
     return Texture_CreateTexture(this, surface);
 }
 
-void Texture_SetupText(Texture *const this, const char *text, int ptsize, SDL_Color color)
+void Texture_SetupText(Texture *const this, const char *text, int ptsize, const SDL_Color *color)
 {
     Texture_SetText(this, text);
     Texture_SetTextSize(this, ptsize);
@@ -129,9 +129,10 @@ void Texture_SetTextSize(Texture *const this, int ptsize)
     }
 }
 
-void Texture_SetTextColor(Texture *const this, SDL_Color color)
+void Texture_SetTextColor(Texture *const this, const SDL_Color *color)
 {
-    this->textColor = color;
+    if (color)
+        this->textColor = *color;
 }
 
 void Texture_Draw(Texture *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
@@ -184,9 +185,10 @@ void Texture_SetPos(Texture *const this, int x, int y)
     this->rect.x = y;
 }
 
-void Texture_SetRect(Texture *const this, SDL_Rect rect)
+void Texture_SetRect(Texture *const this, const SDL_Rect *rect)
 {
-    this->rect = rect;
+    if (rect)
+        this->rect = *rect;
 }
 
 int Texture_GetWidth(Texture *const this)

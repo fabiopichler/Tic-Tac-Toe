@@ -152,12 +152,12 @@ void Sidebar_CreateTextures(Sidebar *const this)
     this->tiedText = Texture_New(this->renderer);
     this->tiedCountText = Texture_New(this->renderer);
 
-    Texture_SetupText(this->player1Text, "Vitórias do jogador 1", 16, this->textColor);
-    Texture_SetupText(this->player1WinText, "0", 40, this->textColor);
-    Texture_SetupText(this->player2Text, "Vitórias do jogador 2", 16, this->textColor);
-    Texture_SetupText(this->player2WinText, "0", 40, this->textColor);
-    Texture_SetupText(this->tiedText, "Total de empates", 16, this->textColor);
-    Texture_SetupText(this->tiedCountText, "0", 40, this->textColor);
+    Texture_SetupText(this->player1Text, "Vitórias do jogador 1", 16, &this->textColor);
+    Texture_SetupText(this->player1WinText, "0", 40, &this->textColor);
+    Texture_SetupText(this->player2Text, "Vitórias do jogador 2", 16, &this->textColor);
+    Texture_SetupText(this->player2WinText, "0", 40, &this->textColor);
+    Texture_SetupText(this->tiedText, "Total de empates", 16, &this->textColor);
+    Texture_SetupText(this->tiedCountText, "0", 40, &this->textColor);
 
     Texture_MakeText(this->player1Text);
     Texture_MakeText(this->player1WinText);
@@ -181,7 +181,7 @@ void Sidebar_UpdateTextRect(Sidebar *const this, Texture *texture, int y)
     int w = Texture_GetWidth(texture);
     int h = Texture_GetHeight(texture);
 
-    Texture_SetRect(texture, (SDL_Rect) {
+    Texture_SetRect(texture, &(SDL_Rect) {
                         .x = (this->width - w) / 2,
                         .y = y,
                         .w = w,

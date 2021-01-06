@@ -91,7 +91,7 @@ void Footer_CreateRestartButton(Footer *const this)
 
     Button_SetRect(
                 this->restartButton,
-                (SDL_Rect) {
+                &(SDL_Rect) {
                     .x = this->rect->sidebar_w + ((this->rect->content_w - width) / 2),
                     .y = this->rect->window_h - height - padding,
                     .w = width,
@@ -105,14 +105,14 @@ void Footer_CreateCopyrightText(Footer *const this)
 
     const char text[] = "© 2020 Fábio Pichler                               www.fabiopichler.net";
 
-    Texture_SetupText(this->copyrightText, text, 14, (SDL_Color) {30, 120, 120, 255});
+    Texture_SetupText(this->copyrightText, text, 14, &(SDL_Color) {30, 120, 120, 255});
     Texture_MakeText(this->copyrightText);
 
     int width = Texture_GetWidth(this->copyrightText);
     int height = Texture_GetHeight(this->copyrightText);
     int padding = 10;
 
-    Texture_SetRect(this->copyrightText, (SDL_Rect) {
+    Texture_SetRect(this->copyrightText, &(SDL_Rect) {
                         .x = this->rect->sidebar_w + ((this->rect->content_w - width) / 2),
                         .y = this->rect->window_h - height - padding,
                         .w = width,

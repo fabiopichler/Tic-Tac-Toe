@@ -161,7 +161,7 @@ void Header_SetCurrentPlayer(Header *const this, Player currentPlayer, Player ga
 void Header_CreateResultText(Header *const this)
 {
     this->result = Texture_New(this->renderer);
-    Texture_SetupText(this->result, "...", 24, (SDL_Color) {30, 120, 120, 255});
+    Texture_SetupText(this->result, "...", 24, &(SDL_Color) {30, 120, 120, 255});
     Texture_MakeText(this->result);
 
     Header_SetupResultText(this);
@@ -170,7 +170,7 @@ void Header_CreateResultText(Header *const this)
 void Header_CreatePlayer1Text(Header *const this)
 {
     this->player1 = Texture_New(this->renderer);
-    Texture_SetupText(this->player1, "Jogador 1", 20, (SDL_Color) {30, 120, 120, 255});
+    Texture_SetupText(this->player1, "Jogador 1", 20, &(SDL_Color) {30, 120, 120, 255});
     Texture_MakeText(this->player1);
 
     this->player1Icon = Texture_New(this->renderer);
@@ -182,7 +182,7 @@ void Header_CreatePlayer1Text(Header *const this)
 void Header_CreatePlayer2Text(Header *const this)
 {
     this->player2 = Texture_New(this->renderer);
-    Texture_SetupText(this->player2, "Jogador 2", 20, (SDL_Color) {30, 120, 120, 255});
+    Texture_SetupText(this->player2, "Jogador 2", 20, &(SDL_Color) {30, 120, 120, 255});
     Texture_MakeText(this->player2);
 
     this->player2Icon = Texture_New(this->renderer);
@@ -196,7 +196,7 @@ void Header_SetupResultText(Header *const this)
     int w = Texture_GetWidth(this->result);
     int h = Texture_GetHeight(this->result);
 
-    Texture_SetRect(this->result, (SDL_Rect) {
+    Texture_SetRect(this->result, &(SDL_Rect) {
                         .x = this->rect->sidebar_w + ((this->rect->content_w - w) / 2),
                         .y = 26,
                         .w = w,
@@ -214,14 +214,14 @@ void Header_SetupPlayer1Text(Header *const this)
     int text_x = (this->rect->sidebar_w + ((this->rect->content_w - text_w) / 2)) - (text_w / 2) - this->margin - icon_w - this->space;
     int icon_x = (this->rect->sidebar_w + ((this->rect->content_w - icon_w) / 2)) - (icon_w / 2) - this->margin;
 
-    Texture_SetRect(this->player1, (SDL_Rect) {
+    Texture_SetRect(this->player1, &(SDL_Rect) {
                         .x = text_x,
                         .y = 30,
                         .w = text_w,
                         .h = text_h
                     });
 
-    Texture_SetRect(this->player1Icon, (SDL_Rect) {
+    Texture_SetRect(this->player1Icon, &(SDL_Rect) {
                         .x = icon_x,
                         .y = 32,
                         .w = icon_w,
@@ -239,14 +239,14 @@ void Header_SetupPlayer2Text(Header *const this)
     int text_x = (this->rect->sidebar_w + ((this->rect->content_w - text_w) / 2)) + (text_w / 2) + this->margin + icon_w + this->space;
     int icon_x = (this->rect->sidebar_w + ((this->rect->content_w - icon_w) / 2)) + (icon_w / 2) + this->margin;
 
-    Texture_SetRect(this->player2, (SDL_Rect) {
+    Texture_SetRect(this->player2, &(SDL_Rect) {
                         .x = text_x,
                         .y = 30,
                         .w = text_w,
                         .h = text_h
                     });
 
-    Texture_SetRect(this->player2Icon, (SDL_Rect) {
+    Texture_SetRect(this->player2Icon, &(SDL_Rect) {
                         .x = icon_x,
                         .y = 33,
                         .w = icon_w,

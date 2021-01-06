@@ -40,13 +40,13 @@ typedef void (*ButtonOnPressEvent)(Button *const button, void *user);
 
 Button *Button_New(SDL_Renderer *renderer);
 void Button_Delete(Button *);
-void Button_SetBackgroundColor(Button *, SDL_Color color);
-void Button_SetBackgroundHoverColor(Button *, SDL_Color color);
-void Button_SetBackgroundPressedColor(Button *, SDL_Color color);
-void Button_SetTextColor(Button *, SDL_Color color);
+void Button_SetBackgroundColor(Button *, const SDL_Color *color);
+void Button_SetBackgroundHoverColor(Button *, const SDL_Color *color);
+void Button_SetBackgroundPressedColor(Button *, const SDL_Color *color);
+void Button_SetTextColor(Button *, const SDL_Color *color);
 bool Button_SetText(Button *, const char *text, int ptsize);
 void Button_SetImage(Button *, Texture *texture);
-void Button_SetRect(Button *, SDL_Rect rect);
+void Button_SetRect(Button *, const SDL_Rect *rect);
 void Button_SetOnPressEvent(Button *, ButtonOnPressEvent callback, void *user);
 void *Button_GetEventUserData(Button *);
 void Button_ProcessEvent(Button *, const SDL_Event *event);
