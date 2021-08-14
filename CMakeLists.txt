@@ -67,7 +67,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
 
     add_definitions("${DEFS}")
-    set_target_properties(tic-tac-toe PROPERTIES LINK_FLAGS "${DEFS} -s WASM=1 -s MIN_WEBGL_VERSION=2 -s MAX_WEBGL_VERSION=2")
+    set_target_properties(tic-tac-toe PROPERTIES LINK_FLAGS "${DEFS} -s WASM=1 -s MIN_WEBGL_VERSION=1 -s MAX_WEBGL_VERSION=2 --use-preload-plugins --preload-file ${CMAKE_SOURCE_DIR}/assets@")
 else()
     target_link_libraries(tic-tac-toe PRIVATE SDL2 SDL2_image SDL2_ttf)
 endif()
