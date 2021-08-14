@@ -60,4 +60,14 @@ elseif(ANDROID)
     set_target_properties(tic-tac-toe PROPERTIES OUTPUT_NAME "main")
 endif()
 
-target_link_libraries(tic-tac-toe PRIVATE SDL2 SDL2_image SDL2_ttf)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    # emcmake cmake ..
+
+    set(DEFS "-s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_TTF=2 -s SDL2_IMAGE_FORMATS='[\"png\"]'")
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+
+    add_definitions("${DEFS}")
+    set_target_properties(tic-tac-toe PROPERTIES LINK_FLAGS "${DEFS} -s WASM=1 -s MIN_WEBGL_VERSION=2 -s MAX_WEBGL_VERSION=2")
+else()
+    target_link_libraries(tic-tac-toe PRIVATE SDL2 SDL2_image SDL2_ttf)
+endif()

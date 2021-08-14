@@ -34,6 +34,11 @@ SOFTWARE.
 #include <stdbool.h>
 #include <stdio.h>
 
+#ifdef __EMSCRIPTEN__
+    #include <emscripten.h>
+    #include <emscripten/html5.h>
+#endif
+
 struct App
 {
     Window *window;
@@ -41,6 +46,7 @@ struct App
     SDL_Renderer *renderer;
     SceneGame *sceneGame;
 
+    SDL_Event event;
     uint64_t lastPerformanceCounter;
     SDL_Rect bgRect;
 };
@@ -71,6 +77,7 @@ App *App_New()
 
 void App_Delete(App *const this)
 {
+#ifndef __EMSCRIPTEN__
     if (!this)
         return;
 
@@ -82,26 +89,46 @@ void App_Delete(App *const this)
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();
+#endif
 }
+
+bool main_loop(App *const this)
+{
+    while (SDL_PollEvent(&this->event))
+    {
+        if (this->event.type == SDL_QUIT || this->event.key.keysym.sym == SDLK_AC_BACK)
+            return false;
+
+        SceneGame_ProcessEvent(this->sceneGame, &this->event);
+    }
+
+    App_Update(this);
+    App_Draw(this);
+
+    return true;
+}
+
+#ifdef __EMSCRIPTEN__
+int frame_loop(double time, void *userData) {
+    App *const this = userData;
+
+    if (main_loop(this))
+        return EM_TRUE;
+
+    return EM_FALSE;
+}
+#endif
 
 void App_Run(App *const this)
 {
-    bool running = true;
-    SDL_Event event;
-
-    while (running)
-    {
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_AC_BACK)
-                running = false;
-
-            SceneGame_ProcessEvent(this->sceneGame, &event);
-        }
-
-        App_Update(this);
-        App_Draw(this);
-    }
+#ifdef __EMSCRIPTEN__
+    //emscripten_set_main_loop_arg(main_loop, this, 60, 1);
+    emscripten_request_animation_frame_loop(frame_loop, this);
+#else
+    while (1)
+        if (!main_loop(this))
+            return;
+#endif
 }
 
 void App_Update(App *const this)
@@ -134,6 +161,7 @@ void App_InitSDL()
         exit(-1);
     }
 
+#ifndef __EMSCRIPTEN__
     int imgFlags = IMG_INIT_PNG;
 
     if (!(IMG_Init(imgFlags) & imgFlags))
@@ -142,6 +170,7 @@ void App_InitSDL()
         SDL_Quit();
         exit(-1);
     }
+#endif
 
     if (TTF_Init() == -1)
     {
