@@ -44,7 +44,7 @@ make
 
 ![Screenshot](/screenshots/screenshot_03.png?raw=true)
 
-![Screenshot](/screenshots/screenshot_04.png?raw=true)
+![Screenshot](/screenshots/screenshot_04.jpg?raw=true)
 
 ## Licença
 
