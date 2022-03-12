@@ -35,22 +35,22 @@ extern "C" {
 typedef struct Texture Texture;
 
 Texture *Texture_New(SDL_Renderer *renderer);
-void Texture_Delete(Texture *);
+void Texture_Delete(Texture *self);
 
-bool Texture_LoadImageFromFile(Texture *, const char *fileName);
+bool Texture_LoadImageFromFile(Texture *self, const char *fileName);
 
-bool Texture_MakeText(Texture *);
-void Texture_SetupText(Texture *, const char *text, int ptsize, const SDL_Color *color);
-void Texture_SetText(Texture *, const char *text);
-void Texture_SetTextSize(Texture *, int ptsize);
-void Texture_SetTextColor(Texture *, const SDL_Color *color);
+bool Texture_MakeText(Texture *self);
+void Texture_SetupText(Texture *self, const char *text, int ptsize, const SDL_Color *color);
+void Texture_SetText(Texture *self, const char *text);
+void Texture_SetTextSize(Texture *self, int ptsize);
+void Texture_SetTextColor(Texture *self, const SDL_Color *color);
 
-void Texture_Draw(Texture *, const SDL_Rect *srcrect, const SDL_Rect *dstrect);
-void Texture_DrawEx(Texture *, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
-void Texture_SetPos(Texture *, int x, int y);
-void Texture_SetRect(Texture *, const SDL_Rect *rect);
-int Texture_GetWidth(Texture *);
-int Texture_GetHeight(Texture *);
+void Texture_Draw(Texture *self, const SDL_Rect *srcrect, const SDL_Rect *dstrect);
+void Texture_DrawEx(Texture *self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
+void Texture_SetPos(Texture *self, int x, int y);
+void Texture_SetRect(Texture *self, const SDL_Rect *rect);
+int Texture_GetWidth(Texture *self);
+int Texture_GetHeight(Texture *self);
 
 #ifdef __cplusplus
 }

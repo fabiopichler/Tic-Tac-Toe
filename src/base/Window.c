@@ -36,18 +36,18 @@ struct Window
 
 Window *Window_New(int width, int height)
 {
-    Window *const this = malloc(sizeof (Window));
+    Window *const self = malloc(sizeof (Window));
 
-    this->rect = (SDL_Rect) { .x = 0, .y = 0, .w = width, .h = height };
+    self->rect = (SDL_Rect) { .x = 0, .y = 0, .w = width, .h = height };
 
-    this->window = SDL_CreateWindow("Tic Tac Toe",
+    self->window = SDL_CreateWindow("Tic Tac Toe",
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
-                                this->rect.w,
-                                this->rect.h,
+                                self->rect.w,
+                                self->rect.h,
                                 SDL_WINDOW_SHOWN);
 
-    if (!this->window)
+    if (!self->window)
     {
         printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
         SDL_Quit();
@@ -55,27 +55,27 @@ Window *Window_New(int width, int height)
     }
 
     SDL_Surface *icon = IMG_Load("images/window-icon.png");
-    SDL_SetWindowIcon(this->window, icon);
+    SDL_SetWindowIcon(self->window, icon);
     SDL_FreeSurface(icon);
 
-    return this;
+    return self;
 }
 
-void Window_Delete(Window *const this)
+void Window_Delete(Window *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
-    SDL_DestroyWindow(this->window);
-    free(this);
+    SDL_DestroyWindow(self->window);
+    free(self);
 }
 
-SDL_Window *Window_GetSDLWindow(Window *const this)
+SDL_Window *Window_GetSDLWindow(Window *const self)
 {
-    return this->window;
+    return self->window;
 }
 
-SDL_Rect Window_GetRect(Window *const this)
+SDL_Rect Window_GetRect(Window *const self)
 {
-    return this->rect;
+    return self->rect;
 }

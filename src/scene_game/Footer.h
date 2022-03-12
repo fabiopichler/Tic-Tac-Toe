@@ -32,7 +32,7 @@ SOFTWARE.
 typedef struct Footer Footer;
 
 Footer *Footer_New(SDL_Renderer *renderer, SceneGameRect *rect);
-void Footer_Delete(Footer *const this);
-void Footer_ProcessEvent(Footer *const this, const SDL_Event *event);
-void Footer_Draw(Footer *const this);
-Button *Footer_GetRestartButton(Footer *const this);
+void Footer_Delete(Footer *const self);
+void Footer_ProcessEvent(Footer *const self, const SDL_Event *event);
+void Footer_Draw(Footer *const self);
+Button *Footer_GetRestartButton(Footer *const self);

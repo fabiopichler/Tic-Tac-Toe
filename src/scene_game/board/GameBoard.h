@@ -33,10 +33,10 @@ typedef struct GameBoard GameBoard;
 typedef void (*GameEventHandler)(GameBoard *const game, void *user);
 
 GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect);
-void GameBoard_Delete(GameBoard *const this);
-void GameBoard_ProcessEvent(GameBoard *const this, const SDL_Event *event);
-void GameBoard_Update(GameBoard *const this, double deltaTime);
-void GameBoard_Draw(GameBoard *const this);
-void GameBoard_SetGameEvent(GameBoard *const this, GameEventHandler callback, void *user);
-int GameBoard_GetCurrentPlayer(GameBoard *const this);
-int GameBoard_GetGameResult(GameBoard *const this);
+void GameBoard_Delete(GameBoard *const self);
+void GameBoard_ProcessEvent(GameBoard *const self, const SDL_Event *event);
+void GameBoard_Update(GameBoard *const self, double deltaTime);
+void GameBoard_Draw(GameBoard *const self);
+void GameBoard_SetGameEvent(GameBoard *const self, GameEventHandler callback, void *user);
+int GameBoard_GetCurrentPlayer(GameBoard *const self);
+int GameBoard_GetGameResult(GameBoard *const self);

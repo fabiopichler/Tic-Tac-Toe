@@ -32,8 +32,8 @@ SOFTWARE.
 typedef struct Header Header;
 
 Header *Header_New(SDL_Renderer *renderer, SceneGameRect *rect);
-void Header_Delete(Header *const this);
-void Header_ProcessEvent(Header *const this, const SDL_Event *event);
-void Header_Update(Header *const this, double deltaTime);
-void Header_Draw(Header *const this);
-void Header_SetCurrentPlayer(Header *const this, Player currentPlayer, Player gameResult);
+void Header_Delete(Header *const self);
+void Header_ProcessEvent(Header *const self, const SDL_Event *event);
+void Header_Update(Header *const self, double deltaTime);
+void Header_Draw(Header *const self);
+void Header_SetCurrentPlayer(Header *const self, Player currentPlayer, Player gameResult);

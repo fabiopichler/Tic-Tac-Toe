@@ -51,40 +51,40 @@ struct App
     SDL_Rect bgRect;
 };
 
-void App_Update(App *const this);
-void App_Draw(App *const this);
+void App_Update(App *const self);
+void App_Draw(App *const self);
 void App_InitSDL();
 
 App *App_New()
 {
-    App *const this = malloc(sizeof (App));
+    App *const self = malloc(sizeof (App));
 
     App_InitSDL();
 
     int width = 640;
     int height = 480;
 
-    this->window = Window_New(width, height);
-    this->graphics = Graphics_New(this->window);
-    this->renderer = Graphics_GetRenderer(this->graphics);
-    this->sceneGame = SceneGame_New(this->renderer, Window_GetRect(this->window));
+    self->window = Window_New(width, height);
+    self->graphics = Graphics_New(self->window);
+    self->renderer = Graphics_GetRenderer(self->graphics);
+    self->sceneGame = SceneGame_New(self->renderer, Window_GetRect(self->window));
 
-    this->lastPerformanceCounter = SDL_GetPerformanceCounter();
-    this->bgRect = (SDL_Rect) { 0, 0, width, height };
+    self->lastPerformanceCounter = SDL_GetPerformanceCounter();
+    self->bgRect = (SDL_Rect) { 0, 0, width, height };
 
-    return this;
+    return self;
 }
 
-void App_Delete(App *const this)
+void App_Delete(App *const self)
 {
 #ifndef __EMSCRIPTEN__
-    if (!this)
+    if (!self)
         return;
 
-    SceneGame_Delete(this->sceneGame);
-    Graphics_Delete(this->graphics);
-    Window_Delete(this->window);
-    free(this);
+    SceneGame_Delete(self->sceneGame);
+    Graphics_Delete(self->graphics);
+    Window_Delete(self->window);
+    free(self);
 
     IMG_Quit();
     TTF_Quit();
@@ -92,65 +92,65 @@ void App_Delete(App *const this)
 #endif
 }
 
-bool main_loop(App *const this)
+bool main_loop(App *const self)
 {
-    while (SDL_PollEvent(&this->event))
+    while (SDL_PollEvent(&self->event))
     {
-        if (this->event.type == SDL_QUIT || this->event.key.keysym.sym == SDLK_AC_BACK)
+        if (self->event.type == SDL_QUIT || self->event.key.keysym.sym == SDLK_AC_BACK)
             return false;
 
-        SceneGame_ProcessEvent(this->sceneGame, &this->event);
+        SceneGame_ProcessEvent(self->sceneGame, &self->event);
     }
 
-    App_Update(this);
-    App_Draw(this);
+    App_Update(self);
+    App_Draw(self);
 
     return true;
 }
 
 #ifdef __EMSCRIPTEN__
 int frame_loop(double time, void *userData) {
-    App *const this = userData;
+    App *const self = userData;
 
-    if (main_loop(this))
+    if (main_loop(self))
         return EM_TRUE;
 
     return EM_FALSE;
 }
 #endif
 
-void App_Run(App *const this)
+void App_Run(App *const self)
 {
 #ifdef __EMSCRIPTEN__
-    //emscripten_set_main_loop_arg(main_loop, this, 60, 1);
-    emscripten_request_animation_frame_loop(frame_loop, this);
+    //emscripten_set_main_loop_arg(main_loop, self, 60, 1);
+    emscripten_request_animation_frame_loop(frame_loop, self);
 #else
     while (1)
-        if (!main_loop(this))
+        if (!main_loop(self))
             return;
 #endif
 }
 
-void App_Update(App *const this)
+void App_Update(App *const self)
 {
     Uint64 now = SDL_GetPerformanceCounter();
-    double deltaTime = (double)((now - this->lastPerformanceCounter) * 1000ul) / (double)SDL_GetPerformanceFrequency();
-    this->lastPerformanceCounter = now;
+    double deltaTime = (double)((now - self->lastPerformanceCounter) * 1000ul) / (double)SDL_GetPerformanceFrequency();
+    self->lastPerformanceCounter = now;
 
-    SceneGame_Update(this->sceneGame, deltaTime);
+    SceneGame_Update(self->sceneGame, deltaTime);
 }
 
-void App_Draw(App *const this)
+void App_Draw(App *const self)
 {
-    SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
-    SDL_RenderClear(this->renderer);
+    SDL_SetRenderDrawColor(self->renderer, 0, 0, 0, 255);
+    SDL_RenderClear(self->renderer);
 
-    SDL_SetRenderDrawColor(this->renderer, 190, 225, 225, 255);
-    SDL_RenderFillRect(this->renderer, &this->bgRect);
+    SDL_SetRenderDrawColor(self->renderer, 190, 225, 225, 255);
+    SDL_RenderFillRect(self->renderer, &self->bgRect);
 
-    SceneGame_Draw(this->sceneGame);
+    SceneGame_Draw(self->sceneGame);
 
-    SDL_RenderPresent(this->renderer);
+    SDL_RenderPresent(self->renderer);
 }
 
 void App_InitSDL()

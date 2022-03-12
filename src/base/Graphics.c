@@ -33,14 +33,14 @@ struct Graphics
 
 Graphics *Graphics_New(Window *window)
 {
-    Graphics *const this = malloc(sizeof (Graphics));
+    Graphics *const self = malloc(sizeof (Graphics));
 
-    this->renderer = SDL_CreateRenderer(
+    self->renderer = SDL_CreateRenderer(
                 Window_GetSDLWindow(window),
                 -1,
                 SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    if (!this->renderer)
+    if (!self->renderer)
     {
         printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(Window_GetSDLWindow(window));
@@ -49,21 +49,21 @@ Graphics *Graphics_New(Window *window)
     }
 
     SDL_Rect rect = Window_GetRect(window);
-    SDL_RenderSetLogicalSize(this->renderer, rect.w, rect.h);
+    SDL_RenderSetLogicalSize(self->renderer, rect.w, rect.h);
 
-    return this;
+    return self;
 }
 
-void Graphics_Delete(Graphics *const this)
+void Graphics_Delete(Graphics *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
-    SDL_DestroyRenderer(this->renderer);
-    free(this);
+    SDL_DestroyRenderer(self->renderer);
+    free(self);
 }
 
-SDL_Renderer *Graphics_GetRenderer(Graphics *const this)
+SDL_Renderer *Graphics_GetRenderer(Graphics *const self)
 {
-    return this->renderer;
+    return self->renderer;
 }

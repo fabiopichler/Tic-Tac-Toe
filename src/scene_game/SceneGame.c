@@ -49,13 +49,13 @@ struct SceneGame
     Footer *footer;
 };
 
-void SceneGame_NewGame(SceneGame *const this);
+void SceneGame_NewGame(SceneGame *const self);
 void SceneGame_OnPressed(Button *const button, void *user);
 void SceneGame_OnGameEvent(GameBoard *const game, void *user);
 
 SceneGame *SceneGame_New(SDL_Renderer *renderer, SDL_Rect windowRect)
 {
-    SceneGame *const this = malloc(sizeof (SceneGame));
+    SceneGame *const self = malloc(sizeof (SceneGame));
 
     SceneGameRect *rect = malloc(sizeof (SceneGameRect));
     *(int *)&rect->window_w = windowRect.w;
@@ -65,65 +65,65 @@ SceneGame *SceneGame_New(SDL_Renderer *renderer, SDL_Rect windowRect)
     *(int *)&rect->content_w = windowRect.w - rect->sidebar_w;
     *(int *)&rect->content_h = windowRect.h;
 
-    this->renderer = renderer;
-    this->rect = rect;
-    this->gameBoard = NULL;
-    this->player1WinCount = 0;
-    this->player2WinCount = 0;
-    this->tiedCount = 0;
-    this->sidebar = Sidebar_New(this->renderer, this->rect);
-    this->header = Header_New(this->renderer, this->rect);
-    this->footer = Footer_New(this->renderer, this->rect);
+    self->renderer = renderer;
+    self->rect = rect;
+    self->gameBoard = NULL;
+    self->player1WinCount = 0;
+    self->player2WinCount = 0;
+    self->tiedCount = 0;
+    self->sidebar = Sidebar_New(self->renderer, self->rect);
+    self->header = Header_New(self->renderer, self->rect);
+    self->footer = Footer_New(self->renderer, self->rect);
 
-    Button *restartButton = Footer_GetRestartButton(this->footer);
-    Button_SetOnPressEvent(restartButton, SceneGame_OnPressed, this);
+    Button *restartButton = Footer_GetRestartButton(self->footer);
+    Button_SetOnPressEvent(restartButton, SceneGame_OnPressed, self);
 
-    SceneGame_NewGame(this);
+    SceneGame_NewGame(self);
 
-    return this;
+    return self;
 }
 
-void SceneGame_Delete(SceneGame *const this)
+void SceneGame_Delete(SceneGame *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
-    GameBoard_Delete(this->gameBoard);
-    Footer_Delete(this->footer);
-    Header_Delete(this->header);
-    Sidebar_Delete(this->sidebar);
-    free(this->rect);
-    free(this);
+    GameBoard_Delete(self->gameBoard);
+    Footer_Delete(self->footer);
+    Header_Delete(self->header);
+    Sidebar_Delete(self->sidebar);
+    free(self->rect);
+    free(self);
 }
 
-void SceneGame_ProcessEvent(SceneGame *const this, const SDL_Event *event)
+void SceneGame_ProcessEvent(SceneGame *const self, const SDL_Event *event)
 {
-    Header_ProcessEvent(this->header, event);
-    Footer_ProcessEvent(this->footer, event);
-    GameBoard_ProcessEvent(this->gameBoard, event);
+    Header_ProcessEvent(self->header, event);
+    Footer_ProcessEvent(self->footer, event);
+    GameBoard_ProcessEvent(self->gameBoard, event);
 }
 
-void SceneGame_Update(SceneGame *const this, double deltaTime)
+void SceneGame_Update(SceneGame *const self, double deltaTime)
 {
-    Header_Update(this->header, deltaTime);
-    GameBoard_Update(this->gameBoard, deltaTime);
+    Header_Update(self->header, deltaTime);
+    GameBoard_Update(self->gameBoard, deltaTime);
 }
 
-void SceneGame_Draw(SceneGame *const this)
+void SceneGame_Draw(SceneGame *const self)
 {
-    GameBoard_Draw(this->gameBoard);
-    Header_Draw(this->header);
-    Footer_Draw(this->footer);
-    Sidebar_Draw(this->sidebar);
+    GameBoard_Draw(self->gameBoard);
+    Header_Draw(self->header);
+    Footer_Draw(self->footer);
+    Sidebar_Draw(self->sidebar);
 }
 
-void SceneGame_NewGame(SceneGame *const this)
+void SceneGame_NewGame(SceneGame *const self)
 {
-    GameBoard_Delete(this->gameBoard);
+    GameBoard_Delete(self->gameBoard);
 
-    this->gameBoard = GameBoard_New(this->renderer, this->rect);
-    GameBoard_SetGameEvent(this->gameBoard, SceneGame_OnGameEvent, this);
-    Header_SetCurrentPlayer(this->header, Player_1, None);
+    self->gameBoard = GameBoard_New(self->renderer, self->rect);
+    GameBoard_SetGameEvent(self->gameBoard, SceneGame_OnGameEvent, self);
+    Header_SetCurrentPlayer(self->header, Player_1, None);
 }
 
 void SceneGame_OnPressed(Button *const button, void *user)
@@ -134,16 +134,16 @@ void SceneGame_OnPressed(Button *const button, void *user)
 
 void SceneGame_OnGameEvent(GameBoard *const gameBoard, void *user)
 {
-    SceneGame *const this = user;
+    SceneGame *const self = user;
     Player player = GameBoard_GetCurrentPlayer(gameBoard);
     Player gameResult = GameBoard_GetGameResult(gameBoard);
 
-    Header_SetCurrentPlayer(this->header, player, gameResult);
+    Header_SetCurrentPlayer(self->header, player, gameResult);
 
     if (gameResult == Player_1)
-        Sidebar_SetPlayer1WinText(this->sidebar, ++this->player1WinCount);
+        Sidebar_SetPlayer1WinText(self->sidebar, ++self->player1WinCount);
     else if (gameResult == Player_2)
-        Sidebar_SetPlayer2WinText(this->sidebar, ++this->player2WinCount);
+        Sidebar_SetPlayer2WinText(self->sidebar, ++self->player2WinCount);
     else if (gameResult == Tied)
-        Sidebar_SetTiedCountText(this->sidebar, ++this->tiedCount);
+        Sidebar_SetTiedCountText(self->sidebar, ++self->tiedCount);
 }

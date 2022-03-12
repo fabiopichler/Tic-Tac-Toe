@@ -48,180 +48,180 @@ struct Header
     Texture *player2Icon;
 };
 
-void Header_CreateResultText(Header *const this);
-void Header_CreatePlayer1Text(Header *const this);
-void Header_CreatePlayer2Text(Header *const this);
-void Header_SetupResultText(Header *const this);
-void Header_SetupPlayer1Text(Header *const this);
-void Header_SetupPlayer2Text(Header *const this);
+void Header_CreateResultText(Header *const self);
+void Header_CreatePlayer1Text(Header *const self);
+void Header_CreatePlayer2Text(Header *const self);
+void Header_SetupResultText(Header *const self);
+void Header_SetupPlayer1Text(Header *const self);
+void Header_SetupPlayer2Text(Header *const self);
 
 Header *Header_New(SDL_Renderer *renderer, SceneGameRect *rect)
 {
-    Header *const this = malloc(sizeof (Header));
+    Header *const self = malloc(sizeof (Header));
 
-    *(int *)&this->space = 6;
-    *(int *)&this->margin = 20;
+    *(int *)&self->space = 6;
+    *(int *)&self->margin = 20;
 
     const float w = 134;
     const float x = rect->sidebar_w + ((rect->content_w - w) / 2);
-    *(float *)&this->line_p1_x = x - 85.f;
-    *(float *)&this->line_p2_x = x + 85.f;
-    this->line_rect = (SDL_FRect) {.x = this->line_p1_x, .y = 64.f, .w = w, .h = 4.f};
+    *(float *)&self->line_p1_x = x - 85.f;
+    *(float *)&self->line_p2_x = x + 85.f;
+    self->line_rect = (SDL_FRect) {.x = self->line_p1_x, .y = 64.f, .w = w, .h = 4.f};
 
-    this->renderer = renderer;
-    this->rect = rect;
-    this->currentPlayer = Player_1;
-    this->gameResult = None;
+    self->renderer = renderer;
+    self->rect = rect;
+    self->currentPlayer = Player_1;
+    self->gameResult = None;
 
-    Header_CreateResultText(this);
-    Header_CreatePlayer1Text(this);
-    Header_CreatePlayer2Text(this);
+    Header_CreateResultText(self);
+    Header_CreatePlayer1Text(self);
+    Header_CreatePlayer2Text(self);
 
-    return this;
+    return self;
 }
 
-void Header_Delete(Header *const this)
+void Header_Delete(Header *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
-    Texture_Delete(this->result);
-    Texture_Delete(this->player1);
-    Texture_Delete(this->player1Icon);
-    Texture_Delete(this->player2);
-    Texture_Delete(this->player2Icon);
-    free(this);
+    Texture_Delete(self->result);
+    Texture_Delete(self->player1);
+    Texture_Delete(self->player1Icon);
+    Texture_Delete(self->player2);
+    Texture_Delete(self->player2Icon);
+    free(self);
 }
 
-void Header_ProcessEvent(Header *const this, const SDL_Event *event)
+void Header_ProcessEvent(Header *const self, const SDL_Event *event)
 {
-    (void)this;(void)event;
+    (void)self;(void)event;
 }
 
-void Header_Update(Header *const this, double deltaTime)
+void Header_Update(Header *const self, double deltaTime)
 {
     for (int i = 0; i < 8; ++i)
     {
-        if (this->currentPlayer == Player_1 && this->line_rect.x >= this->line_p1_x)
-            this->line_rect.x -= 0.1 * deltaTime;
-        else if (this->currentPlayer == Player_2 && this->line_rect.x <= this->line_p2_x)
-            this->line_rect.x += 0.1 * deltaTime;
+        if (self->currentPlayer == Player_1 && self->line_rect.x >= self->line_p1_x)
+            self->line_rect.x -= 0.1 * deltaTime;
+        else if (self->currentPlayer == Player_2 && self->line_rect.x <= self->line_p2_x)
+            self->line_rect.x += 0.1 * deltaTime;
     }
 }
 
-void Header_Draw(Header *const this)
+void Header_Draw(Header *const self)
 {
-    if (this->gameResult == None)
+    if (self->gameResult == None)
     {
-        SDL_SetRenderDrawColor(this->renderer, 100, 180, 180, 255);
-        SDL_RenderFillRectF(this->renderer, &this->line_rect);
+        SDL_SetRenderDrawColor(self->renderer, 100, 180, 180, 255);
+        SDL_RenderFillRectF(self->renderer, &self->line_rect);
 
-        Texture_Draw(this->player1, NULL, NULL);
-        Texture_Draw(this->player1Icon, NULL, NULL);
-        Texture_Draw(this->player2, NULL, NULL);
-        Texture_Draw(this->player2Icon, NULL, NULL);
+        Texture_Draw(self->player1, NULL, NULL);
+        Texture_Draw(self->player1Icon, NULL, NULL);
+        Texture_Draw(self->player2, NULL, NULL);
+        Texture_Draw(self->player2Icon, NULL, NULL);
     }
     else
     {
         int w = 302;
-        int x = this->rect->sidebar_w + ((this->rect->content_w - w) / 2);
+        int x = self->rect->sidebar_w + ((self->rect->content_w - w) / 2);
         SDL_Rect rect = (SDL_Rect) {.x = x, .y = 18, .w = w, .h = 58};
 
-        SDL_SetRenderDrawColor(this->renderer, 120, 200, 200, 255);
-        SDL_RenderFillRect(this->renderer, &rect);
+        SDL_SetRenderDrawColor(self->renderer, 120, 200, 200, 255);
+        SDL_RenderFillRect(self->renderer, &rect);
 
         rect.w -= 2; rect.h -= 2; rect.x -= 2; rect.y -= 2;
 
-        SDL_SetRenderDrawColor(this->renderer, 230, 240, 240, 255);
-        SDL_RenderFillRect(this->renderer, &rect);
+        SDL_SetRenderDrawColor(self->renderer, 230, 240, 240, 255);
+        SDL_RenderFillRect(self->renderer, &rect);
 
-        Texture_Draw(this->result, NULL, NULL);
+        Texture_Draw(self->result, NULL, NULL);
     }
 }
 
-void Header_SetCurrentPlayer(Header *const this, Player currentPlayer, Player gameResult)
+void Header_SetCurrentPlayer(Header *const self, Player currentPlayer, Player gameResult)
 {
-    this->currentPlayer = currentPlayer;
-    this->gameResult = gameResult;
+    self->currentPlayer = currentPlayer;
+    self->gameResult = gameResult;
 
-    if (this->gameResult == Player_1)
-        Texture_SetText(this->result, "Vitória do jogador 1");
-    else if (this->gameResult == Player_2)
-        Texture_SetText(this->result, "Vitória do jogador 2");
-    else if (this->gameResult == Tied)
-        Texture_SetText(this->result, "Deu empate!");
+    if (self->gameResult == Player_1)
+        Texture_SetText(self->result, "Vitória do jogador 1");
+    else if (self->gameResult == Player_2)
+        Texture_SetText(self->result, "Vitória do jogador 2");
+    else if (self->gameResult == Tied)
+        Texture_SetText(self->result, "Deu empate!");
 
-    if (this->gameResult != None)
+    if (self->gameResult != None)
     {
-        Texture_MakeText(this->result);
-        Header_SetupResultText(this);
+        Texture_MakeText(self->result);
+        Header_SetupResultText(self);
     }
 }
 
-void Header_CreateResultText(Header *const this)
+void Header_CreateResultText(Header *const self)
 {
-    this->result = Texture_New(this->renderer);
-    Texture_SetupText(this->result, "...", 24, &(SDL_Color) {30, 120, 120, 255});
-    Texture_MakeText(this->result);
+    self->result = Texture_New(self->renderer);
+    Texture_SetupText(self->result, "...", 24, &(SDL_Color) {30, 120, 120, 255});
+    Texture_MakeText(self->result);
 
-    Header_SetupResultText(this);
+    Header_SetupResultText(self);
 }
 
-void Header_CreatePlayer1Text(Header *const this)
+void Header_CreatePlayer1Text(Header *const self)
 {
-    this->player1 = Texture_New(this->renderer);
-    Texture_SetupText(this->player1, "Jogador 1", 20, &(SDL_Color) {30, 120, 120, 255});
-    Texture_MakeText(this->player1);
+    self->player1 = Texture_New(self->renderer);
+    Texture_SetupText(self->player1, "Jogador 1", 20, &(SDL_Color) {30, 120, 120, 255});
+    Texture_MakeText(self->player1);
 
-    this->player1Icon = Texture_New(this->renderer);
-    Texture_LoadImageFromFile(this->player1Icon, "images/player_1.png");
+    self->player1Icon = Texture_New(self->renderer);
+    Texture_LoadImageFromFile(self->player1Icon, "images/player_1.png");
 
-    Header_SetupPlayer1Text(this);
+    Header_SetupPlayer1Text(self);
 }
 
-void Header_CreatePlayer2Text(Header *const this)
+void Header_CreatePlayer2Text(Header *const self)
 {
-    this->player2 = Texture_New(this->renderer);
-    Texture_SetupText(this->player2, "Jogador 2", 20, &(SDL_Color) {30, 120, 120, 255});
-    Texture_MakeText(this->player2);
+    self->player2 = Texture_New(self->renderer);
+    Texture_SetupText(self->player2, "Jogador 2", 20, &(SDL_Color) {30, 120, 120, 255});
+    Texture_MakeText(self->player2);
 
-    this->player2Icon = Texture_New(this->renderer);
-    Texture_LoadImageFromFile(this->player2Icon, "images/player_2.png");
+    self->player2Icon = Texture_New(self->renderer);
+    Texture_LoadImageFromFile(self->player2Icon, "images/player_2.png");
 
-    Header_SetupPlayer2Text(this);
+    Header_SetupPlayer2Text(self);
 }
 
-void Header_SetupResultText(Header *const this)
+void Header_SetupResultText(Header *const self)
 {
-    int w = Texture_GetWidth(this->result);
-    int h = Texture_GetHeight(this->result);
+    int w = Texture_GetWidth(self->result);
+    int h = Texture_GetHeight(self->result);
 
-    Texture_SetRect(this->result, &(SDL_Rect) {
-                        .x = this->rect->sidebar_w + ((this->rect->content_w - w) / 2),
+    Texture_SetRect(self->result, &(SDL_Rect) {
+                        .x = self->rect->sidebar_w + ((self->rect->content_w - w) / 2),
                         .y = 26,
                         .w = w,
                         .h = h
                     });
 }
 
-void Header_SetupPlayer1Text(Header *const this)
+void Header_SetupPlayer1Text(Header *const self)
 {
-    int text_w = Texture_GetWidth(this->player1);
-    int text_h = Texture_GetHeight(this->player1);
+    int text_w = Texture_GetWidth(self->player1);
+    int text_h = Texture_GetHeight(self->player1);
     int icon_w = 28;
     int icon_h = 28;
 
-    int text_x = (this->rect->sidebar_w + ((this->rect->content_w - text_w) / 2)) - (text_w / 2) - this->margin - icon_w - this->space;
-    int icon_x = (this->rect->sidebar_w + ((this->rect->content_w - icon_w) / 2)) - (icon_w / 2) - this->margin;
+    int text_x = (self->rect->sidebar_w + ((self->rect->content_w - text_w) / 2)) - (text_w / 2) - self->margin - icon_w - self->space;
+    int icon_x = (self->rect->sidebar_w + ((self->rect->content_w - icon_w) / 2)) - (icon_w / 2) - self->margin;
 
-    Texture_SetRect(this->player1, &(SDL_Rect) {
+    Texture_SetRect(self->player1, &(SDL_Rect) {
                         .x = text_x,
                         .y = 30,
                         .w = text_w,
                         .h = text_h
                     });
 
-    Texture_SetRect(this->player1Icon, &(SDL_Rect) {
+    Texture_SetRect(self->player1Icon, &(SDL_Rect) {
                         .x = icon_x,
                         .y = 32,
                         .w = icon_w,
@@ -229,24 +229,24 @@ void Header_SetupPlayer1Text(Header *const this)
                     });
 }
 
-void Header_SetupPlayer2Text(Header *const this)
+void Header_SetupPlayer2Text(Header *const self)
 {
-    int text_w = Texture_GetWidth(this->player2);
-    int text_h = Texture_GetHeight(this->player2);
+    int text_w = Texture_GetWidth(self->player2);
+    int text_h = Texture_GetHeight(self->player2);
     int icon_w = 26;
     int icon_h = 26;
 
-    int text_x = (this->rect->sidebar_w + ((this->rect->content_w - text_w) / 2)) + (text_w / 2) + this->margin + icon_w + this->space;
-    int icon_x = (this->rect->sidebar_w + ((this->rect->content_w - icon_w) / 2)) + (icon_w / 2) + this->margin;
+    int text_x = (self->rect->sidebar_w + ((self->rect->content_w - text_w) / 2)) + (text_w / 2) + self->margin + icon_w + self->space;
+    int icon_x = (self->rect->sidebar_w + ((self->rect->content_w - icon_w) / 2)) + (icon_w / 2) + self->margin;
 
-    Texture_SetRect(this->player2, &(SDL_Rect) {
+    Texture_SetRect(self->player2, &(SDL_Rect) {
                         .x = text_x,
                         .y = 30,
                         .w = text_w,
                         .h = text_h
                     });
 
-    Texture_SetRect(this->player2Icon, &(SDL_Rect) {
+    Texture_SetRect(self->player2Icon, &(SDL_Rect) {
                         .x = icon_x,
                         .y = 33,
                         .w = icon_w,

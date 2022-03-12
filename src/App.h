@@ -27,5 +27,5 @@ SOFTWARE.
 typedef struct App App;
 
 App *App_New();
-void App_Delete(App *const this);
-void App_Run(App *const this);
+void App_Delete(App *const self);
+void App_Run(App *const self);

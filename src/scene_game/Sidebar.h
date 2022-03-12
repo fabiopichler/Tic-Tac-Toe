@@ -31,8 +31,8 @@ SOFTWARE.
 typedef struct Sidebar Sidebar;
 
 Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *rect);
-void Sidebar_Delete(Sidebar *const this);
-void Sidebar_Draw(Sidebar *const this);
-void Sidebar_SetPlayer1WinText(Sidebar *const this, int count);
-void Sidebar_SetPlayer2WinText(Sidebar *const this, int count);
-void Sidebar_SetTiedCountText(Sidebar *const this, int count);
+void Sidebar_Delete(Sidebar *const self);
+void Sidebar_Draw(Sidebar *const self);
+void Sidebar_SetPlayer1WinText(Sidebar *const self, int count);
+void Sidebar_SetPlayer2WinText(Sidebar *const self, int count);
+void Sidebar_SetTiedCountText(Sidebar *const self, int count);

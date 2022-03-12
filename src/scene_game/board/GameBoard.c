@@ -57,121 +57,121 @@ struct GameBoard
     double p1Angle;
 };
 
-void GameBoard_SetupBoard(GameBoard *const this);
+void GameBoard_SetupBoard(GameBoard *const self);
 void GameBoard_OnItemPress(Button *const button, void *user);
-void GameBoard_Check(GameBoard *const this, BoardItem *item);
-Player GameBoard_CheckWinner(GameBoard *const this);
+void GameBoard_Check(GameBoard *const self, BoardItem *item);
+Player GameBoard_CheckWinner(GameBoard *const self);
 
 GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect)
 {
-    GameBoard *const this = malloc(sizeof (GameBoard));
+    GameBoard *const self = malloc(sizeof (GameBoard));
 
     const int board_size = 304;
 
-    *(int *)&this->item_size = 98;
-    *(int *)&this->board_space = 5;
-    *(int *)&this->board_x = rect->sidebar_w + ((rect->content_w - board_size) / 2);
-    *(int *)&this->board_y = (rect->window_h - board_size) / 2;
-    *(SDL_Rect *)&this->board_rect = (SDL_Rect) {this->board_x, this->board_y, board_size, board_size};
+    *(int *)&self->item_size = 98;
+    *(int *)&self->board_space = 5;
+    *(int *)&self->board_x = rect->sidebar_w + ((rect->content_w - board_size) / 2);
+    *(int *)&self->board_y = (rect->window_h - board_size) / 2;
+    *(SDL_Rect *)&self->board_rect = (SDL_Rect) {self->board_x, self->board_y, board_size, board_size};
 
-    this->renderer = renderer;
-    this->rect = rect;
-    this->player = Player_1;
-    this->gameResult = None;
-    this->round = 0;
-    this->gameEvent = (GameEvent) {NULL, NULL};
-    this->player1Texture = Texture_New(renderer);
-    this->player2Texture = Texture_New(renderer);
-    this->p1Angle = 0.0;
+    self->renderer = renderer;
+    self->rect = rect;
+    self->player = Player_1;
+    self->gameResult = None;
+    self->round = 0;
+    self->gameEvent = (GameEvent) {NULL, NULL};
+    self->player1Texture = Texture_New(renderer);
+    self->player2Texture = Texture_New(renderer);
+    self->p1Angle = 0.0;
 
-    Texture_LoadImageFromFile(this->player1Texture, "images/player_1.png");
-    Texture_LoadImageFromFile(this->player2Texture, "images/player_2.png");
+    Texture_LoadImageFromFile(self->player1Texture, "images/player_1.png");
+    Texture_LoadImageFromFile(self->player2Texture, "images/player_2.png");
 
-    GameBoard_SetupBoard(this);
+    GameBoard_SetupBoard(self);
 
-    return this;
+    return self;
 }
 
-void GameBoard_Delete(GameBoard *const this)
+void GameBoard_Delete(GameBoard *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
-            Button_Delete(this->board[i][j].button);
+            Button_Delete(self->board[i][j].button);
 
-    Texture_Delete(this->player1Texture);
-    Texture_Delete(this->player2Texture);
-    free(this);
+    Texture_Delete(self->player1Texture);
+    Texture_Delete(self->player2Texture);
+    free(self);
 }
 
-void GameBoard_ProcessEvent(GameBoard *const this, const SDL_Event *event)
+void GameBoard_ProcessEvent(GameBoard *const self, const SDL_Event *event)
 {
     for (int row = 0; row < 3; ++row)
         for (int col = 0; col < 3; ++col)
-            Button_ProcessEvent(this->board[row][col].button, event);
+            Button_ProcessEvent(self->board[row][col].button, event);
 }
 
-void GameBoard_Update(GameBoard *const this, double deltaTime)
+void GameBoard_Update(GameBoard *const self, double deltaTime)
 {
-    this->p1Angle = this->p1Angle + 0.03 * deltaTime;
+    self->p1Angle = self->p1Angle + 0.03 * deltaTime;
 
-    if (this->p1Angle > 360)
-        this->p1Angle = 0;
+    if (self->p1Angle > 360)
+        self->p1Angle = 0;
 }
 
-void GameBoard_Draw(GameBoard *const this)
+void GameBoard_Draw(GameBoard *const self)
 {
-    SDL_SetRenderDrawColor(this->renderer, 80, 160, 160, 255);
-    SDL_RenderFillRect(this->renderer, &this->board_rect);
+    SDL_SetRenderDrawColor(self->renderer, 80, 160, 160, 255);
+    SDL_RenderFillRect(self->renderer, &self->board_rect);
 
     for (int row = 0; row < 3; ++row)
     {
         for (int col = 0; col < 3; ++col)
         {
-            BoardItem *item = &this->board[row][col];
+            BoardItem *item = &self->board[row][col];
 
-            Button_DrawEx(item->button, NULL, NULL, item->player == Player_1 ? this->p1Angle : 0);
+            Button_DrawEx(item->button, NULL, NULL, item->player == Player_1 ? self->p1Angle : 0);
         }
     }
 }
 
-void GameBoard_SetGameEvent(GameBoard *const this, GameEventHandler callback, void *user)
+void GameBoard_SetGameEvent(GameBoard *const self, GameEventHandler callback, void *user)
 {
-    this->gameEvent.function = callback;
-    this->gameEvent.userdata = user;
+    self->gameEvent.function = callback;
+    self->gameEvent.userdata = user;
 }
 
-int GameBoard_GetCurrentPlayer(GameBoard *const this)
+int GameBoard_GetCurrentPlayer(GameBoard *const self)
 {
-    return this->player;
+    return self->player;
 }
 
-int GameBoard_GetGameResult(GameBoard *const this)
+int GameBoard_GetGameResult(GameBoard *const self)
 {
-    return this->gameResult;
+    return self->gameResult;
 }
 
-void GameBoard_SetupBoard(GameBoard *const this)
+void GameBoard_SetupBoard(GameBoard *const self)
 {
     for (int row = 0; row < 3; ++row)
     {
         for (int col = 0; col < 3; ++col)
         {
-            BoardItem *item = &this->board[row][col];
-            *item = (BoardItem) { .player = 0, .button = Button_New(this->renderer) };
+            BoardItem *item = &self->board[row][col];
+            *item = (BoardItem) { .player = 0, .button = Button_New(self->renderer) };
 
             Button_SetRect(
                         item->button,
                         &(SDL_Rect) {
-                            .x = this->board_x + (col * this->item_size) + (col * this->board_space),
-                            .y = this->board_y + (row * this->item_size) + (row * this->board_space),
-                            .w = this->item_size,
-                            .h = this->item_size
+                            .x = self->board_x + (col * self->item_size) + (col * self->board_space),
+                            .y = self->board_y + (row * self->item_size) + (row * self->board_space),
+                            .w = self->item_size,
+                            .h = self->item_size
                         });
 
-            Button_SetOnPressEvent(item->button, GameBoard_OnItemPress, this);
+            Button_SetOnPressEvent(item->button, GameBoard_OnItemPress, self);
             Button_SetBackgroundColor(item->button, &(SDL_Color) {210, 240, 240, 255});
             Button_SetBackgroundHoverColor(item->button, &(SDL_Color) {225, 255, 255, 255});
             Button_SetBackgroundPressedColor(item->button, &(SDL_Color) {180, 230, 230, 255});
@@ -181,60 +181,60 @@ void GameBoard_SetupBoard(GameBoard *const this)
 
 void GameBoard_OnItemPress(Button *const button, void *user)
 {
-    GameBoard *this = user;
+    GameBoard *self = user;
 
     for (int row = 0; row < 3; ++row)
     {
         for (int col = 0; col < 3; ++col)
         {
-            BoardItem *item = &this->board[row][col];
+            BoardItem *item = &self->board[row][col];
 
             if (item->button == button)
             {
-                GameBoard_Check(this, item);
+                GameBoard_Check(self, item);
                 return;
             }
         }
     }
 }
 
-void GameBoard_Check(GameBoard *const this, BoardItem *item)
+void GameBoard_Check(GameBoard *const self, BoardItem *item)
 {
-    if (item->player != None || this->gameResult != None)
+    if (item->player != None || self->gameResult != None)
         return;
 
-    item->player = this->player;
+    item->player = self->player;
 
-    this->gameResult = GameBoard_CheckWinner(this);
+    self->gameResult = GameBoard_CheckWinner(self);
 
-    this->player = this->player == Player_1 ? Player_2 : Player_1;
+    self->player = self->player == Player_1 ? Player_2 : Player_1;
 
-    if (this->gameEvent.function)
-        this->gameEvent.function(this, this->gameEvent.userdata);
+    if (self->gameEvent.function)
+        self->gameEvent.function(self, self->gameEvent.userdata);
 
-    Button_SetImage(item->button, item->player == Player_1 ? this->player1Texture : this->player2Texture);
+    Button_SetImage(item->button, item->player == Player_1 ? self->player1Texture : self->player2Texture);
 
-    this->round++;
+    self->round++;
 }
 
-Player GameBoard_CheckWinner(GameBoard *const this)
+Player GameBoard_CheckWinner(GameBoard *const self)
 {
-    Player player = CheckBoardRows(3, this->board);
+    Player player = CheckBoardRows(3, self->board);
 
     if (player == None)
     {
         BoardItem board[3][3];
-        TransposeBoard(this->board, board);
+        TransposeBoard(self->board, board);
         player = CheckBoardRows(3, board);
     }
 
     if (player == None)
-        player = CheckBoardDiagonals(this->board);
+        player = CheckBoardDiagonals(self->board);
 
     if (player > None)
         return player;
 
-    if (player == None && this->round == 8)
+    if (player == None && self->round == 8)
         return Tied;
 
     return None;

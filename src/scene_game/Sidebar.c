@@ -53,147 +53,147 @@ struct Sidebar
     Texture *tiedCountText;
 };
 
-void Sidebar_SetupSizes(Sidebar *const this);
-void Sidebar_CreateTextures(Sidebar *const this);
-void Sidebar_UpdateTextRect(Sidebar *const this, Texture *texture, int y);
-void Sidebar_UpdateText(Sidebar *const this, Texture *texture, int pos_y, int count);
+void Sidebar_SetupSizes(Sidebar *const self);
+void Sidebar_CreateTextures(Sidebar *const self);
+void Sidebar_UpdateTextRect(Sidebar *const self, Texture *texture, int y);
+void Sidebar_UpdateText(Sidebar *const self, Texture *texture, int pos_y, int count);
 
 Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *rect)
 {
-    Sidebar *const this = malloc(sizeof (Sidebar));
+    Sidebar *const self = malloc(sizeof (Sidebar));
 
-    this->renderer = renderer;
-    this->rect = rect;
+    self->renderer = renderer;
+    self->rect = rect;
 
-    Sidebar_SetupSizes(this);
-    Sidebar_CreateTextures(this);
+    Sidebar_SetupSizes(self);
+    Sidebar_CreateTextures(self);
 
-    return this;
+    return self;
 }
 
-void Sidebar_Delete(Sidebar *const this)
+void Sidebar_Delete(Sidebar *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
-    Texture_Delete(this->player1Text);
-    Texture_Delete(this->player1WinText);
-    Texture_Delete(this->player2Text);
-    Texture_Delete(this->player2WinText);
-    Texture_Delete(this->tiedText);
-    Texture_Delete(this->tiedCountText);
-    free(this);
+    Texture_Delete(self->player1Text);
+    Texture_Delete(self->player1WinText);
+    Texture_Delete(self->player2Text);
+    Texture_Delete(self->player2WinText);
+    Texture_Delete(self->tiedText);
+    Texture_Delete(self->tiedCountText);
+    free(self);
 }
 
-void Sidebar_Draw(Sidebar *const this)
+void Sidebar_Draw(Sidebar *const self)
 {
-    SDL_SetRenderDrawColor(this->renderer, 230, 240, 240, 255);
-    SDL_RenderFillRect(this->renderer, &this->sidebarRect);
+    SDL_SetRenderDrawColor(self->renderer, 230, 240, 240, 255);
+    SDL_RenderFillRect(self->renderer, &self->sidebarRect);
 
-    SDL_SetRenderDrawColor(this->renderer, 80, 160, 160, 255);
-    SDL_RenderFillRect(this->renderer, &this->verticalLine);
-    SDL_RenderFillRect(this->renderer, &this->horizontalLine1);
-    SDL_RenderFillRect(this->renderer, &this->horizontalLine2);
+    SDL_SetRenderDrawColor(self->renderer, 80, 160, 160, 255);
+    SDL_RenderFillRect(self->renderer, &self->verticalLine);
+    SDL_RenderFillRect(self->renderer, &self->horizontalLine1);
+    SDL_RenderFillRect(self->renderer, &self->horizontalLine2);
 
-    Texture_Draw(this->player1Text, NULL, NULL);
-    Texture_Draw(this->player1WinText, NULL, NULL);
-    Texture_Draw(this->player2Text, NULL, NULL);
-    Texture_Draw(this->player2WinText, NULL, NULL);
-    Texture_Draw(this->tiedText, NULL, NULL);
-    Texture_Draw(this->tiedCountText, NULL, NULL);
+    Texture_Draw(self->player1Text, NULL, NULL);
+    Texture_Draw(self->player1WinText, NULL, NULL);
+    Texture_Draw(self->player2Text, NULL, NULL);
+    Texture_Draw(self->player2WinText, NULL, NULL);
+    Texture_Draw(self->tiedText, NULL, NULL);
+    Texture_Draw(self->tiedCountText, NULL, NULL);
 }
 
-void Sidebar_SetPlayer1WinText(Sidebar *const this, int count)
+void Sidebar_SetPlayer1WinText(Sidebar *const self, int count)
 {
-    Sidebar_UpdateText(this, this->player1WinText, this->player1Win_y, count);
+    Sidebar_UpdateText(self, self->player1WinText, self->player1Win_y, count);
 }
 
-void Sidebar_SetPlayer2WinText(Sidebar *const this, int count)
+void Sidebar_SetPlayer2WinText(Sidebar *const self, int count)
 {
-    Sidebar_UpdateText(this, this->player2WinText, this->player2Win_y, count);
+    Sidebar_UpdateText(self, self->player2WinText, self->player2Win_y, count);
 }
 
-void Sidebar_SetTiedCountText(Sidebar *const this, int count)
+void Sidebar_SetTiedCountText(Sidebar *const self, int count)
 {
-    Sidebar_UpdateText(this, this->tiedCountText, this->tiedCount_y, count);
+    Sidebar_UpdateText(self, self->tiedCountText, self->tiedCount_y, count);
 }
 
-void Sidebar_SetupSizes(Sidebar *const this)
+void Sidebar_SetupSizes(Sidebar *const self)
 {
     const int border_w = 2;
     const int title_margin = 30;
     const int number_margin = 75;
-    const int second_block = this->rect->sidebar_h / 3;
+    const int second_block = self->rect->sidebar_h / 3;
     const int third_block = second_block * 2;
 
-    *(int *)&this->width = this->rect->sidebar_w - border_w;
+    *(int *)&self->width = self->rect->sidebar_w - border_w;
 
-    *(int *)&this->player1_y = title_margin;
-    *(int *)&this->player1Win_y = number_margin;
-    *(int *)&this->player2_y = second_block + title_margin;
-    *(int *)&this->player2Win_y = second_block + number_margin;
-    *(int *)&this->tied_y = third_block + title_margin;
-    *(int *)&this->tiedCount_y = third_block + number_margin;
+    *(int *)&self->player1_y = title_margin;
+    *(int *)&self->player1Win_y = number_margin;
+    *(int *)&self->player2_y = second_block + title_margin;
+    *(int *)&self->player2Win_y = second_block + number_margin;
+    *(int *)&self->tied_y = third_block + title_margin;
+    *(int *)&self->tiedCount_y = third_block + number_margin;
 
-    *(SDL_Rect *)&this->sidebarRect = (SDL_Rect) {0, 0, this->width, this->rect->sidebar_h};
-    *(SDL_Rect *)&this->verticalLine = (SDL_Rect) {this->width, 0, border_w, this->rect->sidebar_h};
-    *(SDL_Rect *)&this->horizontalLine1 = (SDL_Rect) {0, second_block - border_w, this->width, border_w};
-    *(SDL_Rect *)&this->horizontalLine2 = (SDL_Rect) {0, third_block - border_w, this->width, border_w};
+    *(SDL_Rect *)&self->sidebarRect = (SDL_Rect) {0, 0, self->width, self->rect->sidebar_h};
+    *(SDL_Rect *)&self->verticalLine = (SDL_Rect) {self->width, 0, border_w, self->rect->sidebar_h};
+    *(SDL_Rect *)&self->horizontalLine1 = (SDL_Rect) {0, second_block - border_w, self->width, border_w};
+    *(SDL_Rect *)&self->horizontalLine2 = (SDL_Rect) {0, third_block - border_w, self->width, border_w};
 
-    *(SDL_Color *)&this->textColor = (SDL_Color) {50, 140, 140, 255};
+    *(SDL_Color *)&self->textColor = (SDL_Color) {50, 140, 140, 255};
 }
 
-void Sidebar_CreateTextures(Sidebar *const this)
+void Sidebar_CreateTextures(Sidebar *const self)
 {
-    this->player1Text = Texture_New(this->renderer);
-    this->player1WinText = Texture_New(this->renderer);
-    this->player2Text = Texture_New(this->renderer);
-    this->player2WinText = Texture_New(this->renderer);
-    this->tiedText = Texture_New(this->renderer);
-    this->tiedCountText = Texture_New(this->renderer);
+    self->player1Text = Texture_New(self->renderer);
+    self->player1WinText = Texture_New(self->renderer);
+    self->player2Text = Texture_New(self->renderer);
+    self->player2WinText = Texture_New(self->renderer);
+    self->tiedText = Texture_New(self->renderer);
+    self->tiedCountText = Texture_New(self->renderer);
 
-    Texture_SetupText(this->player1Text, "Vitórias do jogador 1", 16, &this->textColor);
-    Texture_SetupText(this->player1WinText, "0", 40, &this->textColor);
-    Texture_SetupText(this->player2Text, "Vitórias do jogador 2", 16, &this->textColor);
-    Texture_SetupText(this->player2WinText, "0", 40, &this->textColor);
-    Texture_SetupText(this->tiedText, "Total de empates", 16, &this->textColor);
-    Texture_SetupText(this->tiedCountText, "0", 40, &this->textColor);
+    Texture_SetupText(self->player1Text, "Vitórias do jogador 1", 16, &self->textColor);
+    Texture_SetupText(self->player1WinText, "0", 40, &self->textColor);
+    Texture_SetupText(self->player2Text, "Vitórias do jogador 2", 16, &self->textColor);
+    Texture_SetupText(self->player2WinText, "0", 40, &self->textColor);
+    Texture_SetupText(self->tiedText, "Total de empates", 16, &self->textColor);
+    Texture_SetupText(self->tiedCountText, "0", 40, &self->textColor);
 
-    Texture_MakeText(this->player1Text);
-    Texture_MakeText(this->player1WinText);
-    Texture_MakeText(this->player2Text);
-    Texture_MakeText(this->player2WinText);
-    Texture_MakeText(this->tiedText);
-    Texture_MakeText(this->tiedCountText);
+    Texture_MakeText(self->player1Text);
+    Texture_MakeText(self->player1WinText);
+    Texture_MakeText(self->player2Text);
+    Texture_MakeText(self->player2WinText);
+    Texture_MakeText(self->tiedText);
+    Texture_MakeText(self->tiedCountText);
 
-    Sidebar_UpdateTextRect(this, this->player1Text, this->player1_y);
-    Sidebar_UpdateTextRect(this, this->player1WinText, this->player1Win_y);
-    Sidebar_UpdateTextRect(this, this->player2Text, this->player2_y);
-    Sidebar_UpdateTextRect(this, this->player2WinText, this->player2Win_y);
-    Sidebar_UpdateTextRect(this, this->tiedText, this->tied_y);
-    Sidebar_UpdateTextRect(this, this->tiedCountText, this->tiedCount_y);
+    Sidebar_UpdateTextRect(self, self->player1Text, self->player1_y);
+    Sidebar_UpdateTextRect(self, self->player1WinText, self->player1Win_y);
+    Sidebar_UpdateTextRect(self, self->player2Text, self->player2_y);
+    Sidebar_UpdateTextRect(self, self->player2WinText, self->player2Win_y);
+    Sidebar_UpdateTextRect(self, self->tiedText, self->tied_y);
+    Sidebar_UpdateTextRect(self, self->tiedCountText, self->tiedCount_y);
 }
 
-void Sidebar_UpdateTextRect(Sidebar *const this, Texture *texture, int y)
+void Sidebar_UpdateTextRect(Sidebar *const self, Texture *texture, int y)
 {
-    (void)this;
+    (void)self;
 
     int w = Texture_GetWidth(texture);
     int h = Texture_GetHeight(texture);
 
     Texture_SetRect(texture, &(SDL_Rect) {
-                        .x = (this->width - w) / 2,
+                        .x = (self->width - w) / 2,
                         .y = y,
                         .w = w,
                         .h = h
                     });
 }
 
-void Sidebar_UpdateText(Sidebar *const this, Texture *texture, int pos_y, int count)
+void Sidebar_UpdateText(Sidebar *const self, Texture *texture, int pos_y, int count)
 {
     char text[6];
     snprintf(text, sizeof (text), "%d", count);
     Texture_SetText(texture, text);
     Texture_MakeText(texture);
-    Sidebar_UpdateTextRect(this, texture, pos_y);
+    Sidebar_UpdateTextRect(self, texture, pos_y);
 }

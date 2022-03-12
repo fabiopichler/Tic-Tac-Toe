@@ -35,8 +35,8 @@ extern "C" {
 typedef struct Graphics Graphics;
 
 Graphics *Graphics_New(Window *window);
-void Graphics_Delete(Graphics *);
-SDL_Renderer *Graphics_GetRenderer(Graphics *);
+void Graphics_Delete(Graphics *self);
+SDL_Renderer *Graphics_GetRenderer(Graphics *self);
 
 #ifdef __cplusplus
 }

@@ -46,122 +46,122 @@ struct Texture
     SDL_Color textColor;
 };
 
-bool Texture_CreateTexture(Texture *const this, SDL_Surface *surface);
+bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface);
 
 Texture *Texture_New(SDL_Renderer *renderer)
 {
-    Texture *const this = malloc(sizeof (Texture));
+    Texture *const self = malloc(sizeof (Texture));
 
-    this->renderer = renderer;
-    this->texture = NULL;
-    this->rect = (SDL_Rect) {0, 0, 0, 0};
-    this->w = 0;
-    this->h = 0;
+    self->renderer = renderer;
+    self->texture = NULL;
+    self->rect = (SDL_Rect) {0, 0, 0, 0};
+    self->w = 0;
+    self->h = 0;
 
-    this->text = NULL;
-    this->font = NULL;
-    this->fontSize = 16;
-    this->reloadFont = false;
-    this->textColor = (SDL_Color) {60, 60, 60, 255};
+    self->text = NULL;
+    self->font = NULL;
+    self->fontSize = 16;
+    self->reloadFont = false;
+    self->textColor = (SDL_Color) {60, 60, 60, 255};
 
-    return this;
+    return self;
 }
 
-void Texture_Delete(Texture *const this)
+void Texture_Delete(Texture *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
-    SDL_DestroyTexture(this->texture);
-    TTF_CloseFont(this->font);
-    free(this->text);
-    free(this);
+    SDL_DestroyTexture(self->texture);
+    TTF_CloseFont(self->font);
+    free(self->text);
+    free(self);
 }
 
-bool Texture_LoadImageFromFile(Texture *const this, const char *fileName)
+bool Texture_LoadImageFromFile(Texture *const self, const char *fileName)
 {
-    return Texture_CreateTexture(this, IMG_Load(fileName));
+    return Texture_CreateTexture(self, IMG_Load(fileName));
 }
 
-bool Texture_MakeText(Texture *const this)
+bool Texture_MakeText(Texture *const self)
 {
-    if (!this->font || this->reloadFont)
+    if (!self->font || self->reloadFont)
     {
-        TTF_CloseFont(this->font);
+        TTF_CloseFont(self->font);
 
-        if (!(this->font = TTF_OpenFont("fonts/NotoSans-Bold.ttf", this->fontSize)))
+        if (!(self->font = TTF_OpenFont("fonts/NotoSans-Bold.ttf", self->fontSize)))
         {
             printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
             return false;
         }
 
-        this->reloadFont = false;
+        self->reloadFont = false;
     }
 
-    SDL_Surface *surface = TTF_RenderUTF8_Blended(this->font, this->text, this->textColor);
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(self->font, self->text, self->textColor);
 
-    return Texture_CreateTexture(this, surface);
+    return Texture_CreateTexture(self, surface);
 }
 
-void Texture_SetupText(Texture *const this, const char *text, int ptsize, const SDL_Color *color)
+void Texture_SetupText(Texture *const self, const char *text, int ptsize, const SDL_Color *color)
 {
-    Texture_SetText(this, text);
-    Texture_SetTextSize(this, ptsize);
-    Texture_SetTextColor(this, color);
+    Texture_SetText(self, text);
+    Texture_SetTextSize(self, ptsize);
+    Texture_SetTextColor(self, color);
 }
 
-void Texture_SetText(Texture *const this, const char *text)
+void Texture_SetText(Texture *const self, const char *text)
 {
-    free(this->text);
+    free(self->text);
 
     size_t size = strlen(text) + 1;
-    this->text = malloc(size);
+    self->text = malloc(size);
 
-    memcpy(this->text, text, size);
+    memcpy(self->text, text, size);
 }
 
-void Texture_SetTextSize(Texture *const this, int ptsize)
+void Texture_SetTextSize(Texture *const self, int ptsize)
 {
-    if (this->fontSize != ptsize)
+    if (self->fontSize != ptsize)
     {
-        this->fontSize = ptsize;
-        this->reloadFont = true;
+        self->fontSize = ptsize;
+        self->reloadFont = true;
     }
 }
 
-void Texture_SetTextColor(Texture *const this, const SDL_Color *color)
+void Texture_SetTextColor(Texture *const self, const SDL_Color *color)
 {
     if (color)
-        this->textColor = *color;
+        self->textColor = *color;
 }
 
-void Texture_Draw(Texture *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
+void Texture_Draw(Texture *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
 {
-    if (this->texture)
-        SDL_RenderCopy(this->renderer, this->texture, srcrect, dstrect ? dstrect : &this->rect);
+    if (self->texture)
+        SDL_RenderCopy(self->renderer, self->texture, srcrect, dstrect ? dstrect : &self->rect);
 }
 
-void Texture_DrawEx(Texture *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
+void Texture_DrawEx(Texture *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
 {
-    if (this->texture)
-        SDL_RenderCopyEx(this->renderer, this->texture, srcrect, dstrect ? dstrect : &this->rect, angle, NULL, SDL_FLIP_NONE);
+    if (self->texture)
+        SDL_RenderCopyEx(self->renderer, self->texture, srcrect, dstrect ? dstrect : &self->rect, angle, NULL, SDL_FLIP_NONE);
 }
 
-bool Texture_CreateTexture(Texture *const this, SDL_Surface *surface)
+bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface)
 {
     if (surface)
     {
-        if (this->texture)
-            SDL_DestroyTexture(this->texture);
-            //SDL_UpdateTexture(this->texture, NULL, surface->pixels, surface->pitch);
+        if (self->texture)
+            SDL_DestroyTexture(self->texture);
+            //SDL_UpdateTexture(self->texture, NULL, surface->pixels, surface->pitch);
         //else
 
-        this->texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+        self->texture = SDL_CreateTextureFromSurface(self->renderer, surface);
 
-        if (this->texture)
+        if (self->texture)
         {
-            this->w = surface->w;
-            this->h = surface->h;
+            self->w = surface->w;
+            self->h = surface->h;
         }
         else
         {
@@ -172,31 +172,31 @@ bool Texture_CreateTexture(Texture *const this, SDL_Surface *surface)
     }
     else
     {
-        this->texture = NULL;
+        self->texture = NULL;
         printf("Unable to render surface! SDL Error: %s\n", TTF_GetError());
     }
 
-    return this->texture != NULL;
+    return self->texture != NULL;
 }
 
-void Texture_SetPos(Texture *const this, int x, int y)
+void Texture_SetPos(Texture *const self, int x, int y)
 {
-    this->rect.x = x;
-    this->rect.x = y;
+    self->rect.x = x;
+    self->rect.x = y;
 }
 
-void Texture_SetRect(Texture *const this, const SDL_Rect *rect)
+void Texture_SetRect(Texture *const self, const SDL_Rect *rect)
 {
     if (rect)
-        this->rect = *rect;
+        self->rect = *rect;
 }
 
-int Texture_GetWidth(Texture *const this)
+int Texture_GetWidth(Texture *const self)
 {
-    return this->w;
+    return self->w;
 }
 
-int Texture_GetHeight(Texture *const this)
+int Texture_GetHeight(Texture *const self)
 {
-    return this->h;
+    return self->h;
 }

@@ -37,84 +37,84 @@ struct Footer
     Texture *copyrightText;
 };
 
-void Footer_CreateRestartButton(Footer *const this);
-void Footer_CreateCopyrightText(Footer *const this);
+void Footer_CreateRestartButton(Footer *const self);
+void Footer_CreateCopyrightText(Footer *const self);
 
 Footer *Footer_New(SDL_Renderer *renderer, SceneGameRect *rect)
 {
-    Footer *const this = malloc(sizeof (Footer));
+    Footer *const self = malloc(sizeof (Footer));
 
-    this->renderer = renderer;
-    this->rect = rect;
+    self->renderer = renderer;
+    self->rect = rect;
 
-    Footer_CreateRestartButton(this);
-    Footer_CreateCopyrightText(this);
+    Footer_CreateRestartButton(self);
+    Footer_CreateCopyrightText(self);
 
-    return this;
+    return self;
 }
 
-void Footer_Delete(Footer *const this)
+void Footer_Delete(Footer *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
-    Button_Delete(this->restartButton);
-    Texture_Delete(this->copyrightText);
-    free(this);
+    Button_Delete(self->restartButton);
+    Texture_Delete(self->copyrightText);
+    free(self);
 }
 
-void Footer_ProcessEvent(Footer *const this, const SDL_Event *event)
+void Footer_ProcessEvent(Footer *const self, const SDL_Event *event)
 {
-    Button_ProcessEvent(this->restartButton, event);
+    Button_ProcessEvent(self->restartButton, event);
 }
 
-void Footer_Draw(Footer *const this)
+void Footer_Draw(Footer *const self)
 {
-    Button_Draw(this->restartButton);
-    Texture_Draw(this->copyrightText, NULL, NULL);
+    Button_Draw(self->restartButton);
+    Texture_Draw(self->copyrightText, NULL, NULL);
 }
 
-Button *Footer_GetRestartButton(Footer *const this)
+Button *Footer_GetRestartButton(Footer *const self)
 {
-    return this->restartButton;
+    return self->restartButton;
 }
 
-void Footer_CreateRestartButton(Footer *const this)
+void Footer_CreateRestartButton(Footer *const self)
 {
-    this->restartButton = Button_New(this->renderer);
+    self->restartButton = Button_New(self->renderer);
 
-    Button_SetText(this->restartButton, "Reiniciar", 16);
+    Button_SetText(self->restartButton, "Reiniciar", 16);
 
     int width = 110;
     int height = 32;
     int padding = 40;
 
     Button_SetRect(
-                this->restartButton,
+                self->restartButton,
                 &(SDL_Rect) {
-                    .x = this->rect->sidebar_w + ((this->rect->content_w - width) / 2),
-                    .y = this->rect->window_h - height - padding,
+                    .x = self->rect->sidebar_w + ((self->rect->content_w - width) / 2),
+                    .y = self->rect->window_h - height - padding,
                     .w = width,
                     .h = height
                 });
 }
 
-void Footer_CreateCopyrightText(Footer *const this)
+void Footer_CreateCopyrightText(Footer *const self)
 {
-    this->copyrightText = Texture_New(this->renderer);
+    self->copyrightText = Texture_New(self->renderer);
 
     const char text[] = "© 2020 Fábio Pichler                               www.fabiopichler.net";
 
-    Texture_SetupText(this->copyrightText, text, 14, &(SDL_Color) {30, 120, 120, 255});
-    Texture_MakeText(this->copyrightText);
+    Texture_SetupText(self->copyrightText, text, 14, &(SDL_Color) {30, 120, 120, 255});
+    Texture_MakeText(self->copyrightText);
 
-    int width = Texture_GetWidth(this->copyrightText);
-    int height = Texture_GetHeight(this->copyrightText);
+    int width = Texture_GetWidth(self->copyrightText);
+    int height = Texture_GetHeight(self->copyrightText);
     int padding = 10;
 
-    Texture_SetRect(this->copyrightText, &(SDL_Rect) {
-                        .x = this->rect->sidebar_w + ((this->rect->content_w - width) / 2),
-                        .y = this->rect->window_h - height - padding,
+    Texture_SetRect(self->copyrightText, &(SDL_Rect) {
+                        .x = self->rect->sidebar_w + ((self->rect->content_w - width) / 2),
+                        .y = self->rect->window_h - height - padding,
                         .w = width,
                         .h = height
                     });

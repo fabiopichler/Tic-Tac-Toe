@@ -39,19 +39,19 @@ typedef struct Button Button;
 typedef void (*ButtonOnPressEvent)(Button *const button, void *user);
 
 Button *Button_New(SDL_Renderer *renderer);
-void Button_Delete(Button *);
-void Button_SetBackgroundColor(Button *, const SDL_Color *color);
-void Button_SetBackgroundHoverColor(Button *, const SDL_Color *color);
-void Button_SetBackgroundPressedColor(Button *, const SDL_Color *color);
-void Button_SetTextColor(Button *, const SDL_Color *color);
-bool Button_SetText(Button *, const char *text, int ptsize);
-void Button_SetImage(Button *, Texture *texture);
-void Button_SetRect(Button *, const SDL_Rect *rect);
-void Button_SetOnPressEvent(Button *, ButtonOnPressEvent callback, void *user);
-void *Button_GetEventUserData(Button *);
-void Button_ProcessEvent(Button *, const SDL_Event *event);
-void Button_Draw(Button *);
-void Button_DrawEx(Button *, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
+void Button_Delete(Button *self);
+void Button_SetBackgroundColor(Button *self, const SDL_Color *color);
+void Button_SetBackgroundHoverColor(Button *self, const SDL_Color *color);
+void Button_SetBackgroundPressedColor(Button *self, const SDL_Color *color);
+void Button_SetTextColor(Button *self, const SDL_Color *color);
+bool Button_SetText(Button *self, const char *text, int ptsize);
+void Button_SetImage(Button *self, Texture *texture);
+void Button_SetRect(Button *self, const SDL_Rect *rect);
+void Button_SetOnPressEvent(Button *self, ButtonOnPressEvent callback, void *user);
+void *Button_GetEventUserData(Button *self);
+void Button_ProcessEvent(Button *self, const SDL_Event *event);
+void Button_Draw(Button *self);
+void Button_DrawEx(Button *self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
 
 #ifdef __cplusplus
 }

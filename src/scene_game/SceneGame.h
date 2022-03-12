@@ -29,7 +29,7 @@ SOFTWARE.
 typedef struct SceneGame SceneGame;
 
 SceneGame *SceneGame_New(SDL_Renderer *renderer, SDL_Rect windowRect);
-void SceneGame_Delete(SceneGame *const this);
-void SceneGame_ProcessEvent(SceneGame *const this, const SDL_Event *event);
-void SceneGame_Update(SceneGame *const this, double deltaTime);
-void SceneGame_Draw(SceneGame *const this);
+void SceneGame_Delete(SceneGame *const self);
+void SceneGame_ProcessEvent(SceneGame *const self, const SDL_Event *event);
+void SceneGame_Update(SceneGame *const self, double deltaTime);
+void SceneGame_Draw(SceneGame *const self);

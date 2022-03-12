@@ -60,196 +60,196 @@ struct Button
     ButtonPressedEvent pressedEvent;
 };
 
-void Button_Draw_(Button *const this);
-bool Button_PointerIsHovering(Button *const this, const SDL_Event *event);
-void Button_UpdateTextureRect(Button *const this);
+void Button_Draw_(Button *const self);
+bool Button_PointerIsHovering(Button *const self, const SDL_Event *event);
+void Button_UpdateTextureRect(Button *const self);
 
 Button *Button_New(SDL_Renderer *renderer)
 {
-    Button *const this = malloc(sizeof (Button));
+    Button *const self = malloc(sizeof (Button));
 
-    this->renderer = renderer;
-    this->textTexture = NULL;
-    this->imageTexture = NULL;
-    this->textureRect = (SDL_Rect) { 0, 0, 0, 0 };
+    self->renderer = renderer;
+    self->textTexture = NULL;
+    self->imageTexture = NULL;
+    self->textureRect = (SDL_Rect) { 0, 0, 0, 0 };
 
-    this->color = (SDL_Color) {50, 140, 140, 255};
-    this->colorHover = (SDL_Color) {30, 120, 120, 255};
-    this->colorPressed = (SDL_Color) {60, 60, 60, 255};
-    this->textColor = (SDL_Color) {255, 255, 255, 255};
+    self->color = (SDL_Color) {50, 140, 140, 255};
+    self->colorHover = (SDL_Color) {30, 120, 120, 255};
+    self->colorPressed = (SDL_Color) {60, 60, 60, 255};
+    self->textColor = (SDL_Color) {255, 255, 255, 255};
 
-    this->state = Normal;
-    this->pressedEvent = (ButtonPressedEvent) {NULL, NULL};
+    self->state = Normal;
+    self->pressedEvent = (ButtonPressedEvent) {NULL, NULL};
 
-    this->rect = (SDL_Rect) { .x = 0, .y = 0, .w = 60, .h = 40 };
+    self->rect = (SDL_Rect) { .x = 0, .y = 0, .w = 60, .h = 40 };
 
-    return this;
+    return self;
 }
 
-void Button_Delete(Button *const this)
+void Button_Delete(Button *const self)
 {
-    if (!this)
+    if (!self)
         return;
 
-    Texture_Delete(this->textTexture);
-    free(this);
+    Texture_Delete(self->textTexture);
+    free(self);
 }
 
-void Button_SetBackgroundColor(Button *const this, const SDL_Color *color)
+void Button_SetBackgroundColor(Button *const self, const SDL_Color *color)
 {
     if (color)
-        this->color = *color;
+        self->color = *color;
 }
 
-void Button_SetBackgroundHoverColor(Button *const this, const SDL_Color *color)
+void Button_SetBackgroundHoverColor(Button *const self, const SDL_Color *color)
 {
     if (color)
-        this->colorHover = *color;
+        self->colorHover = *color;
 }
 
-void Button_SetBackgroundPressedColor(Button *const this, const SDL_Color *color)
+void Button_SetBackgroundPressedColor(Button *const self, const SDL_Color *color)
 {
     if (color)
-        this->colorPressed = *color;
+        self->colorPressed = *color;
 }
 
-void Button_SetTextColor(Button *const this, const SDL_Color *color)
+void Button_SetTextColor(Button *const self, const SDL_Color *color)
 {
     if (color)
-        this->textColor = *color;
+        self->textColor = *color;
 }
 
-bool Button_SetText(Button *const this, const char *text, int ptsize)
+bool Button_SetText(Button *const self, const char *text, int ptsize)
 {
-    if (!this->textTexture)
-        this->textTexture = Texture_New(this->renderer);
+    if (!self->textTexture)
+        self->textTexture = Texture_New(self->renderer);
 
-    Texture_SetTextColor(this->textTexture, &this->textColor);
-    Texture_SetTextSize(this->textTexture, ptsize);
-    Texture_SetText(this->textTexture, text);
+    Texture_SetTextColor(self->textTexture, &self->textColor);
+    Texture_SetTextSize(self->textTexture, ptsize);
+    Texture_SetText(self->textTexture, text);
 
-    if (Texture_MakeText(this->textTexture))
+    if (Texture_MakeText(self->textTexture))
     {
-        Button_UpdateTextureRect(this);
+        Button_UpdateTextureRect(self);
         return true;
     }
 
     return false;
 }
 
-void Button_SetImage(Button *const this, Texture *texture)
+void Button_SetImage(Button *const self, Texture *texture)
 {
     if (texture)
     {
-        this->imageTexture = texture;
-        Button_UpdateTextureRect(this);
+        self->imageTexture = texture;
+        Button_UpdateTextureRect(self);
     }
 }
 
-void Button_SetRect(Button *const this, const SDL_Rect *rect)
+void Button_SetRect(Button *const self, const SDL_Rect *rect)
 {
     if (rect)
     {
-        this->rect = *rect;
-        Button_UpdateTextureRect(this);
+        self->rect = *rect;
+        Button_UpdateTextureRect(self);
     }
 }
 
-void Button_SetOnPressEvent(Button *const this, ButtonOnPressEvent callback, void *user)
+void Button_SetOnPressEvent(Button *const self, ButtonOnPressEvent callback, void *user)
 {
-    this->pressedEvent.function = callback;
-    this->pressedEvent.userdata = user;
+    self->pressedEvent.function = callback;
+    self->pressedEvent.userdata = user;
 }
 
-void *Button_GetEventUserData(Button *const this)
+void *Button_GetEventUserData(Button *const self)
 {
-    return this->pressedEvent.userdata;
+    return self->pressedEvent.userdata;
 }
 
-void Button_ProcessEvent(Button *const this, const SDL_Event *event)
+void Button_ProcessEvent(Button *const self, const SDL_Event *event)
 {
-    if (event->button.button == SDL_BUTTON_LEFT && Button_PointerIsHovering(this, event))
+    if (event->button.button == SDL_BUTTON_LEFT && Button_PointerIsHovering(self, event))
     {
         if (event->type == SDL_MOUSEBUTTONDOWN)
         {
-            this->state = Pressed;
+            self->state = Pressed;
 
-            if (this->pressedEvent.function)
-                this->pressedEvent.function(this, this->pressedEvent.userdata);
+            if (self->pressedEvent.function)
+                self->pressedEvent.function(self, self->pressedEvent.userdata);
 
             return;
         }
-        else if (this->state == Pressed && event->type != SDL_MOUSEBUTTONUP)
+        else if (self->state == Pressed && event->type != SDL_MOUSEBUTTONUP)
         {
             return;
         }
     }
 
-    if (Button_PointerIsHovering(this, event))
-        this->state = Hover;
+    if (Button_PointerIsHovering(self, event))
+        self->state = Hover;
     else
-        this->state = Normal;
+        self->state = Normal;
 }
 
-void Button_Draw(Button *const this)
+void Button_Draw(Button *const self)
 {
-    Button_Draw_(this);
+    Button_Draw_(self);
 
-    if (this->imageTexture)
-        Texture_Draw(this->imageTexture, NULL, &this->textureRect);
+    if (self->imageTexture)
+        Texture_Draw(self->imageTexture, NULL, &self->textureRect);
 }
 
-void Button_DrawEx(Button *const this, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
+void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
 {
-    Button_Draw_(this);
+    Button_Draw_(self);
 
-    if (this->imageTexture)
-        Texture_DrawEx(this->imageTexture, srcrect, dstrect ? dstrect : &this->textureRect, angle);
+    if (self->imageTexture)
+        Texture_DrawEx(self->imageTexture, srcrect, dstrect ? dstrect : &self->textureRect, angle);
 }
 
-void Button_Draw_(Button *const this)
+void Button_Draw_(Button *const self)
 {
-    if (this->state == Hover)
+    if (self->state == Hover)
     {
-        SDL_SetRenderDrawColor(this->renderer, this->colorHover.r,
-                               this->colorHover.g, this->colorHover.b, this->colorHover.a);
+        SDL_SetRenderDrawColor(self->renderer, self->colorHover.r,
+                               self->colorHover.g, self->colorHover.b, self->colorHover.a);
     }
-    else if (this->state == Pressed)
+    else if (self->state == Pressed)
     {
-        SDL_SetRenderDrawColor(this->renderer, this->colorPressed.r,
-                               this->colorPressed.g, this->colorPressed.b, this->colorPressed.a);
+        SDL_SetRenderDrawColor(self->renderer, self->colorPressed.r,
+                               self->colorPressed.g, self->colorPressed.b, self->colorPressed.a);
     }
     else
     {
-        SDL_SetRenderDrawColor(this->renderer, this->color.r, this->color.g, this->color.b, this->color.a);
+        SDL_SetRenderDrawColor(self->renderer, self->color.r, self->color.g, self->color.b, self->color.a);
     }
 
-    SDL_RenderFillRect(this->renderer, &this->rect);
+    SDL_RenderFillRect(self->renderer, &self->rect);
 
-    if (this->textTexture)
-        Texture_Draw(this->textTexture, NULL, &this->textureRect);
+    if (self->textTexture)
+        Texture_Draw(self->textTexture, NULL, &self->textureRect);
 }
 
-bool Button_PointerIsHovering(Button *const this, const SDL_Event *event)
+bool Button_PointerIsHovering(Button *const self, const SDL_Event *event)
 {
-    return event->button.x >= this->rect.x
-            && event->button.x <= (this->rect.x + this->rect.w)
-            && event->button.y >= this->rect.y
-            && event->button.y <= (this->rect.y + this->rect.h);
+    return event->button.x >= self->rect.x
+            && event->button.x <= (self->rect.x + self->rect.w)
+            && event->button.y >= self->rect.y
+            && event->button.y <= (self->rect.y + self->rect.h);
 }
 
-void Button_UpdateTextureRect(Button *const this)
+void Button_UpdateTextureRect(Button *const self)
 {
-    Texture *texture = this->textTexture ? this->textTexture : this->imageTexture;
+    Texture *texture = self->textTexture ? self->textTexture : self->imageTexture;
 
     if (texture)
     {
         int w = Texture_GetWidth(texture);
         int h = Texture_GetHeight(texture);
 
-        this->textureRect = (SDL_Rect) {
-            .x = this->rect.x + ((this->rect.w - w) / 2),
-            .y = this->rect.y + ((this->rect.h - h) / 2),
+        self->textureRect = (SDL_Rect) {
+            .x = self->rect.x + ((self->rect.w - w) / 2),
+            .y = self->rect.y + ((self->rect.h - h) / 2),
             .w = w,
             .h = h
         };

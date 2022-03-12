@@ -33,9 +33,9 @@ extern "C" {
 typedef struct Window Window;
 
 Window *Window_New(int width, int height);
-void Window_Delete(Window *);
-SDL_Window *Window_GetSDLWindow(Window *);
-SDL_Rect Window_GetRect(Window *);
+void Window_Delete(Window *self);
+SDL_Window *Window_GetSDLWindow(Window *self);
+SDL_Rect Window_GetRect(Window *self);
 
 #ifdef __cplusplus
 }
