@@ -26,6 +26,7 @@ SOFTWARE.
 #include "../base/Texture.h"
 
 #include <malloc.h>
+#include <math.h>
 
 struct Header
 {
@@ -100,13 +101,10 @@ void Header_ProcessEvent(Header *const self, const SDL_Event *event)
 
 void Header_Update(Header *const self, double deltaTime)
 {
-    for (int i = 0; i < 8; ++i)
-    {
-        if (self->currentPlayer == Player_1 && self->line_rect.x >= self->line_p1_x)
-            self->line_rect.x -= 0.1 * deltaTime;
-        else if (self->currentPlayer == Player_2 && self->line_rect.x <= self->line_p2_x)
-            self->line_rect.x += 0.1 * deltaTime;
-    }
+    if (self->currentPlayer == Player_1 && self->line_rect.x >= self->line_p1_x)
+        self->line_rect.x = fmax(self->line_rect.x - (0.8 * deltaTime), self->line_p1_x);
+    else if (self->currentPlayer == Player_2 && self->line_rect.x <= self->line_p2_x)
+        self->line_rect.x = fmin(self->line_rect.x + (0.8 * deltaTime), self->line_p2_x);
 }
 
 void Header_Draw(Header *const self)

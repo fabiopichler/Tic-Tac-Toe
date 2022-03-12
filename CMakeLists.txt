@@ -71,3 +71,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
 else()
     target_link_libraries(tic-tac-toe PRIVATE SDL2 SDL2_image SDL2_ttf)
 endif()
+
+if(NOT WIN32)
+    target_link_libraries(tic-tac-toe PRIVATE m)
+endif()
