@@ -23,6 +23,8 @@ SOFTWARE.
 -------------------------------------------------------------------------------*/
 
 #include "Button.h"
+#include "Rectangle.h"
+#include "Box.h"
 
 #include <malloc.h>
 
@@ -55,6 +57,8 @@ struct Button
 
     SDL_Color textColor;
 
+    Rectangle *background;
+
     State state;
 
     ButtonPressedEvent pressedEvent;
@@ -82,6 +86,8 @@ Button *Button_New(SDL_Renderer *renderer)
     self->pressedEvent = (ButtonPressedEvent) {NULL, NULL};
 
     self->rect = (SDL_Rect) { .x = 0, .y = 0, .w = 60, .h = 40 };
+
+    self->background = Rectangle_New(self->renderer, self->rect.w, self->rect.h);
 
     return self;
 }
@@ -151,6 +157,10 @@ void Button_SetRect(Button *const self, const SDL_Rect *rect)
     if (rect)
     {
         self->rect = *rect;
+
+        Box_SetSize(Rectangle_Box(self->background), self->rect.w, self->rect.h);
+        Box_SetPosition(Rectangle_Box(self->background), self->rect.x, self->rect.y);
+
         Button_UpdateTextureRect(self);
     }
 }
@@ -210,21 +220,13 @@ void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *
 void Button_Draw_(Button *const self)
 {
     if (self->state == Hover)
-    {
-        SDL_SetRenderDrawColor(self->renderer, self->colorHover.r,
-                               self->colorHover.g, self->colorHover.b, self->colorHover.a);
-    }
+        Rectangle_SetColor(self->background, self->colorHover);
     else if (self->state == Pressed)
-    {
-        SDL_SetRenderDrawColor(self->renderer, self->colorPressed.r,
-                               self->colorPressed.g, self->colorPressed.b, self->colorPressed.a);
-    }
+        Rectangle_SetColor(self->background, self->colorPressed);
     else
-    {
-        SDL_SetRenderDrawColor(self->renderer, self->color.r, self->color.g, self->color.b, self->color.a);
-    }
+        Rectangle_SetColor(self->background, self->color);
 
-    SDL_RenderFillRect(self->renderer, &self->rect);
+    Rectangle_Draw(self->background);
 
     if (self->textTexture)
         Texture_Draw(self->textTexture, NULL, &self->textureRect);

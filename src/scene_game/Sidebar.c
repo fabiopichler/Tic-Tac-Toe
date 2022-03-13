@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "Sidebar.h"
 #include "../base/Texture.h"
+#include "../base/Rectangle.h"
+#include "../base/Box.h"
 
 #include <malloc.h>
 #include <stdio.h>
@@ -39,10 +41,11 @@ struct Sidebar
     int player2Win_y;
     int tied_y;
     int tiedCount_y;
-    SDL_Rect sidebarRect;
-    SDL_Rect verticalLine;
-    SDL_Rect horizontalLine1;
-    SDL_Rect horizontalLine2;
+
+    Rectangle *background;
+    Rectangle *verticalLine;
+    Rectangle *horizontalLine1;
+    Rectangle *horizontalLine2;
     SDL_Color textColor;
 
     Texture *player1Text;
@@ -87,13 +90,10 @@ void Sidebar_Delete(Sidebar *const self)
 
 void Sidebar_Draw(Sidebar *const self)
 {
-    SDL_SetRenderDrawColor(self->renderer, 230, 240, 240, 255);
-    SDL_RenderFillRect(self->renderer, &self->sidebarRect);
-
-    SDL_SetRenderDrawColor(self->renderer, 80, 160, 160, 255);
-    SDL_RenderFillRect(self->renderer, &self->verticalLine);
-    SDL_RenderFillRect(self->renderer, &self->horizontalLine1);
-    SDL_RenderFillRect(self->renderer, &self->horizontalLine2);
+    Rectangle_Draw(self->background);
+    Rectangle_Draw(self->verticalLine);
+    Rectangle_Draw(self->horizontalLine1);
+    Rectangle_Draw(self->horizontalLine2);
 
     Texture_Draw(self->player1Text, NULL, NULL);
     Texture_Draw(self->player1WinText, NULL, NULL);
@@ -135,10 +135,19 @@ void Sidebar_SetupSizes(Sidebar *const self)
     self->tied_y = third_block + title_margin;
     self->tiedCount_y = third_block + number_margin;
 
-    self->sidebarRect = (SDL_Rect) {0, 0, self->width, self->rect->sidebar_h};
-    self->verticalLine = (SDL_Rect) {self->width, 0, border_w, self->rect->sidebar_h};
-    self->horizontalLine1 = (SDL_Rect) {0, second_block - border_w, self->width, border_w};
-    self->horizontalLine2 = (SDL_Rect) {0, third_block - border_w, self->width, border_w};
+    self->background = Rectangle_New(self->renderer, self->width, self->rect->sidebar_h);
+    self->verticalLine = Rectangle_New(self->renderer, border_w, self->rect->sidebar_h);
+    self->horizontalLine1 = Rectangle_New(self->renderer, self->width, border_w);
+    self->horizontalLine2 = Rectangle_New(self->renderer, self->width, border_w);
+
+    Rectangle_SetColorRGBA(self->background, 230, 240, 240, 255);
+    Rectangle_SetColorRGBA(self->verticalLine, 80, 160, 160, 255);
+    Rectangle_SetColorRGBA(self->horizontalLine1, 80, 160, 160, 255);
+    Rectangle_SetColorRGBA(self->horizontalLine2, 80, 160, 160, 255);
+
+    Box_SetPosition(Rectangle_Box(self->verticalLine), self->width, 0);
+    Box_SetPosition(Rectangle_Box(self->horizontalLine1), 0, second_block - border_w);
+    Box_SetPosition(Rectangle_Box(self->horizontalLine2), 0, third_block - border_w);
 
     self->textColor = (SDL_Color) {50, 140, 140, 255};
 }
