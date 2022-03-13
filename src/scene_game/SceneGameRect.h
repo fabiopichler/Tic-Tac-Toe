@@ -26,10 +26,10 @@ SOFTWARE.
 
 typedef struct SceneGameRect
 {
-    const int window_w;
-    const int window_h;
-    const int sidebar_w;
-    const int sidebar_h;
-    const int content_w;
-    const int content_h;
+    int window_w;
+    int window_h;
+    int sidebar_w;
+    int sidebar_h;
+    int content_w;
+    int content_h;
 } SceneGameRect;

@@ -32,18 +32,18 @@ struct Sidebar
 {
     SDL_Renderer *renderer;
     const SceneGameRect *rect;
-    const int width;
-    const int player1_y;
-    const int player1Win_y;
-    const int player2_y;
-    const int player2Win_y;
-    const int tied_y;
-    const int tiedCount_y;
-    const SDL_Rect sidebarRect;
-    const SDL_Rect verticalLine;
-    const SDL_Rect horizontalLine1;
-    const SDL_Rect horizontalLine2;
-    const SDL_Color textColor;
+    int width;
+    int player1_y;
+    int player1Win_y;
+    int player2_y;
+    int player2Win_y;
+    int tied_y;
+    int tiedCount_y;
+    SDL_Rect sidebarRect;
+    SDL_Rect verticalLine;
+    SDL_Rect horizontalLine1;
+    SDL_Rect horizontalLine2;
+    SDL_Color textColor;
 
     Texture *player1Text;
     Texture *player1WinText;
@@ -126,21 +126,21 @@ void Sidebar_SetupSizes(Sidebar *const self)
     const int second_block = self->rect->sidebar_h / 3;
     const int third_block = second_block * 2;
 
-    *(int *)&self->width = self->rect->sidebar_w - border_w;
+    self->width = self->rect->sidebar_w - border_w;
 
-    *(int *)&self->player1_y = title_margin;
-    *(int *)&self->player1Win_y = number_margin;
-    *(int *)&self->player2_y = second_block + title_margin;
-    *(int *)&self->player2Win_y = second_block + number_margin;
-    *(int *)&self->tied_y = third_block + title_margin;
-    *(int *)&self->tiedCount_y = third_block + number_margin;
+    self->player1_y = title_margin;
+    self->player1Win_y = number_margin;
+    self->player2_y = second_block + title_margin;
+    self->player2Win_y = second_block + number_margin;
+    self->tied_y = third_block + title_margin;
+    self->tiedCount_y = third_block + number_margin;
 
-    *(SDL_Rect *)&self->sidebarRect = (SDL_Rect) {0, 0, self->width, self->rect->sidebar_h};
-    *(SDL_Rect *)&self->verticalLine = (SDL_Rect) {self->width, 0, border_w, self->rect->sidebar_h};
-    *(SDL_Rect *)&self->horizontalLine1 = (SDL_Rect) {0, second_block - border_w, self->width, border_w};
-    *(SDL_Rect *)&self->horizontalLine2 = (SDL_Rect) {0, third_block - border_w, self->width, border_w};
+    self->sidebarRect = (SDL_Rect) {0, 0, self->width, self->rect->sidebar_h};
+    self->verticalLine = (SDL_Rect) {self->width, 0, border_w, self->rect->sidebar_h};
+    self->horizontalLine1 = (SDL_Rect) {0, second_block - border_w, self->width, border_w};
+    self->horizontalLine2 = (SDL_Rect) {0, third_block - border_w, self->width, border_w};
 
-    *(SDL_Color *)&self->textColor = (SDL_Color) {50, 140, 140, 255};
+    self->textColor = (SDL_Color) {50, 140, 140, 255};
 }
 
 void Sidebar_CreateTextures(Sidebar *const self)

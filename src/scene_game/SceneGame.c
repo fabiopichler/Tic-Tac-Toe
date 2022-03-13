@@ -27,6 +27,7 @@ SOFTWARE.
 #include "board/GameBoard.h"
 #include "../base/Button.h"
 #include "../base/Texture.h"
+#include "../base/Rectangle.h"
 #include "board/board_util.h"
 #include "Sidebar.h"
 #include "Header.h"
@@ -43,6 +44,7 @@ struct SceneGame
     int player2WinCount;
     int tiedCount;
 
+    Rectangle *background;
     GameBoard *gameBoard;
     Sidebar *sidebar;
     Header *header;
@@ -58,12 +60,12 @@ SceneGame *SceneGame_New(SDL_Renderer *renderer, SDL_Rect windowRect)
     SceneGame *const self = malloc(sizeof (SceneGame));
 
     SceneGameRect *rect = malloc(sizeof (SceneGameRect));
-    *(int *)&rect->window_w = windowRect.w;
-    *(int *)&rect->window_h = windowRect.h;
-    *(int *)&rect->sidebar_w = 200;
-    *(int *)&rect->sidebar_h = windowRect.h;
-    *(int *)&rect->content_w = windowRect.w - rect->sidebar_w;
-    *(int *)&rect->content_h = windowRect.h;
+    rect->window_w = windowRect.w;
+    rect->window_h = windowRect.h;
+    rect->sidebar_w = 200;
+    rect->sidebar_h = windowRect.h;
+    rect->content_w = windowRect.w - rect->sidebar_w;
+    rect->content_h = windowRect.h;
 
     self->renderer = renderer;
     self->rect = rect;
@@ -71,9 +73,12 @@ SceneGame *SceneGame_New(SDL_Renderer *renderer, SDL_Rect windowRect)
     self->player1WinCount = 0;
     self->player2WinCount = 0;
     self->tiedCount = 0;
+    self->background = Rectangle_New(self->renderer, rect->window_w, rect->window_h);
     self->sidebar = Sidebar_New(self->renderer, self->rect);
     self->header = Header_New(self->renderer, self->rect);
     self->footer = Footer_New(self->renderer, self->rect);
+
+    Rectangle_SetColorRGBA(self->background, 190, 225, 225, 255);
 
     Button *restartButton = Footer_GetRestartButton(self->footer);
     Button_SetOnPressEvent(restartButton, SceneGame_OnPressed, self);
@@ -92,6 +97,7 @@ void SceneGame_Delete(SceneGame *const self)
     Footer_Delete(self->footer);
     Header_Delete(self->header);
     Sidebar_Delete(self->sidebar);
+    Rectangle_Delete(self->background);
     free(self->rect);
     free(self);
 }
@@ -111,6 +117,7 @@ void SceneGame_Update(SceneGame *const self, double deltaTime)
 
 void SceneGame_Draw(SceneGame *const self)
 {
+    Rectangle_Draw(self->background);
     GameBoard_Draw(self->gameBoard);
     Header_Draw(self->header);
     Footer_Draw(self->footer);

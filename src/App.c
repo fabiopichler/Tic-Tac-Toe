@@ -25,7 +25,6 @@ SOFTWARE.
 #include "App.h"
 #include "base/Window.h"
 #include "base/Graphics.h"
-#include "base/Rectangle.h"
 #include "scene_game/SceneGame.h"
 
 #include <SDL2/SDL.h>
@@ -49,7 +48,6 @@ struct App
 
     SDL_Event event;
     uint64_t lastPerformanceCounter;
-    Rectangle *background;
 };
 
 void App_Update(App *const self);
@@ -71,9 +69,6 @@ App *App_New()
     self->sceneGame = SceneGame_New(self->renderer, Window_GetRect(self->window));
 
     self->lastPerformanceCounter = SDL_GetPerformanceCounter();
-    self->background = Rectangle_New(self->renderer, width, height);
-
-    Rectangle_SetColorRGBA(self->background, 190, 225, 225, 255);
 
     return self;
 }
@@ -87,7 +82,6 @@ void App_Delete(App *const self)
     SceneGame_Delete(self->sceneGame);
     Graphics_Delete(self->graphics);
     Window_Delete(self->window);
-    Rectangle_Delete(self->background);
     free(self);
 
     IMG_Quit();
@@ -149,7 +143,6 @@ void App_Draw(App *const self)
     SDL_SetRenderDrawColor(self->renderer, 0, 0, 0, 255);
     SDL_RenderClear(self->renderer);
 
-    Rectangle_Draw(self->background);
     SceneGame_Draw(self->sceneGame);
 
     SDL_RenderPresent(self->renderer);
