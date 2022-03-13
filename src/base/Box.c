@@ -22,61 +22,69 @@ SOFTWARE.
 
 -------------------------------------------------------------------------------*/
 
-#include "Rectangle.h"
 #include "Box.h"
 
-struct Rectangle
+struct Box
 {
-    SDL_Renderer *renderer;
-    Box *box;
-    SDL_Color color;
+    SDL_FRect rect;
 };
 
-Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height)
+Box *Box_New(float x, float y, float width, float height)
 {
-    Rectangle *const self = malloc(sizeof (Rectangle));
+    Box *const self = malloc(sizeof (Box));
 
-    self->renderer = renderer;
-    self->box = Box_New(0.f, 0.f, width, height);
-    self->color = (SDL_Color) {0, 0, 0, 0};
+    self->rect = (SDL_FRect) {x, y, width, height};
 
     return self;
 }
 
-void Rectangle_Delete(Rectangle *const self)
+void Box_Delete(Box *const self)
 {
     if (!self)
         return;
 
-    Box_Delete(self->box);
     free(self);
 }
 
-void Rectangle_Draw(Rectangle *const self)
+void Box_SetSize(Box *const self, float w, float h)
 {
-    SDL_SetRenderDrawColor(self->renderer, self->color.r, self->color.g, self->color.b, self->color.a);
-    SDL_RenderFillRectF(self->renderer, Box_Rect(self->box));
+    self->rect.w = w;
+    self->rect.h = h;
 }
 
-void Rectangle_SetColor(Rectangle *const self, SDL_Color color)
+void Box_SetPosition(Box *const self, float x, float y)
 {
-    self->color = color;
+    self->rect.x = x;
+    self->rect.y = y;
 }
 
-void Rectangle_SetColorRGBA(Rectangle *const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+void Box_Move(Box *const self, float velX, float velY)
 {
-    self->color.r = r;
-    self->color.g = g;
-    self->color.b = b;
-    self->color.a = a;
+    self->rect.x += velX;
+    self->rect.y += velY;
 }
 
-SDL_Color Rectangle_Color(Rectangle *const self)
+float Box_X(Box *const self)
 {
-    return self->color;
+    return self->rect.x;
 }
 
-Box *Rectangle_Box(Rectangle *const self)
+float Box_Y(Box *const self)
 {
-    return self->box;
+    return self->rect.y;
+}
+
+float Rectangle_Width(Box *const self)
+{
+    return self->rect.w;
+}
+
+float Box_Height(Box *const self)
+{
+    return self->rect.h;
+}
+
+const SDL_FRect *Box_Rect(Box *const self)
+{
+    return &self->rect;
 }

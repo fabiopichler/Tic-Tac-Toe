@@ -22,61 +22,31 @@ SOFTWARE.
 
 -------------------------------------------------------------------------------*/
 
-#include "Rectangle.h"
-#include "Box.h"
+#pragma once
 
-struct Rectangle
-{
-    SDL_Renderer *renderer;
-    Box *box;
-    SDL_Color color;
-};
+#include <SDL2/SDL.h>
 
-Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height)
-{
-    Rectangle *const self = malloc(sizeof (Rectangle));
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    self->renderer = renderer;
-    self->box = Box_New(0.f, 0.f, width, height);
-    self->color = (SDL_Color) {0, 0, 0, 0};
+typedef struct Box Box;
 
-    return self;
+Box *Box_New(float x, float y, float width, float height);
+void Box_Delete(Box *const self);
+
+void Box_SetSize(Box *const self, float w, float h);
+void Box_SetPosition(Box *const self, float x, float y);
+
+void Box_Move(Box *const self, float velX, float velY);
+
+float Box_X(Box *const self);
+float Box_Y(Box *const self);
+float Box_Width(Box *const self);
+float Box_Height(Box *const self);
+
+const SDL_FRect *Box_Rect(Box *const self);
+
+#ifdef __cplusplus
 }
-
-void Rectangle_Delete(Rectangle *const self)
-{
-    if (!self)
-        return;
-
-    Box_Delete(self->box);
-    free(self);
-}
-
-void Rectangle_Draw(Rectangle *const self)
-{
-    SDL_SetRenderDrawColor(self->renderer, self->color.r, self->color.g, self->color.b, self->color.a);
-    SDL_RenderFillRectF(self->renderer, Box_Rect(self->box));
-}
-
-void Rectangle_SetColor(Rectangle *const self, SDL_Color color)
-{
-    self->color = color;
-}
-
-void Rectangle_SetColorRGBA(Rectangle *const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
-{
-    self->color.r = r;
-    self->color.g = g;
-    self->color.b = b;
-    self->color.a = a;
-}
-
-SDL_Color Rectangle_Color(Rectangle *const self)
-{
-    return self->color;
-}
-
-Box *Rectangle_Box(Rectangle *const self)
-{
-    return self->box;
-}
+#endif

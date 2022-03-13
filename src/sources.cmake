@@ -13,6 +13,8 @@ set(SRC_FILES
     src/base/Button.h
     src/base/Rectangle.c
     src/base/Rectangle.h
+    src/base/Box.h
+    src/base/Box.c
     src/scene_game/SceneGameRect.h
     src/scene_game/SceneGame.c
     src/scene_game/SceneGame.h

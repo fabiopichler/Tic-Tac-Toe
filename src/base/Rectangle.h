@@ -30,6 +30,8 @@ SOFTWARE.
 extern "C" {
 #endif
 
+typedef struct Box Box;
+
 typedef struct Rectangle Rectangle;
 
 Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height);
@@ -40,14 +42,7 @@ void Rectangle_SetColor(Rectangle *const self, SDL_Color color);
 void Rectangle_SetColorRGBA(Rectangle *const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 SDL_Color Rectangle_Color(Rectangle *const self);
 
-void Rectangle_SetSize(Rectangle *const self, float w, float h);
-void Rectangle_SetPosition(Rectangle *const self, float x, float y);
-void Rectangle_Move(Rectangle *const self, float velX, float velY);
-float Rectangle_X(Rectangle *const self);
-float Rectangle_Y(Rectangle *const self);
-float Rectangle_Width(Rectangle *const self);
-float Rectangle_Height(Rectangle *const self);
-const SDL_FRect *Rectangle_Box(Rectangle *const self);
+Box *Rectangle_Box(Rectangle *const self);
 
 #ifdef __cplusplus
 }
