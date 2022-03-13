@@ -24,33 +24,30 @@ SOFTWARE.
 
 #pragma once
 
-#include <stdbool.h>
-
 #include <SDL2/SDL.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct Texture Texture;
+typedef struct Rectangle Rectangle;
 
-Texture *Texture_New(SDL_Renderer *renderer);
-void Texture_Delete(Texture *self);
+Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height);
+void Rectangle_Delete(Rectangle *const self);
+void Rectangle_Draw(Rectangle *const self);
 
-bool Texture_LoadImageFromFile(Texture *self, const char *fileName);
+void Rectangle_SetColor(Rectangle *const self, SDL_Color color);
+void Rectangle_SetColorRGBA(Rectangle *const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+SDL_Color Rectangle_Color(Rectangle *const self);
 
-bool Texture_MakeText(Texture *self);
-void Texture_SetupText(Texture *self, const char *text, int ptsize, const SDL_Color *color);
-void Texture_SetText(Texture *self, const char *text);
-void Texture_SetTextSize(Texture *self, int ptsize);
-void Texture_SetTextColor(Texture *self, const SDL_Color *color);
-
-void Texture_Draw(Texture *self, const SDL_Rect *srcrect, const SDL_Rect *dstrect);
-void Texture_DrawEx(Texture *self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
-void Texture_SetPos(Texture *self, int x, int y);
-void Texture_SetRect(Texture *self, const SDL_Rect *rect);
-int Texture_GetWidth(Texture *self);
-int Texture_GetHeight(Texture *self);
+void Rectangle_SetSize(Rectangle *const self, float w, float h);
+void Rectangle_SetPosition(Rectangle *const self, float x, float y);
+void Rectangle_Move(Rectangle *const self, float velX, float velY);
+float Rectangle_X(Rectangle *const self);
+float Rectangle_Y(Rectangle *const self);
+float Rectangle_Width(Rectangle *const self);
+float Rectangle_Height(Rectangle *const self);
+const SDL_FRect *Rectangle_Box(Rectangle *const self);
 
 #ifdef __cplusplus
 }

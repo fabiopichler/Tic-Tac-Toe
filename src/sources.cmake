@@ -11,6 +11,8 @@ set(SRC_FILES
     src/base/Texture.h
     src/base/Button.c
     src/base/Button.h
+    src/base/Rectangle.c
+    src/base/Rectangle.h
     src/scene_game/SceneGameRect.h
     src/scene_game/SceneGame.c
     src/scene_game/SceneGame.h
