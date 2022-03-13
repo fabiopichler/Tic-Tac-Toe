@@ -24,20 +24,23 @@ SOFTWARE.
 
 #include "Header.h"
 #include "../base/Texture.h"
+#include "../base/Rectangle.h"
+#include "../base/Box.h"
 
 #include <malloc.h>
 #include <math.h>
 
 struct Header
 {
-    const int space;
-    const int margin;
-    const float line_p1_x;
-    const float line_p2_x;
-    SDL_FRect line_rect;
+    int space;
+    int margin;
+    float line_p1_x;
+    float line_p2_x;
 
     SDL_Renderer *renderer;
     SceneGameRect *rect;
+
+    Rectangle *line;
 
     Player currentPlayer;
     Player gameResult;
@@ -60,19 +63,22 @@ Header *Header_New(SDL_Renderer *renderer, SceneGameRect *rect)
 {
     Header *const self = malloc(sizeof (Header));
 
-    *(int *)&self->space = 6;
-    *(int *)&self->margin = 20;
+    self->space = 6;
+    self->margin = 20;
 
     const float w = 134;
     const float x = rect->sidebar_w + ((rect->content_w - w) / 2);
-    *(float *)&self->line_p1_x = x - 85.f;
-    *(float *)&self->line_p2_x = x + 85.f;
-    self->line_rect = (SDL_FRect) {.x = self->line_p1_x, .y = 64.f, .w = w, .h = 4.f};
+    self->line_p1_x = x - 85.f;
+    self->line_p2_x = x + 85.f;
 
     self->renderer = renderer;
     self->rect = rect;
     self->currentPlayer = Player_1;
     self->gameResult = None;
+    self->line = Rectangle_New(self->renderer, w, 4.f);
+
+    Box_SetPosition(Rectangle_Box(self->line), self->line_p1_x, 64.f);
+    Rectangle_SetColorRGBA(self->line, 100, 180, 180, 255);
 
     Header_CreateResultText(self);
     Header_CreatePlayer1Text(self);
@@ -101,18 +107,21 @@ void Header_ProcessEvent(Header *const self, const SDL_Event *event)
 
 void Header_Update(Header *const self, double deltaTime)
 {
-    if (self->currentPlayer == Player_1 && self->line_rect.x >= self->line_p1_x)
-        self->line_rect.x = fmax(self->line_rect.x - (0.8 * deltaTime), self->line_p1_x);
-    else if (self->currentPlayer == Player_2 && self->line_rect.x <= self->line_p2_x)
-        self->line_rect.x = fmin(self->line_rect.x + (0.8 * deltaTime), self->line_p2_x);
+    Box *const lineBox = Rectangle_Box(self->line);
+    const float x = Box_X(lineBox);
+
+    if (self->currentPlayer == Player_1 && x >= self->line_p1_x)
+        Box_SetX(lineBox, fmax(x - (0.8 * deltaTime), self->line_p1_x));
+
+    else if (self->currentPlayer == Player_2 && x <= self->line_p2_x)
+        Box_SetX(lineBox, fmin(x + (0.8 * deltaTime), self->line_p2_x));
 }
 
 void Header_Draw(Header *const self)
 {
     if (self->gameResult == None)
     {
-        SDL_SetRenderDrawColor(self->renderer, 100, 180, 180, 255);
-        SDL_RenderFillRectF(self->renderer, &self->line_rect);
+        Rectangle_Draw(self->line);
 
         Texture_Draw(self->player1, NULL, NULL);
         Texture_Draw(self->player1Icon, NULL, NULL);

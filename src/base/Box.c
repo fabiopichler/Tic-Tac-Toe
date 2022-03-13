@@ -58,6 +58,26 @@ void Box_SetPosition(Box *const self, float x, float y)
     self->rect.y = y;
 }
 
+void Box_SetX(Box *const self, float x)
+{
+    self->rect.x = x;
+}
+
+void Box_SetY(Box *const self, float y)
+{
+    self->rect.y = y;
+}
+
+void Box_SetWidth(Box *const self, float w)
+{
+    self->rect.w = w;
+}
+
+void Box_SetHeight(Box *const self, float h)
+{
+    self->rect.h = h;
+}
+
 void Box_Move(Box *const self, float velX, float velY)
 {
     self->rect.x += velX;

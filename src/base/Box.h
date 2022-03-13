@@ -38,6 +38,11 @@ void Box_Delete(Box *const self);
 void Box_SetSize(Box *const self, float w, float h);
 void Box_SetPosition(Box *const self, float x, float y);
 
+void Box_SetX(Box *const self, float x);
+void Box_SetY(Box *const self, float y);
+void Box_SetWidth(Box *const self, float w);
+void Box_SetHeight(Box *const self, float h);
+
 void Box_Move(Box *const self, float velX, float velY);
 
 float Box_X(Box *const self);

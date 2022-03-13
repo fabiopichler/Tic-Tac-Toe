@@ -25,6 +25,8 @@ SOFTWARE.
 #include "GameBoard.h"
 #include "../../base/Button.h"
 #include "../../base/Texture.h"
+#include "../../base/Rectangle.h"
+#include "../../base/Box.h"
 #include "board_util.h"
 
 typedef struct GameEvent
@@ -35,14 +37,15 @@ typedef struct GameEvent
 
 struct GameBoard
 {
-    const int item_size;
-    const int board_space;
-    const int board_x;
-    const int board_y;
-    const SDL_Rect board_rect;
+    int item_size;
+    int board_space;
+    int board_x;
+    int board_y;
+    SDL_Rect board_rect;
 
     SDL_Renderer *renderer;
     const SceneGameRect *rect;
+    Rectangle *background;
 
     Player player;
     Player gameResult;
@@ -68,13 +71,14 @@ GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect)
 
     const int board_size = 304;
 
-    *(int *)&self->item_size = 98;
-    *(int *)&self->board_space = 5;
-    *(int *)&self->board_x = rect->sidebar_w + ((rect->content_w - board_size) / 2);
-    *(int *)&self->board_y = (rect->window_h - board_size) / 2;
-    *(SDL_Rect *)&self->board_rect = (SDL_Rect) {self->board_x, self->board_y, board_size, board_size};
+    self->item_size = 98;
+    self->board_space = 5;
+    self->board_x = rect->sidebar_w + ((rect->content_w - board_size) / 2);
+    self->board_y = (rect->window_h - board_size) / 2;
+    self->board_rect = (SDL_Rect) {self->board_x, self->board_y, board_size, board_size};
 
     self->renderer = renderer;
+    self->background = Rectangle_New(self->renderer, board_size, board_size);
     self->rect = rect;
     self->player = Player_1;
     self->gameResult = None;
@@ -83,6 +87,9 @@ GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect)
     self->player1Texture = Texture_New(renderer);
     self->player2Texture = Texture_New(renderer);
     self->p1Angle = 0.0;
+
+    Box_SetPosition(Rectangle_Box(self->background), self->board_x, self->board_y);
+    Rectangle_SetColorRGBA(self->background, 80, 160, 160, 255);
 
     Texture_LoadImageFromFile(self->player1Texture, "images/player_1.png");
     Texture_LoadImageFromFile(self->player2Texture, "images/player_2.png");
@@ -123,8 +130,7 @@ void GameBoard_Update(GameBoard *const self, double deltaTime)
 
 void GameBoard_Draw(GameBoard *const self)
 {
-    SDL_SetRenderDrawColor(self->renderer, 80, 160, 160, 255);
-    SDL_RenderFillRect(self->renderer, &self->board_rect);
+    Rectangle_Draw(self->background);
 
     for (int row = 0; row < 3; ++row)
     {
