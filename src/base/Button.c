@@ -203,6 +203,8 @@ void Button_ProcessEvent(Button *const self, const SDL_Event *event)
 
 void Button_Draw(Button *const self)
 {
+    Button_OnUpdateBox(self);
+
     Rectangle_Draw(self->background);
 
     if (self->iconTexture)
@@ -224,9 +226,6 @@ bool Button_PointerIsHovering(Button *const self, const SDL_Event *event)
 
 void Button_OnUpdateBox(Button *const self)
 {
-    Box_SetSize(Rectangle_Box(self->background), Box_Width(self->box), Box_Height(self->box));
-    Box_SetPosition(Rectangle_Box(self->background), Box_X(self->box), Box_Y(self->box));
-
     Texture *texture = self->textTexture ? self->textTexture : self->iconTexture;
     const SDL_FRect *rect = Box_Rect(self->box);
 
@@ -243,7 +242,12 @@ void Button_OnUpdateBox(Button *const self)
 
 void Button_BoxOnUpdateEvent(Box *const box, void *userdata)
 {
-    Button_OnUpdateBox(userdata);
+    Button *const self = userdata;
+
+    Box_SetSize(Rectangle_Box(self->background), Box_Width(self->box), Box_Height(self->box));
+    Box_SetPosition(Rectangle_Box(self->background), Box_X(self->box), Box_Y(self->box));
+
+    Button_OnUpdateBox(self);
 }
 
 Box *Button_Box(Button *const self)
