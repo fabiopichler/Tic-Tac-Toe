@@ -26,6 +26,11 @@ SOFTWARE.
 
 #include <SDL2/SDL.h>
 
+#ifdef __EMSCRIPTEN__
+    #include <emscripten.h>
+    #include <emscripten/html5.h>
+#endif
+
 struct BasicSceneManager
 {
     SDL_Event event;
