@@ -206,7 +206,7 @@ void Button_Draw(Button *const self)
     Button_Draw_(self);
 
     if (self->imageTexture)
-        Texture_Draw(self->imageTexture, NULL, &self->textureRect);
+        Texture_Draw(self->imageTexture, &self->textureRect);
 }
 
 void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
@@ -214,7 +214,15 @@ void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *
     Button_Draw_(self);
 
     if (self->imageTexture)
-        Texture_DrawEx(self->imageTexture, srcrect, dstrect ? dstrect : &self->textureRect, angle);
+    {
+        // LEMBRETE: arrumar essa gambiarra (temporária)
+
+        if (srcrect)
+            Texture_SetSourceRect(self->imageTexture, *srcrect);
+
+        Texture_SetAngle(self->imageTexture, angle);
+        Texture_Draw(self->imageTexture, dstrect ? dstrect : &self->textureRect);
+    }
 }
 
 void Button_Draw_(Button *const self)
@@ -229,7 +237,7 @@ void Button_Draw_(Button *const self)
     Rectangle_Draw(self->background);
 
     if (self->textTexture)
-        Texture_Draw(self->textTexture, NULL, &self->textureRect);
+        Texture_Draw(self->textTexture, &self->textureRect);
 }
 
 bool Button_PointerIsHovering(Button *const self, const SDL_Event *event)

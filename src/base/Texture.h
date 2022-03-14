@@ -45,8 +45,10 @@ void Texture_SetText(Texture *self, const char *text);
 void Texture_SetTextSize(Texture *self, int ptsize);
 void Texture_SetTextColor(Texture *self, const SDL_Color *color);
 
-void Texture_Draw(Texture *self, const SDL_Rect *srcrect, const SDL_Rect *dstrect);
-void Texture_DrawEx(Texture *self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
+void Texture_SetSourceRect(Texture *const self, SDL_Rect srcrect);
+void Texture_SetAngle(Texture *self, double angle);
+
+void Texture_Draw(Texture *self, const SDL_Rect *dstrect);
 void Texture_SetPos(Texture *self, int x, int y);
 void Texture_SetRect(Texture *self, const SDL_Rect *rect);
 int Texture_GetWidth(Texture *self);

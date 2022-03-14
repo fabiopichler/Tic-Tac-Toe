@@ -95,12 +95,12 @@ void Sidebar_Draw(Sidebar *const self)
     Rectangle_Draw(self->horizontalLine1);
     Rectangle_Draw(self->horizontalLine2);
 
-    Texture_Draw(self->player1Text, NULL, NULL);
-    Texture_Draw(self->player1WinText, NULL, NULL);
-    Texture_Draw(self->player2Text, NULL, NULL);
-    Texture_Draw(self->player2WinText, NULL, NULL);
-    Texture_Draw(self->tiedText, NULL, NULL);
-    Texture_Draw(self->tiedCountText, NULL, NULL);
+    Texture_Draw(self->player1Text, NULL);
+    Texture_Draw(self->player1WinText, NULL);
+    Texture_Draw(self->player2Text, NULL);
+    Texture_Draw(self->player2WinText, NULL);
+    Texture_Draw(self->tiedText, NULL);
+    Texture_Draw(self->tiedCountText, NULL);
 }
 
 void Sidebar_SetPlayer1WinText(Sidebar *const self, int count)

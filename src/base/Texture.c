@@ -44,6 +44,9 @@ struct Texture
     int fontSize;
     bool reloadFont;
     SDL_Color textColor;
+
+    SDL_Rect srcrect;
+    double angle;
 };
 
 bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface);
@@ -63,6 +66,9 @@ Texture *Texture_New(SDL_Renderer *renderer)
     self->fontSize = 16;
     self->reloadFont = false;
     self->textColor = (SDL_Color) {60, 60, 60, 255};
+
+    self->srcrect = (SDL_Rect) {0, 0, 0, 0};
+    self->angle = 0.0;
 
     return self;
 }
@@ -135,16 +141,20 @@ void Texture_SetTextColor(Texture *const self, const SDL_Color *color)
         self->textColor = *color;
 }
 
-void Texture_Draw(Texture *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
+void Texture_SetSourceRect(Texture *const self, SDL_Rect srcrect)
 {
-    if (self->texture)
-        SDL_RenderCopy(self->renderer, self->texture, srcrect, dstrect ? dstrect : &self->rect);
+    self->srcrect = srcrect;
 }
 
-void Texture_DrawEx(Texture *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
+void Texture_SetAngle(Texture *self, double angle)
+{
+    self->angle = angle;
+}
+
+void Texture_Draw(Texture *const self, const SDL_Rect *dstrect)
 {
     if (self->texture)
-        SDL_RenderCopyEx(self->renderer, self->texture, srcrect, dstrect ? dstrect : &self->rect, angle, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(self->renderer, self->texture, &self->srcrect, dstrect ? dstrect : &self->rect, self->angle, NULL, SDL_FLIP_NONE);
 }
 
 bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface)
@@ -160,8 +170,12 @@ bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface)
 
         if (self->texture)
         {
+            self->srcrect.w = surface->w;
+            self->srcrect.h = surface->h;
             self->w = surface->w;
             self->h = surface->h;
+            self->rect.w = surface->w;
+            self->rect.h = surface->h;
         }
         else
         {

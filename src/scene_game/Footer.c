@@ -71,7 +71,7 @@ void Footer_ProcessEvent(Footer *const self, const SDL_Event *event)
 void Footer_Draw(Footer *const self)
 {
     Button_Draw(self->restartButton);
-    Texture_Draw(self->copyrightText, NULL, NULL);
+    Texture_Draw(self->copyrightText, NULL);
 }
 
 Button *Footer_GetRestartButton(Footer *const self)

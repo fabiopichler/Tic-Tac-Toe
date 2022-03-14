@@ -132,17 +132,17 @@ void Header_Draw(Header *const self)
     {
         Rectangle_Draw(self->line);
 
-        Texture_Draw(self->player1, NULL, NULL);
-        Texture_Draw(self->player1Icon, NULL, NULL);
-        Texture_Draw(self->player2, NULL, NULL);
-        Texture_Draw(self->player2Icon, NULL, NULL);
+        Texture_Draw(self->player1, NULL);
+        Texture_Draw(self->player1Icon, NULL);
+        Texture_Draw(self->player2, NULL);
+        Texture_Draw(self->player2Icon, NULL);
     }
     else
     {
         Rectangle_Draw(self->background1);
         Rectangle_Draw(self->background2);
 
-        Texture_Draw(self->result, NULL, NULL);
+        Texture_Draw(self->result, NULL);
     }
 }
 
