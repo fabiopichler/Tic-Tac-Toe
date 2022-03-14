@@ -126,6 +126,18 @@ void GameBoard_Update(GameBoard *const self, double deltaTime)
 
     if (self->p1Angle > 360.0)
         self->p1Angle = 0.0;
+
+    for (int row = 0; row < 3; ++row)
+    {
+        for (int col = 0; col < 3; ++col)
+        {
+            BoardItem *item = &self->board[row][col];
+            Texture *icon = Button_Icon(item->button);
+
+            if (icon)
+                Texture_SetAngle(icon, item->player == Player_1 ? self->p1Angle : 0);
+        }
+    }
 }
 
 void GameBoard_Draw(GameBoard *const self)
@@ -133,14 +145,8 @@ void GameBoard_Draw(GameBoard *const self)
     Rectangle_Draw(self->background);
 
     for (int row = 0; row < 3; ++row)
-    {
         for (int col = 0; col < 3; ++col)
-        {
-            BoardItem *item = &self->board[row][col];
-
-            Button_DrawEx(item->button, NULL, NULL, item->player == Player_1 ? self->p1Angle : 0);
-        }
-    }
+            Button_Draw(self->board[row][col].button);
 }
 
 void GameBoard_SetGameEvent(GameBoard *const self, GameEventHandler callback, void *user)
@@ -168,14 +174,10 @@ void GameBoard_SetupBoard(GameBoard *const self)
             BoardItem *item = &self->board[row][col];
             *item = (BoardItem) { .player = 0, .button = Button_New(self->renderer) };
 
-            Button_SetRect(
-                        item->button,
-                        &(SDL_Rect) {
-                            .x = self->board_x + (col * self->item_size) + (col * self->board_space),
-                            .y = self->board_y + (row * self->item_size) + (row * self->board_space),
-                            .w = self->item_size,
-                            .h = self->item_size
-                        });
+            Box_SetSize(Button_Box(item->button), self->item_size, self->item_size);
+            Box_SetPosition(Button_Box(item->button),
+                            self->board_x + (col * self->item_size) + (col * self->board_space),
+                            self->board_y + (row * self->item_size) + (row * self->board_space));
 
             Button_SetOnPressEvent(item->button, GameBoard_OnItemPress, self);
             Button_SetBackgroundColor(item->button, &(SDL_Color) {210, 240, 240, 255});
@@ -218,7 +220,7 @@ void GameBoard_Check(GameBoard *const self, BoardItem *item)
     if (self->gameEvent.function)
         self->gameEvent.function(self, self->gameEvent.userdata);
 
-    Button_SetImage(item->button, item->player == Player_1 ? self->player1Texture : self->player2Texture);
+    Button_SetIcon(item->button, item->player == Player_1 ? self->player1Texture : self->player2Texture);
 
     self->round++;
 }

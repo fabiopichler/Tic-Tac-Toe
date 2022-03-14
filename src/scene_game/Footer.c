@@ -90,14 +90,10 @@ void Footer_CreateRestartButton(Footer *const self)
     int height = 32;
     int padding = 40;
 
-    Button_SetRect(
-                self->restartButton,
-                &(SDL_Rect) {
-                    .x = self->rect->sidebar_w + ((self->rect->content_w - width) / 2),
-                    .y = self->rect->window_h - height - padding,
-                    .w = width,
-                    .h = height
-                });
+    Box_SetSize(Button_Box(self->restartButton), width, height);
+    Box_SetPosition(Button_Box(self->restartButton),
+                    self->rect->sidebar_w + ((self->rect->content_w - width) / 2),
+                    self->rect->window_h - height - padding);
 }
 
 void Footer_CreateCopyrightText(Footer *const self)

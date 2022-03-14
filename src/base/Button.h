@@ -34,6 +34,8 @@ SOFTWARE.
 extern "C" {
 #endif
 
+typedef struct Texture Texture;
+
 typedef struct Button Button;
 
 typedef void (*ButtonOnPressEvent)(Button *const button, void *user);
@@ -45,13 +47,14 @@ void Button_SetBackgroundHoverColor(Button *self, const SDL_Color *color);
 void Button_SetBackgroundPressedColor(Button *self, const SDL_Color *color);
 void Button_SetTextColor(Button *self, const SDL_Color *color);
 bool Button_SetText(Button *self, const char *text, int ptsize);
-void Button_SetImage(Button *self, Texture *texture);
-void Button_SetRect(Button *self, const SDL_Rect *rect);
+void Button_SetIcon(Button *self, Texture *texture);
 void Button_SetOnPressEvent(Button *self, ButtonOnPressEvent callback, void *user);
 void *Button_GetEventUserData(Button *self);
 void Button_ProcessEvent(Button *self, const SDL_Event *event);
 void Button_Draw(Button *self);
-void Button_DrawEx(Button *self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle);
+
+Box *Button_Box(Button *const self);
+Texture *Button_Icon(Button *const self);
 
 #ifdef __cplusplus
 }

@@ -94,7 +94,7 @@ float Box_Y(Box *const self)
     return self->rect.y;
 }
 
-float Rectangle_Width(Box *const self)
+float Box_Width(Box *const self)
 {
     return self->rect.w;
 }

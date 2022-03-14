@@ -46,10 +46,10 @@ struct Button
     SDL_Renderer *renderer;
 
     Texture *textTexture;
-    Texture *imageTexture;
+    Texture *iconTexture;
     SDL_Rect textureRect;
 
-    SDL_Rect rect;
+    Box *box;
 
     SDL_Color color;
     SDL_Color colorHover;
@@ -74,7 +74,7 @@ Button *Button_New(SDL_Renderer *renderer)
 
     self->renderer = renderer;
     self->textTexture = NULL;
-    self->imageTexture = NULL;
+    self->iconTexture = NULL;
     self->textureRect = (SDL_Rect) { 0, 0, 0, 0 };
 
     self->color = (SDL_Color) {50, 140, 140, 255};
@@ -85,9 +85,9 @@ Button *Button_New(SDL_Renderer *renderer)
     self->state = Normal;
     self->pressedEvent = (ButtonPressedEvent) {NULL, NULL};
 
-    self->rect = (SDL_Rect) { .x = 0, .y = 0, .w = 60, .h = 40 };
+    self->box = Box_New(0.f, 0.f, 60.f, 40.f);
 
-    self->background = Rectangle_New(self->renderer, self->rect.w, self->rect.h);
+    self->background = Rectangle_New(self->renderer, Box_Width(self->box), Box_Height(self->box));
 
     return self;
 }
@@ -143,27 +143,27 @@ bool Button_SetText(Button *const self, const char *text, int ptsize)
     return false;
 }
 
-void Button_SetImage(Button *const self, Texture *texture)
+void Button_SetIcon(Button *const self, Texture *texture)
 {
     if (texture)
     {
-        self->imageTexture = texture;
+        self->iconTexture = texture;
         Button_UpdateTextureRect(self);
     }
 }
 
-void Button_SetRect(Button *const self, const SDL_Rect *rect)
-{
-    if (rect)
-    {
-        self->rect = *rect;
+//void Button_SetRect(Button *const self, const SDL_Rect *rect)
+//{
+//    if (rect)
+//    {
+//        self->rect = *rect;
 
-        Box_SetSize(Rectangle_Box(self->background), self->rect.w, self->rect.h);
-        Box_SetPosition(Rectangle_Box(self->background), self->rect.x, self->rect.y);
+//        Box_SetSize(Rectangle_Box(self->background), self->rect.w, self->rect.h);
+//        Box_SetPosition(Rectangle_Box(self->background), self->rect.x, self->rect.y);
 
-        Button_UpdateTextureRect(self);
-    }
-}
+//        Button_UpdateTextureRect(self);
+//    }
+//}
 
 void Button_SetOnPressEvent(Button *const self, ButtonOnPressEvent callback, void *user)
 {
@@ -212,35 +212,35 @@ void Button_Draw(Button *const self)
 {
     Button_Draw_(self);
 
-    if (self->imageTexture)
+    if (self->iconTexture)
     {
         // LEMBRETE: arrumar essa gambiarra (temporária)
-        Box_SetSize(Texture_Box(self->imageTexture), self->textureRect.w, self->textureRect.h);
-        Box_SetPosition(Texture_Box(self->imageTexture), self->textureRect.x, self->textureRect.y);
+        Box_SetSize(Texture_Box(self->iconTexture), self->textureRect.w, self->textureRect.h);
+        Box_SetPosition(Texture_Box(self->iconTexture), self->textureRect.x, self->textureRect.y);
 
-        Texture_Draw(self->imageTexture);
+        Texture_Draw(self->iconTexture);
     }
 }
 
-void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
-{
-    Button_Draw_(self);
+//void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
+//{
+//    Button_Draw_(self);
 
-    if (self->imageTexture)
-    {
-        // LEMBRETE: arrumar essa gambiarra (temporária)
+//    if (self->iconTexture)
+//    {
+//        // LEMBRETE: arrumar essa gambiarra (temporária)
 
-        if (srcrect)
-            Texture_SetSourceRect(self->imageTexture, *srcrect);
+//        if (srcrect)
+//            Texture_SetSourceRect(self->iconTexture, *srcrect);
 
-        const SDL_Rect *_dstrect = dstrect ? dstrect : &self->textureRect;
-        Box_SetSize(Texture_Box(self->imageTexture), _dstrect->w, _dstrect->h);
-        Box_SetPosition(Texture_Box(self->imageTexture), _dstrect->x, _dstrect->y);
+//        const SDL_Rect *_dstrect = dstrect ? dstrect : &self->textureRect;
+//        Box_SetSize(Texture_Box(self->iconTexture), _dstrect->w, _dstrect->h);
+//        Box_SetPosition(Texture_Box(self->iconTexture), _dstrect->x, _dstrect->y);
 
-        Texture_SetAngle(self->imageTexture, angle);
-        Texture_Draw(self->imageTexture);
-    }
-}
+//        Texture_SetAngle(self->iconTexture, angle);
+//        Texture_Draw(self->iconTexture);
+//    }
+//}
 
 void Button_Draw_(Button *const self)
 {
@@ -258,15 +258,18 @@ void Button_Draw_(Button *const self)
 
 bool Button_PointerIsHovering(Button *const self, const SDL_Event *event)
 {
-    return event->button.x >= self->rect.x
-            && event->button.x <= (self->rect.x + self->rect.w)
-            && event->button.y >= self->rect.y
-            && event->button.y <= (self->rect.y + self->rect.h);
+    const SDL_FRect *rect = Box_Rect(self->box);
+
+    return event->button.x >= rect->x
+            && event->button.x <= (rect->x + rect->w)
+            && event->button.y >= rect->y
+            && event->button.y <= (rect->y + rect->h);
 }
 
 void Button_UpdateTextureRect(Button *const self)
 {
-    Texture *texture = self->textTexture ? self->textTexture : self->imageTexture;
+    Texture *texture = self->textTexture ? self->textTexture : self->iconTexture;
+    const SDL_FRect *rect = Box_Rect(self->box);
 
     if (texture)
     {
@@ -274,10 +277,20 @@ void Button_UpdateTextureRect(Button *const self)
         int h = Texture_GetHeight(texture);
 
         self->textureRect = (SDL_Rect) {
-            .x = self->rect.x + ((self->rect.w - w) / 2),
-            .y = self->rect.y + ((self->rect.h - h) / 2),
+            .x = rect->x + ((rect->w - w) / 2),
+            .y = rect->y + ((rect->h - h) / 2),
             .w = w,
             .h = h
         };
     }
+}
+
+Box *Button_Box(Button *const self)
+{
+    return self->box;
+}
+
+Texture *Button_Icon(Button *const self)
+{
+    return self->iconTexture;
 }
