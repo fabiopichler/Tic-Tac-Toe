@@ -38,7 +38,7 @@ typedef struct Texture Texture;
 
 typedef struct Button Button;
 
-typedef void (*ButtonOnPressEvent)(Button *const button, void *user);
+typedef void (*Button_OnPressEvent)(Button *const button, void *user);
 
 Button *Button_New(SDL_Renderer *renderer);
 void Button_Delete(Button *self);
@@ -48,7 +48,7 @@ void Button_SetBackgroundPressedColor(Button *self, const SDL_Color *color);
 void Button_SetTextColor(Button *self, const SDL_Color *color);
 bool Button_SetText(Button *self, const char *text, int ptsize);
 void Button_SetIcon(Button *self, Texture *texture);
-void Button_SetOnPressEvent(Button *self, ButtonOnPressEvent callback, void *user);
+void Button_SetOnPressEvent(Button *self, Button_OnPressEvent callback, void *userdata);
 void *Button_GetEventUserData(Button *self);
 void Button_ProcessEvent(Button *self, const SDL_Event *event);
 void Button_Draw(Button *self);
