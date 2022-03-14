@@ -199,6 +199,13 @@ void Button_ProcessEvent(Button *const self, const SDL_Event *event)
         self->state = Hover;
     else
         self->state = Normal;
+
+    if (self->state == Hover)
+        Rectangle_SetColor(self->background, self->colorHover);
+    else if (self->state == Pressed)
+        Rectangle_SetColor(self->background, self->colorPressed);
+    else
+        Rectangle_SetColor(self->background, self->color);
 }
 
 void Button_Draw(Button *const self)
@@ -226,12 +233,9 @@ void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *
         if (srcrect)
             Texture_SetSourceRect(self->imageTexture, *srcrect);
 
-        if (dstrect)
-        {
-            const SDL_Rect *_dstrect = dstrect ? dstrect : &self->textureRect;
-            Box_SetSize(Texture_Box(self->imageTexture), _dstrect->w, _dstrect->h);
-            Box_SetPosition(Texture_Box(self->imageTexture), _dstrect->x, _dstrect->y);
-        }
+        const SDL_Rect *_dstrect = dstrect ? dstrect : &self->textureRect;
+        Box_SetSize(Texture_Box(self->imageTexture), _dstrect->w, _dstrect->h);
+        Box_SetPosition(Texture_Box(self->imageTexture), _dstrect->x, _dstrect->y);
 
         Texture_SetAngle(self->imageTexture, angle);
         Texture_Draw(self->imageTexture);
@@ -240,13 +244,6 @@ void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *
 
 void Button_Draw_(Button *const self)
 {
-    if (self->state == Hover)
-        Rectangle_SetColor(self->background, self->colorHover);
-    else if (self->state == Pressed)
-        Rectangle_SetColor(self->background, self->colorPressed);
-    else
-        Rectangle_SetColor(self->background, self->color);
-
     Rectangle_Draw(self->background);
 
     if (self->textTexture)
