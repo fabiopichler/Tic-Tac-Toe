@@ -23,6 +23,7 @@ SOFTWARE.
 -------------------------------------------------------------------------------*/
 
 #include "Texture.h"
+#include "Box.h"
 
 #include "malloc.h"
 
@@ -35,10 +36,10 @@ struct Texture
 {
     SDL_Renderer *renderer;
     SDL_Texture *texture;
-    SDL_Rect rect;
     int w;
     int h;
 
+    Box *box;
     char *text;
     TTF_Font *font;
     int fontSize;
@@ -57,10 +58,10 @@ Texture *Texture_New(SDL_Renderer *renderer)
 
     self->renderer = renderer;
     self->texture = NULL;
-    self->rect = (SDL_Rect) {0, 0, 0, 0};
     self->w = 0;
     self->h = 0;
 
+    self->box = Box_New(0.f, 0.f, 0.f, 0.f);
     self->text = NULL;
     self->font = NULL;
     self->fontSize = 16;
@@ -78,8 +79,11 @@ void Texture_Delete(Texture *const self)
     if (!self)
         return;
 
+    Box_Delete(self->box);
+
     SDL_DestroyTexture(self->texture);
     TTF_CloseFont(self->font);
+
     free(self->text);
     free(self);
 }
@@ -151,10 +155,10 @@ void Texture_SetAngle(Texture *self, double angle)
     self->angle = angle;
 }
 
-void Texture_Draw(Texture *const self, const SDL_Rect *dstrect)
+void Texture_Draw(Texture *const self)
 {
     if (self->texture)
-        SDL_RenderCopyEx(self->renderer, self->texture, &self->srcrect, dstrect ? dstrect : &self->rect, self->angle, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyExF(self->renderer, self->texture, &self->srcrect, Box_Rect(self->box), self->angle, NULL, SDL_FLIP_NONE);
 }
 
 bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface)
@@ -170,12 +174,11 @@ bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface)
 
         if (self->texture)
         {
-            self->srcrect.w = surface->w;
-            self->srcrect.h = surface->h;
             self->w = surface->w;
             self->h = surface->h;
-            self->rect.w = surface->w;
-            self->rect.h = surface->h;
+            self->srcrect.w = surface->w;
+            self->srcrect.h = surface->h;
+            Box_SetSize(self->box, surface->w, surface->h);
         }
         else
         {
@@ -193,18 +196,6 @@ bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface)
     return self->texture != NULL;
 }
 
-void Texture_SetPos(Texture *const self, int x, int y)
-{
-    self->rect.x = x;
-    self->rect.x = y;
-}
-
-void Texture_SetRect(Texture *const self, const SDL_Rect *rect)
-{
-    if (rect)
-        self->rect = *rect;
-}
-
 int Texture_GetWidth(Texture *const self)
 {
     return self->w;
@@ -213,4 +204,9 @@ int Texture_GetWidth(Texture *const self)
 int Texture_GetHeight(Texture *const self)
 {
     return self->h;
+}
+
+Box *Texture_Box(Texture *const self)
+{
+    return self->box;
 }

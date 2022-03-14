@@ -32,6 +32,8 @@ SOFTWARE.
 extern "C" {
 #endif
 
+typedef struct Box Box;
+
 typedef struct Texture Texture;
 
 Texture *Texture_New(SDL_Renderer *renderer);
@@ -48,11 +50,11 @@ void Texture_SetTextColor(Texture *self, const SDL_Color *color);
 void Texture_SetSourceRect(Texture *const self, SDL_Rect srcrect);
 void Texture_SetAngle(Texture *self, double angle);
 
-void Texture_Draw(Texture *self, const SDL_Rect *dstrect);
-void Texture_SetPos(Texture *self, int x, int y);
-void Texture_SetRect(Texture *self, const SDL_Rect *rect);
+void Texture_Draw(Texture *self);
+
 int Texture_GetWidth(Texture *self);
 int Texture_GetHeight(Texture *self);
+Box *Texture_Box(Texture *const self);
 
 #ifdef __cplusplus
 }
