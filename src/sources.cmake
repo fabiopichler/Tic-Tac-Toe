@@ -15,6 +15,8 @@ set(SRC_FILES
     src/base/Rectangle.h
     src/base/Box.h
     src/base/Box.c
+    src/base/BasicSceneManager.h
+    src/base/BasicSceneManager.c
     src/scene_game/SceneGameRect.h
     src/scene_game/SceneGame.c
     src/scene_game/SceneGame.h

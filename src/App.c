@@ -25,6 +25,7 @@ SOFTWARE.
 #include "App.h"
 #include "base/Window.h"
 #include "base/Graphics.h"
+#include "base/BasicSceneManager.h"
 #include "scene_game/SceneGame.h"
 
 #include <SDL2/SDL.h>
@@ -44,14 +45,9 @@ struct App
     Window *window;
     Graphics *graphics;
     SDL_Renderer *renderer;
-    SceneGame *sceneGame;
-
-    SDL_Event event;
-    uint64_t lastPerformanceCounter;
+    BasicSceneManager *sceneManager;
 };
 
-void App_Update(App *const self);
-void App_Draw(App *const self);
 void App_InitSDL();
 
 App *App_New()
@@ -66,9 +62,11 @@ App *App_New()
     self->window = Window_New(width, height);
     self->graphics = Graphics_New(self->window);
     self->renderer = Graphics_GetRenderer(self->graphics);
-    self->sceneGame = SceneGame_New(self->renderer, Window_GetRect(self->window));
+    self->sceneManager = BasicSceneManager_New(self->renderer);
 
-    self->lastPerformanceCounter = SDL_GetPerformanceCounter();
+    SceneGame *sceneGame = SceneGame_New(self->renderer, Window_GetRect(self->window));
+
+    GO_TO(self->sceneManager, SceneGame, sceneGame);
 
     return self;
 }
@@ -79,7 +77,7 @@ void App_Delete(App *const self)
     if (!self)
         return;
 
-    SceneGame_Delete(self->sceneGame);
+    BasicSceneManager_Delete(self->sceneManager);
     Graphics_Delete(self->graphics);
     Window_Delete(self->window);
     free(self);
@@ -90,62 +88,9 @@ void App_Delete(App *const self)
 #endif
 }
 
-bool main_loop(App *const self)
-{
-    while (SDL_PollEvent(&self->event))
-    {
-        if (self->event.type == SDL_QUIT || self->event.key.keysym.sym == SDLK_AC_BACK)
-            return false;
-
-        SceneGame_ProcessEvent(self->sceneGame, &self->event);
-    }
-
-    App_Update(self);
-    App_Draw(self);
-
-    return true;
-}
-
-#ifdef __EMSCRIPTEN__
-int frame_loop(double time, void *userData) {
-    App *const self = userData;
-
-    if (main_loop(self))
-        return EM_TRUE;
-
-    return EM_FALSE;
-}
-#endif
-
 void App_Run(App *const self)
 {
-#ifdef __EMSCRIPTEN__
-    //emscripten_set_main_loop_arg(main_loop, self, 60, 1);
-    emscripten_request_animation_frame_loop(frame_loop, self);
-#else
-    while (1)
-        if (!main_loop(self))
-            return;
-#endif
-}
-
-void App_Update(App *const self)
-{
-    Uint64 now = SDL_GetPerformanceCounter();
-    double deltaTime = (double)(now - self->lastPerformanceCounter) / (double)SDL_GetPerformanceFrequency();
-    self->lastPerformanceCounter = now;
-
-    SceneGame_Update(self->sceneGame, deltaTime);
-}
-
-void App_Draw(App *const self)
-{
-    SDL_SetRenderDrawColor(self->renderer, 0, 0, 0, 255);
-    SDL_RenderClear(self->renderer);
-
-    SceneGame_Draw(self->sceneGame);
-
-    SDL_RenderPresent(self->renderer);
+    BasicSceneManager_Run(self->sceneManager);
 }
 
 void App_InitSDL()
