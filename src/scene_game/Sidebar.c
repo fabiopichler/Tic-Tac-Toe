@@ -95,12 +95,12 @@ void Sidebar_Draw(Sidebar *const self)
     Rectangle_Draw(self->horizontalLine1);
     Rectangle_Draw(self->horizontalLine2);
 
-    Texture_Draw(self->player1Text, NULL);
-    Texture_Draw(self->player1WinText, NULL);
-    Texture_Draw(self->player2Text, NULL);
-    Texture_Draw(self->player2WinText, NULL);
-    Texture_Draw(self->tiedText, NULL);
-    Texture_Draw(self->tiedCountText, NULL);
+    Texture_Draw(self->player1Text);
+    Texture_Draw(self->player1WinText);
+    Texture_Draw(self->player2Text);
+    Texture_Draw(self->player2WinText);
+    Texture_Draw(self->tiedText);
+    Texture_Draw(self->tiedCountText);
 }
 
 void Sidebar_SetPlayer1WinText(Sidebar *const self, int count)
@@ -190,12 +190,8 @@ void Sidebar_UpdateTextRect(Sidebar *const self, Texture *texture, int y)
     int w = Texture_GetWidth(texture);
     int h = Texture_GetHeight(texture);
 
-    Texture_SetRect(texture, &(SDL_Rect) {
-                        .x = (self->width - w) / 2,
-                        .y = y,
-                        .w = w,
-                        .h = h
-                    });
+    Box_SetSize(Texture_Box(texture), w, h);
+    Box_SetPosition(Texture_Box(texture), (self->width - w) / 2, y);
 }
 
 void Sidebar_UpdateText(Sidebar *const self, Texture *texture, int pos_y, int count)

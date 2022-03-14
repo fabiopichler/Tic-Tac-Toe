@@ -25,6 +25,7 @@ SOFTWARE.
 #include "Footer.h"
 #include "../base/Button.h"
 #include "../base/Texture.h"
+#include "../base/Box.h"
 
 #include <malloc.h>
 
@@ -71,7 +72,7 @@ void Footer_ProcessEvent(Footer *const self, const SDL_Event *event)
 void Footer_Draw(Footer *const self)
 {
     Button_Draw(self->restartButton);
-    Texture_Draw(self->copyrightText, NULL);
+    Texture_Draw(self->copyrightText);
 }
 
 Button *Footer_GetRestartButton(Footer *const self)
@@ -112,10 +113,8 @@ void Footer_CreateCopyrightText(Footer *const self)
     int height = Texture_GetHeight(self->copyrightText);
     int padding = 10;
 
-    Texture_SetRect(self->copyrightText, &(SDL_Rect) {
-                        .x = self->rect->sidebar_w + ((self->rect->content_w - width) / 2),
-                        .y = self->rect->window_h - height - padding,
-                        .w = width,
-                        .h = height
-                    });
+    Box_SetSize(Texture_Box(self->copyrightText), width, height);
+    Box_SetPosition(Texture_Box(self->copyrightText),
+                    self->rect->sidebar_w + ((self->rect->content_w - width) / 2),
+                    self->rect->window_h - height - padding);
 }

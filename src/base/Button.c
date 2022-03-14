@@ -206,7 +206,13 @@ void Button_Draw(Button *const self)
     Button_Draw_(self);
 
     if (self->imageTexture)
-        Texture_Draw(self->imageTexture, &self->textureRect);
+    {
+        // LEMBRETE: arrumar essa gambiarra (temporária)
+        Box_SetSize(Texture_Box(self->imageTexture), self->textureRect.w, self->textureRect.h);
+        Box_SetPosition(Texture_Box(self->imageTexture), self->textureRect.x, self->textureRect.y);
+
+        Texture_Draw(self->imageTexture);
+    }
 }
 
 void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle)
@@ -220,8 +226,15 @@ void Button_DrawEx(Button *const self, const SDL_Rect *srcrect, const SDL_Rect *
         if (srcrect)
             Texture_SetSourceRect(self->imageTexture, *srcrect);
 
+        if (dstrect)
+        {
+            const SDL_Rect *_dstrect = dstrect ? dstrect : &self->textureRect;
+            Box_SetSize(Texture_Box(self->imageTexture), _dstrect->w, _dstrect->h);
+            Box_SetPosition(Texture_Box(self->imageTexture), _dstrect->x, _dstrect->y);
+        }
+
         Texture_SetAngle(self->imageTexture, angle);
-        Texture_Draw(self->imageTexture, dstrect ? dstrect : &self->textureRect);
+        Texture_Draw(self->imageTexture);
     }
 }
 
@@ -237,7 +250,13 @@ void Button_Draw_(Button *const self)
     Rectangle_Draw(self->background);
 
     if (self->textTexture)
-        Texture_Draw(self->textTexture, &self->textureRect);
+    {
+        // LEMBRETE: arrumar essa gambiarra (temporária)
+        Box_SetSize(Texture_Box(self->textTexture), self->textureRect.w, self->textureRect.h);
+        Box_SetPosition(Texture_Box(self->textTexture), self->textureRect.x, self->textureRect.y);
+
+        Texture_Draw(self->textTexture);
+    }
 }
 
 bool Button_PointerIsHovering(Button *const self, const SDL_Event *event)

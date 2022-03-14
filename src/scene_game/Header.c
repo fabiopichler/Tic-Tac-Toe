@@ -132,17 +132,17 @@ void Header_Draw(Header *const self)
     {
         Rectangle_Draw(self->line);
 
-        Texture_Draw(self->player1, NULL);
-        Texture_Draw(self->player1Icon, NULL);
-        Texture_Draw(self->player2, NULL);
-        Texture_Draw(self->player2Icon, NULL);
+        Texture_Draw(self->player1);
+        Texture_Draw(self->player1Icon);
+        Texture_Draw(self->player2);
+        Texture_Draw(self->player2Icon);
     }
     else
     {
         Rectangle_Draw(self->background1);
         Rectangle_Draw(self->background2);
 
-        Texture_Draw(self->result, NULL);
+        Texture_Draw(self->result);
     }
 }
 
@@ -220,12 +220,8 @@ void Header_SetupResultText(Header *const self)
     int w = Texture_GetWidth(self->result);
     int h = Texture_GetHeight(self->result);
 
-    Texture_SetRect(self->result, &(SDL_Rect) {
-                        .x = self->rect->sidebar_w + ((self->rect->content_w - w) / 2),
-                        .y = 26,
-                        .w = w,
-                        .h = h
-                    });
+    Box_SetSize(Texture_Box(self->result), w, h);
+    Box_SetPosition(Texture_Box(self->result), self->rect->sidebar_w + ((self->rect->content_w - w) / 2), 26);
 }
 
 void Header_SetupPlayer1Text(Header *const self)
@@ -238,19 +234,11 @@ void Header_SetupPlayer1Text(Header *const self)
     int text_x = (self->rect->sidebar_w + ((self->rect->content_w - text_w) / 2)) - (text_w / 2) - self->margin - icon_w - self->space;
     int icon_x = (self->rect->sidebar_w + ((self->rect->content_w - icon_w) / 2)) - (icon_w / 2) - self->margin;
 
-    Texture_SetRect(self->player1, &(SDL_Rect) {
-                        .x = text_x,
-                        .y = 30,
-                        .w = text_w,
-                        .h = text_h
-                    });
+    Box_SetSize(Texture_Box(self->player1), text_w, text_h);
+    Box_SetPosition(Texture_Box(self->player1), text_x, 30);
 
-    Texture_SetRect(self->player1Icon, &(SDL_Rect) {
-                        .x = icon_x,
-                        .y = 32,
-                        .w = icon_w,
-                        .h = icon_h
-                    });
+    Box_SetSize(Texture_Box(self->player1Icon), icon_w, icon_h);
+    Box_SetPosition(Texture_Box(self->player1Icon), icon_x, 32);
 }
 
 void Header_SetupPlayer2Text(Header *const self)
@@ -263,17 +251,9 @@ void Header_SetupPlayer2Text(Header *const self)
     int text_x = (self->rect->sidebar_w + ((self->rect->content_w - text_w) / 2)) + (text_w / 2) + self->margin + icon_w + self->space;
     int icon_x = (self->rect->sidebar_w + ((self->rect->content_w - icon_w) / 2)) + (icon_w / 2) + self->margin;
 
-    Texture_SetRect(self->player2, &(SDL_Rect) {
-                        .x = text_x,
-                        .y = 30,
-                        .w = text_w,
-                        .h = text_h
-                    });
+    Box_SetSize(Texture_Box(self->player2), text_w, text_h);
+    Box_SetPosition(Texture_Box(self->player2), text_x, 30);
 
-    Texture_SetRect(self->player2Icon, &(SDL_Rect) {
-                        .x = icon_x,
-                        .y = 33,
-                        .w = icon_w,
-                        .h = icon_h
-                    });
+    Box_SetSize(Texture_Box(self->player2Icon), icon_w, icon_h);
+    Box_SetPosition(Texture_Box(self->player2Icon), icon_x, 33);
 }
