@@ -122,10 +122,10 @@ void GameBoard_ProcessEvent(GameBoard *const self, const SDL_Event *event)
 
 void GameBoard_Update(GameBoard *const self, double deltaTime)
 {
-    self->p1Angle = self->p1Angle + 0.03 * deltaTime;
+    self->p1Angle = self->p1Angle + 30.0 * deltaTime;
 
-    if (self->p1Angle > 360)
-        self->p1Angle = 0;
+    if (self->p1Angle > 360.0)
+        self->p1Angle = 0.0;
 }
 
 void GameBoard_Draw(GameBoard *const self)

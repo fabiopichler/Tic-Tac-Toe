@@ -120,10 +120,10 @@ void Header_Update(Header *const self, double deltaTime)
     const float x = Box_X(lineBox);
 
     if (self->currentPlayer == Player_1 && x >= self->line_p1_x)
-        Box_SetX(lineBox, fmax(x - (0.8 * deltaTime), self->line_p1_x));
+        Box_SetX(lineBox, fmax(x - (800.0 * deltaTime), self->line_p1_x));
 
     else if (self->currentPlayer == Player_2 && x <= self->line_p2_x)
-        Box_SetX(lineBox, fmin(x + (0.8 * deltaTime), self->line_p2_x));
+        Box_SetX(lineBox, fmin(x + (800.0 * deltaTime), self->line_p2_x));
 }
 
 void Header_Draw(Header *const self)

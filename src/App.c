@@ -132,7 +132,7 @@ void App_Run(App *const self)
 void App_Update(App *const self)
 {
     Uint64 now = SDL_GetPerformanceCounter();
-    double deltaTime = (double)((now - self->lastPerformanceCounter) * 1000ul) / (double)SDL_GetPerformanceFrequency();
+    double deltaTime = (double)(now - self->lastPerformanceCounter) / (double)SDL_GetPerformanceFrequency();
     self->lastPerformanceCounter = now;
 
     SceneGame_Update(self->sceneGame, deltaTime);
