@@ -37,6 +37,8 @@ struct BasicSceneManager
 {
     SDL_Event event;
     uint64_t lastPerformanceCounter;
+    Window *window;
+    Graphics *graphics;
     SDL_Renderer *renderer;
     BasicSceneManager_CurrentScene currentScene;
 };
@@ -48,6 +50,8 @@ BasicSceneManager *BasicSceneManager_New(Window *window, Graphics *graphics)
 {
     BasicSceneManager *const self = malloc(sizeof (BasicSceneManager));
 
+    self->window = window;
+    self->graphics = graphics;
     self->renderer = Graphics_GetRenderer(graphics);
     self->lastPerformanceCounter = SDL_GetPerformanceCounter();
 
@@ -137,4 +141,14 @@ void BasicSceneManager_Draw(BasicSceneManager *const self)
         self->currentScene.drawCallback(self->currentScene.self);
 
     SDL_RenderPresent(self->renderer);
+}
+
+Window *BasicSceneManager_Window(BasicSceneManager *const self)
+{
+    return self->window;
+}
+
+Graphics *BasicSceneManager_Graphics(BasicSceneManager *const self)
+{
+    return self->graphics;
 }

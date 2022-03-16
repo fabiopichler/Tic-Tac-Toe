@@ -50,12 +50,14 @@ BasicSceneManager *BasicSceneManager_New(Window *window, Graphics *graphics);
 void BasicSceneManager_Delete(BasicSceneManager *const self);
 void BasicSceneManager_GoTo(BasicSceneManager *const self, const BasicSceneManager_CurrentScene *scene);
 void BasicSceneManager_Run(BasicSceneManager *const self);
+Window *BasicSceneManager_Window(BasicSceneManager *const self);
+Graphics *BasicSceneManager_Graphics(BasicSceneManager *const self);
 
-#define GO_TO(SCENE_MANAGER, SCENE_CLASS, CURRENT_SCENE)\
-    BasicSceneManager_GoTo(SCENE_MANAGER, &(BasicSceneManager_CurrentScene) {\
-        .self = CURRENT_SCENE,\
-        .deleteCallback = (BasicSceneManager_DeleteCallback) SCENE_CLASS##_Delete,\
-        .processEventCallback = (BasicSceneManager_ProcessEventCallback) SCENE_CLASS##_ProcessEvent,\
-        .updateCallback = (BasicSceneManager_UpdateCallback) SCENE_CLASS##_Update,\
-        .drawCallback = (BasicSceneManager_DrawCallback) SCENE_CLASS##_Draw,\
+#define GO_TO(MANAGER, SCENE_CLASS) \
+    BasicSceneManager_GoTo(MANAGER, &(BasicSceneManager_CurrentScene) { \
+        .self = SCENE_CLASS##_New(BasicSceneManager_Window(MANAGER), BasicSceneManager_Graphics(MANAGER)), \
+        .deleteCallback = (BasicSceneManager_DeleteCallback) SCENE_CLASS##_Delete, \
+        .processEventCallback = (BasicSceneManager_ProcessEventCallback) SCENE_CLASS##_ProcessEvent, \
+        .updateCallback = (BasicSceneManager_UpdateCallback) SCENE_CLASS##_Update, \
+        .drawCallback = (BasicSceneManager_DrawCallback) SCENE_CLASS##_Draw, \
     });

@@ -58,7 +58,7 @@ App *App_New()
     self->graphics = Graphics_New(self->window);
     self->sceneManager = BasicSceneManager_New(self->window, self->graphics);
 
-    GO_TO(self->sceneManager, SceneGame, SceneGame_New(self->window, self->graphics));
+    GO_TO(self->sceneManager, SceneGame);
 
     return self;
 }
