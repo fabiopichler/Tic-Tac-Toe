@@ -26,12 +26,11 @@ SOFTWARE.
 
 #include <SDL2/SDL.h>
 
-typedef struct Window Window;
-typedef struct Graphics Graphics;
+typedef struct BasicSceneManager BasicSceneManager;
 
 typedef struct SceneGame SceneGame;
 
-SceneGame *SceneGame_New(Window *window, Graphics *graphics);
+SceneGame *SceneGame_New(BasicSceneManager *sceneManager);
 void SceneGame_Delete(SceneGame *const self);
 void SceneGame_ProcessEvent(SceneGame *const self, const SDL_Event *event);
 void SceneGame_Update(SceneGame *const self, double deltaTime);

@@ -27,6 +27,7 @@ SOFTWARE.
 #include "board/GameBoard.h"
 #include "../base/Window.h"
 #include "../base/Graphics.h"
+#include "../base/BasicSceneManager.h"
 #include "../base/Button.h"
 #include "../base/Texture.h"
 #include "../base/Rectangle.h"
@@ -57,11 +58,14 @@ void SceneGame_NewGame(SceneGame *const self);
 void SceneGame_OnPressed(Button *const button, void *user);
 void SceneGame_OnGameEvent(GameBoard *const game, void *user);
 
-SceneGame *SceneGame_New(Window *window, Graphics *graphics)
+SceneGame *SceneGame_New(BasicSceneManager *sceneManager)
 {
     SceneGame *const self = malloc(sizeof (SceneGame));
 
+    Window *window = BasicSceneManager_Window(sceneManager);
+    Graphics *graphics = BasicSceneManager_Graphics(sceneManager);
     SDL_Rect windowRect = Window_GetRect(window);
+
     SceneGameRect *rect = malloc(sizeof (SceneGameRect));
     rect->window_w = windowRect.w;
     rect->window_h = windowRect.h;

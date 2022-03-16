@@ -55,7 +55,7 @@ Graphics *BasicSceneManager_Graphics(BasicSceneManager *const self);
 
 #define GO_TO(MANAGER, SCENE_CLASS) \
     BasicSceneManager_GoTo(MANAGER, &(BasicSceneManager_CurrentScene) { \
-        .self = SCENE_CLASS##_New(BasicSceneManager_Window(MANAGER), BasicSceneManager_Graphics(MANAGER)), \
+        .self = SCENE_CLASS##_New(MANAGER), \
         .deleteCallback = (BasicSceneManager_DeleteCallback) SCENE_CLASS##_Delete, \
         .processEventCallback = (BasicSceneManager_ProcessEventCallback) SCENE_CLASS##_ProcessEvent, \
         .updateCallback = (BasicSceneManager_UpdateCallback) SCENE_CLASS##_Update, \
