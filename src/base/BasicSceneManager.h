@@ -27,6 +27,9 @@ SOFTWARE.
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
+typedef struct Window Window;
+typedef struct Graphics Graphics;
+
 typedef struct BasicSceneManager BasicSceneManager;
 
 typedef void (*BasicSceneManager_DeleteCallback)(void *const self);
@@ -36,23 +39,23 @@ typedef void (*BasicSceneManager_DrawCallback)(void *const self);
 
 typedef struct BasicSceneManager_CurrentScene
 {
-    void *object;
-    BasicSceneManager_DeleteCallback delete;
-    BasicSceneManager_ProcessEventCallback processEvent;
-    BasicSceneManager_UpdateCallback update;
-    BasicSceneManager_DrawCallback draw;
+    void *self;
+    BasicSceneManager_DeleteCallback deleteCallback;
+    BasicSceneManager_ProcessEventCallback processEventCallback;
+    BasicSceneManager_UpdateCallback updateCallback;
+    BasicSceneManager_DrawCallback drawCallback;
 } BasicSceneManager_CurrentScene;
 
-BasicSceneManager *BasicSceneManager_New(SDL_Renderer *renderer);
+BasicSceneManager *BasicSceneManager_New(Window *window, Graphics *graphics);
 void BasicSceneManager_Delete(BasicSceneManager *const self);
 void BasicSceneManager_GoTo(BasicSceneManager *const self, const BasicSceneManager_CurrentScene *scene);
 void BasicSceneManager_Run(BasicSceneManager *const self);
 
 #define GO_TO(SCENE_MANAGER, SCENE_CLASS, CURRENT_SCENE)\
     BasicSceneManager_GoTo(SCENE_MANAGER, &(BasicSceneManager_CurrentScene) {\
-        .object = CURRENT_SCENE,\
-        .delete = (BasicSceneManager_DeleteCallback) SCENE_CLASS##_Delete,\
-        .processEvent = (BasicSceneManager_ProcessEventCallback) SCENE_CLASS##_ProcessEvent,\
-        .update = (BasicSceneManager_UpdateCallback) SCENE_CLASS##_Update,\
-        .draw = (BasicSceneManager_DrawCallback) SCENE_CLASS##_Draw,\
+        .self = CURRENT_SCENE,\
+        .deleteCallback = (BasicSceneManager_DeleteCallback) SCENE_CLASS##_Delete,\
+        .processEventCallback = (BasicSceneManager_ProcessEventCallback) SCENE_CLASS##_ProcessEvent,\
+        .updateCallback = (BasicSceneManager_UpdateCallback) SCENE_CLASS##_Update,\
+        .drawCallback = (BasicSceneManager_DrawCallback) SCENE_CLASS##_Draw,\
     });

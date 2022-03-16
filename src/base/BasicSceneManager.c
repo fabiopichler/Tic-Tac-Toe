@@ -23,6 +23,8 @@ SOFTWARE.
 -------------------------------------------------------------------------------*/
 
 #include "BasicSceneManager.h"
+#include "Window.h"
+#include "Graphics.h"
 
 #include <SDL2/SDL.h>
 
@@ -42,18 +44,18 @@ struct BasicSceneManager
 static void BasicSceneManager_Update(BasicSceneManager *const self);
 static void BasicSceneManager_Draw(BasicSceneManager *const self);
 
-BasicSceneManager *BasicSceneManager_New(SDL_Renderer *renderer)
+BasicSceneManager *BasicSceneManager_New(Window *window, Graphics *graphics)
 {
     BasicSceneManager *const self = malloc(sizeof (BasicSceneManager));
 
-    self->renderer = renderer;
+    self->renderer = Graphics_GetRenderer(graphics);
     self->lastPerformanceCounter = SDL_GetPerformanceCounter();
 
     self->currentScene = (BasicSceneManager_CurrentScene) {
-        .object = NULL,
-        .processEvent = NULL,
-        .update = NULL,
-        .draw = NULL,
+        .self = NULL,
+        .processEventCallback = NULL,
+        .updateCallback = NULL,
+        .drawCallback = NULL,
     };
 
     return self;
@@ -61,14 +63,17 @@ BasicSceneManager *BasicSceneManager_New(SDL_Renderer *renderer)
 
 void BasicSceneManager_Delete(BasicSceneManager *const self)
 {
-    if (self->currentScene.delete)
-        self->currentScene.delete(self->currentScene.object);
+    if (self->currentScene.deleteCallback)
+        self->currentScene.deleteCallback(self->currentScene.self);
 
     free(self);
 }
 
 void BasicSceneManager_GoTo(BasicSceneManager *const self, const BasicSceneManager_CurrentScene *scene)
 {
+    if (self->currentScene.deleteCallback)
+        self->currentScene.deleteCallback(self->currentScene.self);
+
     self->currentScene = *scene;
 }
 
@@ -79,8 +84,8 @@ bool main_loop(BasicSceneManager *const self)
         if (self->event.type == SDL_QUIT || self->event.key.keysym.sym == SDLK_AC_BACK)
             return false;
 
-        if (self->currentScene.processEvent)
-            self->currentScene.processEvent(self->currentScene.object, &self->event);
+        if (self->currentScene.processEventCallback)
+            self->currentScene.processEventCallback(self->currentScene.self, &self->event);
     }
 
     BasicSceneManager_Update(self);
@@ -119,8 +124,8 @@ void BasicSceneManager_Update(BasicSceneManager *const self)
     double deltaTime = (double)(now - self->lastPerformanceCounter) / (double)SDL_GetPerformanceFrequency();
     self->lastPerformanceCounter = now;
 
-    if (self->currentScene.update)
-        self->currentScene.update(self->currentScene.object, deltaTime);
+    if (self->currentScene.updateCallback)
+        self->currentScene.updateCallback(self->currentScene.self, deltaTime);
 }
 
 void BasicSceneManager_Draw(BasicSceneManager *const self)
@@ -128,8 +133,8 @@ void BasicSceneManager_Draw(BasicSceneManager *const self)
     SDL_SetRenderDrawColor(self->renderer, 0, 0, 0, 255);
     SDL_RenderClear(self->renderer);
 
-    if (self->currentScene.draw)
-        self->currentScene.draw(self->currentScene.object);
+    if (self->currentScene.drawCallback)
+        self->currentScene.drawCallback(self->currentScene.self);
 
     SDL_RenderPresent(self->renderer);
 }

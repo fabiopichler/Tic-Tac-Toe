@@ -26,9 +26,12 @@ SOFTWARE.
 
 #include <SDL2/SDL.h>
 
+typedef struct Window Window;
+typedef struct Graphics Graphics;
+
 typedef struct SceneGame SceneGame;
 
-SceneGame *SceneGame_New(SDL_Renderer *renderer, SDL_Rect windowRect);
+SceneGame *SceneGame_New(Window *window, Graphics *graphics);
 void SceneGame_Delete(SceneGame *const self);
 void SceneGame_ProcessEvent(SceneGame *const self, const SDL_Event *event);
 void SceneGame_Update(SceneGame *const self, double deltaTime);

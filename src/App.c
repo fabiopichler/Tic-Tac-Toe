@@ -43,7 +43,6 @@ struct App
 {
     Window *window;
     Graphics *graphics;
-    SDL_Renderer *renderer;
     BasicSceneManager *sceneManager;
 };
 
@@ -55,17 +54,11 @@ App *App_New()
 
     App_InitSDL();
 
-    int width = 640;
-    int height = 480;
-
-    self->window = Window_New(width, height);
+    self->window = Window_New(640, 480);
     self->graphics = Graphics_New(self->window);
-    self->renderer = Graphics_GetRenderer(self->graphics);
-    self->sceneManager = BasicSceneManager_New(self->renderer);
+    self->sceneManager = BasicSceneManager_New(self->window, self->graphics);
 
-    SceneGame *sceneGame = SceneGame_New(self->renderer, Window_GetRect(self->window));
-
-    GO_TO(self->sceneManager, SceneGame, sceneGame);
+    GO_TO(self->sceneManager, SceneGame, SceneGame_New(self->window, self->graphics));
 
     return self;
 }
@@ -79,6 +72,7 @@ void App_Delete(App *const self)
     BasicSceneManager_Delete(self->sceneManager);
     Graphics_Delete(self->graphics);
     Window_Delete(self->window);
+
     free(self);
 
     IMG_Quit();
