@@ -30,8 +30,8 @@ typedef struct BasicSceneManager BasicSceneManager;
 
 typedef struct SceneGame SceneGame;
 
-SceneGame *SceneGame_New(BasicSceneManager *sceneManager);
-void SceneGame_Delete(SceneGame *const self);
-void SceneGame_ProcessEvent(SceneGame *const self, const SDL_Event *event);
-void SceneGame_Update(SceneGame *const self, double deltaTime);
-void SceneGame_Draw(SceneGame *const self);
+SceneGame *SceneGame_OnNew(BasicSceneManager *sceneManager);
+void SceneGame_OnDelete(SceneGame *const self);
+void SceneGame_OnProcessEvent(SceneGame *const self, const SDL_Event *event);
+void SceneGame_OnUpdate(SceneGame *const self, double deltaTime);
+void SceneGame_OnDraw(SceneGame *const self);

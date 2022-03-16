@@ -58,7 +58,7 @@ void SceneGame_NewGame(SceneGame *const self);
 void SceneGame_OnPressed(Button *const button, void *user);
 void SceneGame_OnGameEvent(GameBoard *const game, void *user);
 
-SceneGame *SceneGame_New(BasicSceneManager *sceneManager)
+SceneGame *SceneGame_OnNew(BasicSceneManager *sceneManager)
 {
     SceneGame *const self = malloc(sizeof (SceneGame));
 
@@ -95,7 +95,7 @@ SceneGame *SceneGame_New(BasicSceneManager *sceneManager)
     return self;
 }
 
-void SceneGame_Delete(SceneGame *const self)
+void SceneGame_OnDelete(SceneGame *const self)
 {
     if (!self)
         return;
@@ -109,20 +109,20 @@ void SceneGame_Delete(SceneGame *const self)
     free(self);
 }
 
-void SceneGame_ProcessEvent(SceneGame *const self, const SDL_Event *event)
+void SceneGame_OnProcessEvent(SceneGame *const self, const SDL_Event *event)
 {
     Header_ProcessEvent(self->header, event);
     Footer_ProcessEvent(self->footer, event);
     GameBoard_ProcessEvent(self->gameBoard, event);
 }
 
-void SceneGame_Update(SceneGame *const self, double deltaTime)
+void SceneGame_OnUpdate(SceneGame *const self, double deltaTime)
 {
     Header_Update(self->header, deltaTime);
     GameBoard_Update(self->gameBoard, deltaTime);
 }
 
-void SceneGame_Draw(SceneGame *const self)
+void SceneGame_OnDraw(SceneGame *const self)
 {
     Rectangle_Draw(self->background);
     GameBoard_Draw(self->gameBoard);

@@ -40,11 +40,31 @@ struct BasicSceneManager
     Window *window;
     Graphics *graphics;
     SDL_Renderer *renderer;
-    BasicSceneManager_CurrentScene currentScene;
+
+    BasicSceneManager_CurrentScene newScene;
+
+    struct
+    {
+        BasicSceneManager_CurrentScene func;
+        void *self;
+    } scene;
 };
 
+static void OverrideSceneFunctions(BasicSceneManager_CurrentScene *func)
+{
+    *func = (BasicSceneManager_CurrentScene) {
+            .onNew = NULL,
+            .onDelete = NULL,
+            .onProcessEvent = NULL,
+            .onUpdate = NULL,
+            .onDraw = NULL,
+        };
+}
+
+static void BasicSceneManager_InitScene(BasicSceneManager *const self);
 static void BasicSceneManager_Update(BasicSceneManager *const self);
 static void BasicSceneManager_Draw(BasicSceneManager *const self);
+static bool BasicSceneManager_MainLoop(BasicSceneManager *const self);
 
 BasicSceneManager *BasicSceneManager_New(Window *window, Graphics *graphics)
 {
@@ -55,41 +75,51 @@ BasicSceneManager *BasicSceneManager_New(Window *window, Graphics *graphics)
     self->renderer = Graphics_GetRenderer(graphics);
     self->lastPerformanceCounter = SDL_GetPerformanceCounter();
 
-    self->currentScene = (BasicSceneManager_CurrentScene) {
-        .self = NULL,
-        .processEventCallback = NULL,
-        .updateCallback = NULL,
-        .drawCallback = NULL,
-    };
+    OverrideSceneFunctions(&self->newScene);
+    OverrideSceneFunctions(&self->scene.func);
+    self->scene.self = NULL;
 
     return self;
 }
 
 void BasicSceneManager_Delete(BasicSceneManager *const self)
 {
-    if (self->currentScene.deleteCallback)
-        self->currentScene.deleteCallback(self->currentScene.self);
+    if (self->scene.func.onDelete)
+        self->scene.func.onDelete(self->scene.self);
 
     free(self);
 }
 
 void BasicSceneManager_GoTo(BasicSceneManager *const self, const BasicSceneManager_CurrentScene *scene)
 {
-    if (self->currentScene.deleteCallback)
-        self->currentScene.deleteCallback(self->currentScene.self);
-
-    self->currentScene = *scene;
+    self->newScene = *scene;
 }
 
-bool main_loop(BasicSceneManager *const self)
+void BasicSceneManager_InitScene(BasicSceneManager *const self)
 {
+    if (self->newScene.onNew)
+    {
+        if (self->scene.func.onDelete)
+            self->scene.func.onDelete(self->scene.self);
+
+        self->scene.func = self->newScene;
+        OverrideSceneFunctions(&self->newScene);
+
+        self->scene.self = self->scene.func.onNew(self);
+    }
+}
+
+bool BasicSceneManager_MainLoop(BasicSceneManager *const self)
+{
+    BasicSceneManager_InitScene(self);
+
     while (SDL_PollEvent(&self->event))
     {
         if (self->event.type == SDL_QUIT || self->event.key.keysym.sym == SDLK_AC_BACK)
             return false;
 
-        if (self->currentScene.processEventCallback)
-            self->currentScene.processEventCallback(self->currentScene.self, &self->event);
+        if (self->scene.func.onProcessEvent)
+            self->scene.func.onProcessEvent(self->scene.self, &self->event);
     }
 
     BasicSceneManager_Update(self);
@@ -99,11 +129,11 @@ bool main_loop(BasicSceneManager *const self)
 }
 
 #ifdef __EMSCRIPTEN__
-int frame_loop(double time, void *userData)
+static int FrameLoop(double time, void *userData)
 {
     BasicSceneManager *const self = userData;
 
-    if (main_loop(self))
+    if (BasicSceneManager_MainLoop(self))
         return EM_TRUE;
 
     return EM_FALSE;
@@ -113,11 +143,11 @@ int frame_loop(double time, void *userData)
 void BasicSceneManager_Run(BasicSceneManager *const self)
 {
 #ifdef __EMSCRIPTEN__
-    //emscripten_set_main_loop_arg(main_loop, self, 60, 1);
-    emscripten_request_animation_frame_loop(frame_loop, self);
+    //emscripten_set_main_loop_arg(MainLoop, self, 60, 1);
+    emscripten_request_animation_frame_loop(FrameLoop, self);
 #else
     while (1)
-        if (!main_loop(self))
+        if (!BasicSceneManager_MainLoop(self))
             return;
 #endif
 }
@@ -128,8 +158,8 @@ void BasicSceneManager_Update(BasicSceneManager *const self)
     double deltaTime = (double)(now - self->lastPerformanceCounter) / (double)SDL_GetPerformanceFrequency();
     self->lastPerformanceCounter = now;
 
-    if (self->currentScene.updateCallback)
-        self->currentScene.updateCallback(self->currentScene.self, deltaTime);
+    if (self->scene.func.onUpdate)
+        self->scene.func.onUpdate(self->scene.self, deltaTime);
 }
 
 void BasicSceneManager_Draw(BasicSceneManager *const self)
@@ -137,8 +167,8 @@ void BasicSceneManager_Draw(BasicSceneManager *const self)
     SDL_SetRenderDrawColor(self->renderer, 0, 0, 0, 255);
     SDL_RenderClear(self->renderer);
 
-    if (self->currentScene.drawCallback)
-        self->currentScene.drawCallback(self->currentScene.self);
+    if (self->scene.func.onDraw)
+        self->scene.func.onDraw(self->scene.self);
 
     SDL_RenderPresent(self->renderer);
 }
