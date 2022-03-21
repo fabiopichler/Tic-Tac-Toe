@@ -172,26 +172,34 @@ void Button_CallPressedEvent(Button *const self)
 
 void Button_ProcessEvent(Button *const self, const SDL_Event *event)
 {
-    if (event->button.button == SDL_BUTTON_LEFT && Button_PointerIsHovering(self, event))
+    if (event->type == SDL_MOUSEMOTION || event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP)
     {
-        if (event->type == SDL_MOUSEBUTTONDOWN)
+        if (event->button.button == SDL_BUTTON_LEFT && Button_PointerIsHovering(self, event))
         {
-            self->state = Pressed;
+            if (event->type == SDL_MOUSEBUTTONDOWN)
+            {
+                self->state = Pressed;
 
-            Button_CallPressedEvent(self);
+                Button_CallPressedEvent(self);
 
-            return;
+                return;
+            }
+            else if (self->state == Pressed && event->type != SDL_MOUSEBUTTONUP)
+            {
+                return;
+            }
         }
-        else if (self->state == Pressed && event->type != SDL_MOUSEBUTTONUP)
-        {
-            return;
-        }
+
+        if (Button_PointerIsHovering(self, event))
+            self->state = Hover;
+        else
+            self->state = Normal;
     }
+}
 
-    if (Button_PointerIsHovering(self, event))
-        self->state = Hover;
-    else
-        self->state = Normal;
+void Button_Draw(Button *const self)
+{
+    Button_OnUpdateBox(self);
 
     if (self->state == Hover)
         Rectangle_SetColor(self->background, self->colorHover);
@@ -199,11 +207,6 @@ void Button_ProcessEvent(Button *const self, const SDL_Event *event)
         Rectangle_SetColor(self->background, self->colorPressed);
     else
         Rectangle_SetColor(self->background, self->color);
-}
-
-void Button_Draw(Button *const self)
-{
-    Button_OnUpdateBox(self);
 
     Rectangle_Draw(self->background);
 
