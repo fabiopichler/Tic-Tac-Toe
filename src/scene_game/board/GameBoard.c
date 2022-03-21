@@ -37,20 +37,20 @@ typedef struct GameEvent
 
 struct GameBoard
 {
-    int item_size;
-    int board_space;
-    int board_x;
-    int board_y;
-    SDL_Rect board_rect;
-
     SDL_Renderer *renderer;
-    const SceneGameRect *rect;
     Rectangle *background;
 
     Player player;
     Player gameResult;
     int round;
-    BoardItem board[3][3];
+
+    struct Board
+    {
+        SDL_Rect rect;
+        int item_size;
+        int space;
+        BoardItem items[3][3];
+    } board;
 
     GameEvent gameEvent;
 
@@ -70,16 +70,15 @@ GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect)
     GameBoard *const self = malloc(sizeof (GameBoard));
 
     const int board_size = 304;
+    int board_x = rect->sidebar_w + ((rect->content_w - board_size) / 2);
+    int board_y = (rect->window_h - board_size) / 2;
 
-    self->item_size = 98;
-    self->board_space = 5;
-    self->board_x = rect->sidebar_w + ((rect->content_w - board_size) / 2);
-    self->board_y = (rect->window_h - board_size) / 2;
-    self->board_rect = (SDL_Rect) {self->board_x, self->board_y, board_size, board_size};
+    self->board.item_size = 98;
+    self->board.space = 5;
+    self->board.rect = (SDL_Rect) {board_x, board_y, board_size, board_size};
 
     self->renderer = renderer;
     self->background = Rectangle_New(self->renderer, board_size, board_size);
-    self->rect = rect;
     self->player = Player_1;
     self->gameResult = None;
     self->round = 0;
@@ -88,7 +87,7 @@ GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect)
     self->player2Texture = Texture_New(renderer);
     self->p1Angle = 0.0;
 
-    Box_SetPosition(Rectangle_Box(self->background), self->board_x, self->board_y);
+    Box_SetPosition(Rectangle_Box(self->background), self->board.rect.x, self->board.rect.y);
     Rectangle_SetColorRGBA(self->background, 80, 160, 160, 255);
 
     Texture_LoadImageFromFile(self->player1Texture, "images/player_1.png");
@@ -106,10 +105,11 @@ void GameBoard_Delete(GameBoard *const self)
 
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
-            Button_Delete(self->board[i][j].button);
+            Button_Delete(self->board.items[i][j].button);
 
     Texture_Delete(self->player1Texture);
     Texture_Delete(self->player2Texture);
+
     free(self);
 }
 
@@ -117,7 +117,7 @@ void GameBoard_ProcessEvent(GameBoard *const self, const SDL_Event *event)
 {
     for (int row = 0; row < 3; ++row)
         for (int col = 0; col < 3; ++col)
-            Button_ProcessEvent(self->board[row][col].button, event);
+            Button_ProcessEvent(self->board.items[row][col].button, event);
 }
 
 void GameBoard_Update(GameBoard *const self, double deltaTime)
@@ -131,7 +131,7 @@ void GameBoard_Update(GameBoard *const self, double deltaTime)
     {
         for (int col = 0; col < 3; ++col)
         {
-            BoardItem *item = &self->board[row][col];
+            BoardItem *item = &self->board.items[row][col];
             Texture *icon = Button_Icon(item->button);
 
             if (icon)
@@ -146,7 +146,7 @@ void GameBoard_Draw(GameBoard *const self)
 
     for (int row = 0; row < 3; ++row)
         for (int col = 0; col < 3; ++col)
-            Button_Draw(self->board[row][col].button);
+            Button_Draw(self->board.items[row][col].button);
 }
 
 void GameBoard_SetGameEvent(GameBoard *const self, GameEventHandler callback, void *user)
@@ -171,13 +171,13 @@ void GameBoard_SetupBoard(GameBoard *const self)
     {
         for (int col = 0; col < 3; ++col)
         {
-            BoardItem *item = &self->board[row][col];
+            BoardItem *item = &self->board.items[row][col];
             *item = (BoardItem) { .player = 0, .button = Button_New(self->renderer) };
 
-            Box_SetSize(Button_Box(item->button), self->item_size, self->item_size);
+            Box_SetSize(Button_Box(item->button), self->board.item_size, self->board.item_size);
             Box_SetPosition(Button_Box(item->button),
-                            self->board_x + (col * self->item_size) + (col * self->board_space),
-                            self->board_y + (row * self->item_size) + (row * self->board_space));
+                            self->board.rect.x + (col * self->board.item_size) + (col * self->board.space),
+                            self->board.rect.y + (row * self->board.item_size) + (row * self->board.space));
 
             Button_SetOnPressEvent(item->button, GameBoard_OnItemPress, self);
             Button_SetBackgroundColor(item->button, &(SDL_Color) {210, 240, 240, 255});
@@ -195,7 +195,7 @@ void GameBoard_OnItemPress(Button *const button, void *user)
     {
         for (int col = 0; col < 3; ++col)
         {
-            BoardItem *item = &self->board[row][col];
+            BoardItem *item = &self->board.items[row][col];
 
             if (item->button == button)
             {
@@ -212,9 +212,7 @@ void GameBoard_Check(GameBoard *const self, BoardItem *item)
         return;
 
     item->player = self->player;
-
     self->gameResult = GameBoard_CheckWinner(self);
-
     self->player = self->player == Player_1 ? Player_2 : Player_1;
 
     if (self->gameEvent.function)
@@ -227,17 +225,17 @@ void GameBoard_Check(GameBoard *const self, BoardItem *item)
 
 Player GameBoard_CheckWinner(GameBoard *const self)
 {
-    Player player = CheckBoardRows(3, self->board);
+    Player player = CheckBoardRows(3, self->board.items);
 
     if (player == None)
     {
-        BoardItem board[3][3];
-        TransposeBoard(self->board, board);
-        player = CheckBoardRows(3, board);
+        BoardItem items[3][3];
+        TransposeBoard(self->board.items, items);
+        player = CheckBoardRows(3, items);
     }
 
     if (player == None)
-        player = CheckBoardDiagonals(self->board);
+        player = CheckBoardDiagonals(self->board.items);
 
     if (player > None)
         return player;
