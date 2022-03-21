@@ -153,8 +153,10 @@ void Header_SetCurrentPlayer(Header *const self, Player currentPlayer, Player ga
 
     if (self->gameResult == Player_1)
         Texture_SetText(self->result, "Vitória do jogador 1");
+
     else if (self->gameResult == Player_2)
         Texture_SetText(self->result, "Vitória do jogador 2");
+
     else if (self->gameResult == Tied)
         Texture_SetText(self->result, "Deu empate!");
 

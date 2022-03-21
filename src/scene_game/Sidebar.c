@@ -67,6 +67,7 @@ Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 
     self->renderer = renderer;
     self->sceneGameRect = sceneGameRect;
+    self->textColor = (SDL_Color) {50, 140, 140, 255};
 
     Sidebar_SetupSizes(self);
     Sidebar_CreateTextures(self);
@@ -149,8 +150,6 @@ void Sidebar_SetupSizes(Sidebar *const self)
     Box_SetPosition(Rectangle_Box(self->verticalLine), self->width, 0);
     Box_SetPosition(Rectangle_Box(self->horizontalLine1), 0, second_block - border_w);
     Box_SetPosition(Rectangle_Box(self->horizontalLine2), 0, third_block - border_w);
-
-    self->textColor = (SDL_Color) {50, 140, 140, 255};
 }
 
 void Sidebar_CreateTextures(Sidebar *const self)
@@ -198,6 +197,7 @@ void Sidebar_UpdateTextRect(Sidebar *const self, Texture *texture, int y)
 void Sidebar_UpdateText(Sidebar *const self, Texture *texture, int pos_y, int count)
 {
     char text[6];
+
     snprintf(text, sizeof (text), "%d", count);
     Texture_SetText(texture, text);
     Texture_MakeText(texture);

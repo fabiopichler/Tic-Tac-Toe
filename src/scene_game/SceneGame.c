@@ -136,6 +136,7 @@ void SceneGame_NewGame(SceneGame *const self)
     GameBoard_Delete(self->gameBoard);
 
     self->gameBoard = GameBoard_New(self->renderer, &self->sceneGameRect);
+
     GameBoard_SetGameEvent(self->gameBoard, SceneGame_OnGameEvent, self);
     Header_SetCurrentPlayer(self->header, Player_1, None);
 }
@@ -156,8 +157,10 @@ void SceneGame_OnGameEvent(GameBoard *const gameBoard, void *user)
 
     if (gameResult == Player_1)
         Sidebar_SetPlayer1WinText(self->sidebar, ++self->player1WinCount);
+
     else if (gameResult == Player_2)
         Sidebar_SetPlayer2WinText(self->sidebar, ++self->player2WinCount);
+
     else if (gameResult == Tied)
         Sidebar_SetTiedCountText(self->sidebar, ++self->tiedCount);
 }
