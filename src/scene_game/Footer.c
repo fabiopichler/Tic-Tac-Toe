@@ -32,7 +32,7 @@ SOFTWARE.
 struct Footer
 {
     SDL_Renderer *renderer;
-    SceneGameRect *rect;
+    SceneGameRect *sceneGameRect;
 
     Button *restartButton;
     Texture *copyrightText;
@@ -41,12 +41,12 @@ struct Footer
 void Footer_CreateRestartButton(Footer *const self);
 void Footer_CreateCopyrightText(Footer *const self);
 
-Footer *Footer_New(SDL_Renderer *renderer, SceneGameRect *rect)
+Footer *Footer_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 {
     Footer *const self = malloc(sizeof (Footer));
 
     self->renderer = renderer;
-    self->rect = rect;
+    self->sceneGameRect = sceneGameRect;
 
     Footer_CreateRestartButton(self);
     Footer_CreateCopyrightText(self);
@@ -61,6 +61,7 @@ void Footer_Delete(Footer *const self)
 
     Button_Delete(self->restartButton);
     Texture_Delete(self->copyrightText);
+
     free(self);
 }
 
@@ -92,8 +93,8 @@ void Footer_CreateRestartButton(Footer *const self)
 
     Box_SetSize(Button_Box(self->restartButton), width, height);
     Box_SetPosition(Button_Box(self->restartButton),
-                    self->rect->sidebar_w + ((self->rect->content_w - width) / 2),
-                    self->rect->window_h - height - padding);
+                    self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - width) / 2),
+                    self->sceneGameRect->window_h - height - padding);
 }
 
 void Footer_CreateCopyrightText(Footer *const self)
@@ -111,6 +112,6 @@ void Footer_CreateCopyrightText(Footer *const self)
 
     Box_SetSize(Texture_Box(self->copyrightText), width, height);
     Box_SetPosition(Texture_Box(self->copyrightText),
-                    self->rect->sidebar_w + ((self->rect->content_w - width) / 2),
-                    self->rect->window_h - height - padding);
+                    self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - width) / 2),
+                    self->sceneGameRect->window_h - height - padding);
 }

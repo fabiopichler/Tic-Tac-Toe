@@ -32,7 +32,7 @@ typedef struct GameBoard GameBoard;
 
 typedef void (*GameEventHandler)(GameBoard *const game, void *user);
 
-GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect);
+GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect);
 void GameBoard_Delete(GameBoard *const self);
 void GameBoard_ProcessEvent(GameBoard *const self, const SDL_Event *event);
 void GameBoard_Update(GameBoard *const self, double deltaTime);

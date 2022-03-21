@@ -33,7 +33,7 @@ SOFTWARE.
 struct Sidebar
 {
     SDL_Renderer *renderer;
-    const SceneGameRect *rect;
+    const SceneGameRect *sceneGameRect;
     int width;
     int player1_y;
     int player1Win_y;
@@ -61,12 +61,12 @@ void Sidebar_CreateTextures(Sidebar *const self);
 void Sidebar_UpdateTextRect(Sidebar *const self, Texture *texture, int y);
 void Sidebar_UpdateText(Sidebar *const self, Texture *texture, int pos_y, int count);
 
-Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *rect)
+Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 {
     Sidebar *const self = malloc(sizeof (Sidebar));
 
     self->renderer = renderer;
-    self->rect = rect;
+    self->sceneGameRect = sceneGameRect;
 
     Sidebar_SetupSizes(self);
     Sidebar_CreateTextures(self);
@@ -85,6 +85,7 @@ void Sidebar_Delete(Sidebar *const self)
     Texture_Delete(self->player2WinText);
     Texture_Delete(self->tiedText);
     Texture_Delete(self->tiedCountText);
+
     free(self);
 }
 
@@ -123,10 +124,10 @@ void Sidebar_SetupSizes(Sidebar *const self)
     const int border_w = 2;
     const int title_margin = 30;
     const int number_margin = 75;
-    const int second_block = self->rect->sidebar_h / 3;
+    const int second_block = self->sceneGameRect->sidebar_h / 3;
     const int third_block = second_block * 2;
 
-    self->width = self->rect->sidebar_w - border_w;
+    self->width = self->sceneGameRect->sidebar_w - border_w;
 
     self->player1_y = title_margin;
     self->player1Win_y = number_margin;
@@ -135,8 +136,8 @@ void Sidebar_SetupSizes(Sidebar *const self)
     self->tied_y = third_block + title_margin;
     self->tiedCount_y = third_block + number_margin;
 
-    self->background = Rectangle_New(self->renderer, self->width, self->rect->sidebar_h);
-    self->verticalLine = Rectangle_New(self->renderer, border_w, self->rect->sidebar_h);
+    self->background = Rectangle_New(self->renderer, self->width, self->sceneGameRect->sidebar_h);
+    self->verticalLine = Rectangle_New(self->renderer, border_w, self->sceneGameRect->sidebar_h);
     self->horizontalLine1 = Rectangle_New(self->renderer, self->width, border_w);
     self->horizontalLine2 = Rectangle_New(self->renderer, self->width, border_w);
 

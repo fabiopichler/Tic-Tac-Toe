@@ -65,13 +65,13 @@ void GameBoard_OnItemPress(Button *const button, void *user);
 void GameBoard_Check(GameBoard *const self, BoardItem *item);
 Player GameBoard_CheckWinner(GameBoard *const self);
 
-GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *rect)
+GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 {
     GameBoard *const self = malloc(sizeof (GameBoard));
 
     const int board_size = 304;
-    int board_x = rect->sidebar_w + ((rect->content_w - board_size) / 2);
-    int board_y = (rect->window_h - board_size) / 2;
+    int board_x = sceneGameRect->sidebar_w + ((sceneGameRect->content_w - board_size) / 2);
+    int board_y = (sceneGameRect->window_h - board_size) / 2;
 
     self->board.item_size = 98;
     self->board.space = 5;

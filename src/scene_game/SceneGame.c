@@ -41,7 +41,7 @@ SOFTWARE.
 struct SceneGame
 {
     SDL_Renderer *renderer;
-    SceneGameRect *rect;
+    SceneGameRect sceneGameRect;
 
     int player1WinCount;
     int player2WinCount;
@@ -66,24 +66,24 @@ SceneGame *SceneGame_OnNew(BasicSceneManager *sceneManager)
     Graphics *graphics = BasicSceneManager_Graphics(sceneManager);
     SDL_Rect windowRect = Window_GetRect(window);
 
-    SceneGameRect *rect = malloc(sizeof (SceneGameRect));
-    rect->window_w = windowRect.w;
-    rect->window_h = windowRect.h;
-    rect->sidebar_w = 200;
-    rect->sidebar_h = windowRect.h;
-    rect->content_w = windowRect.w - rect->sidebar_w;
-    rect->content_h = windowRect.h;
+    self->sceneGameRect.window_w = windowRect.w;
+    self->sceneGameRect.window_h = windowRect.h;
+    self->sceneGameRect.sidebar_w = 200;
+    self->sceneGameRect.sidebar_h = windowRect.h;
+    self->sceneGameRect.content_w = windowRect.w - self->sceneGameRect.sidebar_w;
+    self->sceneGameRect.content_h = windowRect.h;
 
     self->renderer = Graphics_GetRenderer(graphics);
-    self->rect = rect;
-    self->gameBoard = NULL;
+
     self->player1WinCount = 0;
     self->player2WinCount = 0;
     self->tiedCount = 0;
-    self->background = Rectangle_New(self->renderer, rect->window_w, rect->window_h);
-    self->sidebar = Sidebar_New(self->renderer, self->rect);
-    self->header = Header_New(self->renderer, self->rect);
-    self->footer = Footer_New(self->renderer, self->rect);
+
+    self->background = Rectangle_New(self->renderer, self->sceneGameRect.window_w, self->sceneGameRect.window_h);
+    self->gameBoard = NULL;
+    self->sidebar = Sidebar_New(self->renderer, &self->sceneGameRect);
+    self->header = Header_New(self->renderer, &self->sceneGameRect);
+    self->footer = Footer_New(self->renderer, &self->sceneGameRect);
 
     Rectangle_SetColorRGBA(self->background, 190, 225, 225, 255);
 
@@ -105,7 +105,7 @@ void SceneGame_OnDelete(SceneGame *const self)
     Header_Delete(self->header);
     Sidebar_Delete(self->sidebar);
     Rectangle_Delete(self->background);
-    free(self->rect);
+
     free(self);
 }
 
@@ -135,7 +135,7 @@ void SceneGame_NewGame(SceneGame *const self)
 {
     GameBoard_Delete(self->gameBoard);
 
-    self->gameBoard = GameBoard_New(self->renderer, self->rect);
+    self->gameBoard = GameBoard_New(self->renderer, &self->sceneGameRect);
     GameBoard_SetGameEvent(self->gameBoard, SceneGame_OnGameEvent, self);
     Header_SetCurrentPlayer(self->header, Player_1, None);
 }

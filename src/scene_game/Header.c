@@ -38,7 +38,7 @@ struct Header
     float line_p2_x;
 
     SDL_Renderer *renderer;
-    SceneGameRect *rect;
+    SceneGameRect *sceneGameRect;
 
     Rectangle *background1;
     Rectangle *background2;
@@ -62,7 +62,7 @@ void Header_SetupResultText(Header *const self);
 void Header_SetupPlayer1Text(Header *const self);
 void Header_SetupPlayer2Text(Header *const self);
 
-Header *Header_New(SDL_Renderer *renderer, SceneGameRect *rect)
+Header *Header_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 {
     Header *const self = malloc(sizeof (Header));
 
@@ -70,12 +70,12 @@ Header *Header_New(SDL_Renderer *renderer, SceneGameRect *rect)
     self->margin = 20;
 
     const float w = 134;
-    const float x = rect->sidebar_w + ((rect->content_w - w) / 2);
+    const float x = sceneGameRect->sidebar_w + ((sceneGameRect->content_w - w) / 2);
     self->line_p1_x = x - 85.f;
     self->line_p2_x = x + 85.f;
 
     self->renderer = renderer;
-    self->rect = rect;
+    self->sceneGameRect = sceneGameRect;
     self->currentPlayer = Player_1;
     self->gameResult = None;
 
@@ -177,7 +177,7 @@ void Header_CreateResultText(Header *const self)
 void Header_CreateBackgrounds(Header *const self)
 {
     int w = 302, h = 58;
-    int x = self->rect->sidebar_w + ((self->rect->content_w - w) / 2);
+    int x = self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - w) / 2);
     int y = 18;
 
     self->background1 = Rectangle_New(self->renderer, w, h);
@@ -221,7 +221,7 @@ void Header_SetupResultText(Header *const self)
     int h = Texture_GetHeight(self->result);
 
     Box_SetSize(Texture_Box(self->result), w, h);
-    Box_SetPosition(Texture_Box(self->result), self->rect->sidebar_w + ((self->rect->content_w - w) / 2), 26);
+    Box_SetPosition(Texture_Box(self->result), self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - w) / 2), 26);
 }
 
 void Header_SetupPlayer1Text(Header *const self)
@@ -231,8 +231,8 @@ void Header_SetupPlayer1Text(Header *const self)
     int icon_w = 28;
     int icon_h = 28;
 
-    int text_x = (self->rect->sidebar_w + ((self->rect->content_w - text_w) / 2)) - (text_w / 2) - self->margin - icon_w - self->space;
-    int icon_x = (self->rect->sidebar_w + ((self->rect->content_w - icon_w) / 2)) - (icon_w / 2) - self->margin;
+    int text_x = (self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - text_w) / 2)) - (text_w / 2) - self->margin - icon_w - self->space;
+    int icon_x = (self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - icon_w) / 2)) - (icon_w / 2) - self->margin;
 
     Box_SetSize(Texture_Box(self->player1), text_w, text_h);
     Box_SetPosition(Texture_Box(self->player1), text_x, 30);
@@ -248,8 +248,8 @@ void Header_SetupPlayer2Text(Header *const self)
     int icon_w = 26;
     int icon_h = 26;
 
-    int text_x = (self->rect->sidebar_w + ((self->rect->content_w - text_w) / 2)) + (text_w / 2) + self->margin + icon_w + self->space;
-    int icon_x = (self->rect->sidebar_w + ((self->rect->content_w - icon_w) / 2)) + (icon_w / 2) + self->margin;
+    int text_x = (self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - text_w) / 2)) + (text_w / 2) + self->margin + icon_w + self->space;
+    int icon_x = (self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - icon_w) / 2)) + (icon_w / 2) + self->margin;
 
     Box_SetSize(Texture_Box(self->player2), text_w, text_h);
     Box_SetPosition(Texture_Box(self->player2), text_x, 30);

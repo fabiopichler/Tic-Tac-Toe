@@ -30,7 +30,7 @@ SOFTWARE.
 
 typedef struct Sidebar Sidebar;
 
-Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *rect);
+Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect);
 void Sidebar_Delete(Sidebar *const self);
 void Sidebar_Draw(Sidebar *const self);
 void Sidebar_SetPlayer1WinText(Sidebar *const self, int count);
