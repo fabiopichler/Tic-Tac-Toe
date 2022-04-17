@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,5 +27,5 @@ SOFTWARE.
 typedef struct App App;
 
 App *App_New();
-void App_Delete(App *const self);
-void App_Run(App *const self);
+void App_Delete(App * const self);
+void App_Run(App * const self);

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,13 +30,13 @@ SOFTWARE.
 
 typedef struct GameBoard GameBoard;
 
-typedef void (*GameEventHandler)(GameBoard *const game, void *user);
+typedef void (*GameEventHandler)(GameBoard * const game, void *user);
 
 GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect);
-void GameBoard_Delete(GameBoard *const self);
-void GameBoard_ProcessEvent(GameBoard *const self, const SDL_Event *event);
-void GameBoard_Update(GameBoard *const self, double deltaTime);
-void GameBoard_Draw(GameBoard *const self);
-void GameBoard_SetGameEvent(GameBoard *const self, GameEventHandler callback, void *user);
-int GameBoard_GetCurrentPlayer(GameBoard *const self);
-int GameBoard_GetGameResult(GameBoard *const self);
+void GameBoard_Delete(GameBoard * const self);
+void GameBoard_ProcessEvent(GameBoard * const self, const SDL_Event *event);
+void GameBoard_Update(GameBoard * const self, double deltaTime);
+void GameBoard_Draw(GameBoard * const self);
+void GameBoard_SetGameEvent(GameBoard * const self, GameEventHandler callback, void *user);
+int GameBoard_GetCurrentPlayer(GameBoard * const self);
+int GameBoard_GetGameResult(GameBoard * const self);

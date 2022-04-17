@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -63,14 +63,14 @@ struct Button
     Button_PressedEvent pressedEvent;
 };
 
-bool Button_PointerIsHovering(Button *const self, const SDL_Event *event);
-void Button_OnUpdateBox(Button *const self);
-void Button_CallPressedEvent(Button *const self);
-void Button_BoxOnUpdateEvent(Box *const box, void *userdata);
+bool Button_PointerIsHovering(Button * const self, const SDL_Event *event);
+void Button_OnUpdateBox(Button * const self);
+void Button_CallPressedEvent(Button * const self);
+void Button_BoxOnUpdateEvent(Box * const box, void *userdata);
 
 Button *Button_New(SDL_Renderer *renderer)
 {
-    Button *const self = malloc(sizeof (Button));
+    Button * const self = malloc(sizeof (Button));
 
     self->renderer = renderer;
     self->textTexture = NULL;
@@ -93,7 +93,7 @@ Button *Button_New(SDL_Renderer *renderer)
     return self;
 }
 
-void Button_Delete(Button *const self)
+void Button_Delete(Button * const self)
 {
     if (!self)
         return;
@@ -102,31 +102,71 @@ void Button_Delete(Button *const self)
     free(self);
 }
 
-void Button_SetBackgroundColor(Button *const self, const SDL_Color *color)
+void Button_SetBackgroundColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b)
 {
-    if (color)
-        self->color = *color;
+    self->color.r = r;
+    self->color.g = g;
+    self->color.b = b;
+    self->color.a = 255;
 }
 
-void Button_SetBackgroundHoverColor(Button *const self, const SDL_Color *color)
+void Button_SetBackgroundColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-    if (color)
-        self->colorHover = *color;
+    self->color.r = r;
+    self->color.g = g;
+    self->color.b = b;
+    self->color.a = a;
 }
 
-void Button_SetBackgroundPressedColor(Button *const self, const SDL_Color *color)
+void Button_SetBackgroundHoverColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b)
 {
-    if (color)
-        self->colorPressed = *color;
+    self->colorHover.r = r;
+    self->colorHover.g = g;
+    self->colorHover.b = b;
+    self->colorHover.a = 255;
 }
 
-void Button_SetTextColor(Button *const self, const SDL_Color *color)
+void Button_SetBackgroundHoverColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-    if (color)
-        self->textColor = *color;
+    self->colorHover.r = r;
+    self->colorHover.g = g;
+    self->colorHover.b = b;
+    self->colorHover.a = a;
 }
 
-bool Button_SetText(Button *const self, const char *text, int ptsize)
+void Button_SetBackgroundPressedColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b)
+{
+    self->colorPressed.r = r;
+    self->colorPressed.g = g;
+    self->colorPressed.b = b;
+    self->colorPressed.a = 255;
+}
+
+void Button_SetBackgroundPressedColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    self->colorPressed.r = r;
+    self->colorPressed.g = g;
+    self->colorPressed.b = b;
+    self->colorPressed.a = a;
+}
+
+void Button_SetTextColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b)
+{
+    self->textColor.r = r;
+    self->textColor.g = g;
+    self->textColor.b = b;
+    self->textColor.a = 255;
+}
+
+void Button_SetTextColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    self->textColor.r = r;
+    self->textColor.g = g;
+    self->textColor.b = b;
+    self->textColor.a = a;
+}
+
+bool Button_SetText(Button * const self, const char *text, int ptsize)
 {
     if (!self->textTexture)
         self->textTexture = Texture_New(self->renderer);
@@ -144,33 +184,30 @@ bool Button_SetText(Button *const self, const char *text, int ptsize)
     return false;
 }
 
-void Button_SetIcon(Button *const self, Texture *texture)
+void Button_SetIcon(Button * const self, Texture *texture)
 {
-    if (texture)
-    {
-        self->iconTexture = texture;
-        Button_OnUpdateBox(self);
-    }
+    self->iconTexture = texture;
+    Button_OnUpdateBox(self);
 }
 
-void Button_SetOnPressEvent(Button *const self, Button_OnPressEvent callback, void *userdata)
+void Button_SetOnPressEvent(Button * const self, Button_OnPressEvent callback, void *userdata)
 {
     self->pressedEvent.function = callback;
     self->pressedEvent.userdata = userdata;
 }
 
-void *Button_GetEventUserData(Button *const self)
+void *Button_GetEventUserData(Button * const self)
 {
     return self->pressedEvent.userdata;
 }
 
-void Button_CallPressedEvent(Button *const self)
+void Button_CallPressedEvent(Button * const self)
 {
     if (self->pressedEvent.function)
         self->pressedEvent.function(self, self->pressedEvent.userdata);
 }
 
-void Button_ProcessEvent(Button *const self, const SDL_Event *event)
+void Button_ProcessEvent(Button * const self, const SDL_Event *event)
 {
     if (event->type == SDL_MOUSEMOTION || event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP)
     {
@@ -197,7 +234,7 @@ void Button_ProcessEvent(Button *const self, const SDL_Event *event)
     }
 }
 
-void Button_Draw(Button *const self)
+void Button_Draw(Button * const self)
 {
     Button_OnUpdateBox(self);
 
@@ -217,7 +254,7 @@ void Button_Draw(Button *const self)
         Texture_Draw(self->textTexture);
 }
 
-bool Button_PointerIsHovering(Button *const self, const SDL_Event *event)
+bool Button_PointerIsHovering(Button * const self, const SDL_Event *event)
 {
     const SDL_FRect *rect = Box_Rect(self->box);
 
@@ -227,7 +264,7 @@ bool Button_PointerIsHovering(Button *const self, const SDL_Event *event)
             && event->button.y <= (rect->y + rect->h);
 }
 
-void Button_OnUpdateBox(Button *const self)
+void Button_OnUpdateBox(Button * const self)
 {
     Texture *texture = self->textTexture ? self->textTexture : self->iconTexture;
     const SDL_FRect *rect = Box_Rect(self->box);
@@ -243,9 +280,9 @@ void Button_OnUpdateBox(Button *const self)
     }
 }
 
-void Button_BoxOnUpdateEvent(Box *const box, void *userdata)
+void Button_BoxOnUpdateEvent(Box * const box, void *userdata)
 {
-    Button *const self = userdata;
+    Button * const self = userdata;
 
     Box_SetSize(Rectangle_Box(self->background), Box_Width(self->box), Box_Height(self->box));
     Box_SetPosition(Rectangle_Box(self->background), Box_X(self->box), Box_Y(self->box));
@@ -253,12 +290,12 @@ void Button_BoxOnUpdateEvent(Box *const box, void *userdata)
     Button_OnUpdateBox(self);
 }
 
-Box *Button_Box(Button *const self)
+Box *Button_Box(Button * const self)
 {
     return self->box;
 }
 
-Texture *Button_Icon(Button *const self)
+Texture *Button_Icon(Button * const self)
 {
     return self->iconTexture;
 }

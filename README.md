@@ -1,4 +1,4 @@
-# Tic-Tac-Toe
+# Tic Tac Toe
 
 Um simples Jogo da Velha desenvolvido com a linguagem C e SDL 2 para Linux, Android, Windows, e Web (WebAssembly).
 
@@ -50,4 +50,4 @@ make
 
 MIT License
 
-Copyright (c) 2020 Fábio Pichler
+Copyright (c) 2020-2022 Fábio Pichler

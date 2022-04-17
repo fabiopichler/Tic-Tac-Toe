@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,9 +23,10 @@ SOFTWARE.
 -------------------------------------------------------------------------------*/
 
 #include "App.h"
+#include "base/DataZipFile.h"
 #include "base/Window.h"
 #include "base/Graphics.h"
-#include "base/BasicSceneManager.h"
+#include "base/SceneManager.h"
 #include "scene_game/SceneGame.h"
 
 #include <SDL2/SDL.h>
@@ -34,6 +35,7 @@ SOFTWARE.
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <time.h>
 
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
@@ -43,33 +45,42 @@ struct App
 {
     Window *window;
     Graphics *graphics;
-    BasicSceneManager *sceneManager;
+    SceneManager *sceneManager;
 };
 
-void App_InitSDL();
+static void InitSDL();
 
 App *App_New()
 {
-    App *const self = malloc(sizeof (App));
+    srand(time(NULL));
 
-    App_InitSDL();
+#ifdef USE_DATA_ZIP
+    if (!DataZipFile_Init())
+        return NULL;
+#endif
 
-    self->window = Window_New(640, 480);
+    InitSDL();
+
+    App * const self = malloc(sizeof (App));
+
+    self->window = Window_New(640, 480, "Tic Tac Toe");
     self->graphics = Graphics_New(self->window);
-    self->sceneManager = BasicSceneManager_New(self->window, self->graphics);
+    self->sceneManager = SceneManager_New(self->window, self->graphics);
 
-    GO_TO(self->sceneManager, SceneGame);
+    Window_SetWindowIcon(self->window, "images/player_1.png");
+
+    SCENE_MANAGER_GOTO(self->sceneManager, SceneGame);
 
     return self;
 }
 
-void App_Delete(App *const self)
+void App_Delete(App * const self)
 {
 #ifndef __EMSCRIPTEN__
     if (!self)
         return;
 
-    BasicSceneManager_Delete(self->sceneManager);
+    SceneManager_Delete(self->sceneManager);
     Graphics_Delete(self->graphics);
     Window_Delete(self->window);
 
@@ -78,24 +89,28 @@ void App_Delete(App *const self)
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();
+
+#ifdef USE_DATA_ZIP
+    DataZipFile_Close();
+#endif
 #endif
 }
 
-void App_Run(App *const self)
+void App_Run(App * const self)
 {
-    BasicSceneManager_Run(self->sceneManager);
+    SceneManager_Run(self->sceneManager);
 }
 
-void App_InitSDL()
+void InitSDL()
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
     {
         printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
         exit(-1);
     }
 
 #ifndef __EMSCRIPTEN__
-    int imgFlags = IMG_INIT_PNG;
+    const int imgFlags = IMG_INIT_PNG;
 
     if (!(IMG_Init(imgFlags) & imgFlags))
     {

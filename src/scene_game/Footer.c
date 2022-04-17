@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,12 +38,12 @@ struct Footer
     Texture *copyrightText;
 };
 
-void Footer_CreateRestartButton(Footer *const self);
-void Footer_CreateCopyrightText(Footer *const self);
+void Footer_CreateRestartButton(Footer * const self);
+void Footer_CreateCopyrightText(Footer * const self);
 
 Footer *Footer_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 {
-    Footer *const self = malloc(sizeof (Footer));
+    Footer * const self = malloc(sizeof (Footer));
 
     self->renderer = renderer;
     self->sceneGameRect = sceneGameRect;
@@ -54,7 +54,7 @@ Footer *Footer_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
     return self;
 }
 
-void Footer_Delete(Footer *const self)
+void Footer_Delete(Footer * const self)
 {
     if (!self)
         return;
@@ -65,23 +65,23 @@ void Footer_Delete(Footer *const self)
     free(self);
 }
 
-void Footer_ProcessEvent(Footer *const self, const SDL_Event *event)
+void Footer_ProcessEvent(Footer * const self, const SDL_Event *event)
 {
     Button_ProcessEvent(self->restartButton, event);
 }
 
-void Footer_Draw(Footer *const self)
+void Footer_Draw(Footer * const self)
 {
     Button_Draw(self->restartButton);
     Texture_Draw(self->copyrightText);
 }
 
-Button *Footer_GetRestartButton(Footer *const self)
+Button *Footer_GetRestartButton(Footer * const self)
 {
     return self->restartButton;
 }
 
-void Footer_CreateRestartButton(Footer *const self)
+void Footer_CreateRestartButton(Footer * const self)
 {
     self->restartButton = Button_New(self->renderer);
 
@@ -97,13 +97,13 @@ void Footer_CreateRestartButton(Footer *const self)
                     self->sceneGameRect->window_h - height - padding);
 }
 
-void Footer_CreateCopyrightText(Footer *const self)
+void Footer_CreateCopyrightText(Footer * const self)
 {
     self->copyrightText = Texture_New(self->renderer);
 
-    const char text[] = "© 2020 Fábio Pichler                               www.fabiopichler.net";
-
-    Texture_SetupText(self->copyrightText, text, 14, &(SDL_Color) {30, 120, 120, 255});
+    Texture_SetText(self->copyrightText, "© 2020-2022 Fábio Pichler                       www.fabiopichler.net");
+    Texture_SetTextSize(self->copyrightText, 14);
+    Texture_SetTextColorRGB(self->copyrightText, 30, 120, 120);
     Texture_MakeText(self->copyrightText);
 
     int width = Texture_GetWidth(self->copyrightText);

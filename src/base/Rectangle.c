@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,7 +34,7 @@ struct Rectangle
 
 Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height)
 {
-    Rectangle *const self = malloc(sizeof (Rectangle));
+    Rectangle * const self = malloc(sizeof (Rectangle));
 
     self->renderer = renderer;
     self->box = Box_New(0.f, 0.f, width, height);
@@ -43,7 +43,7 @@ Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height)
     return self;
 }
 
-void Rectangle_Delete(Rectangle *const self)
+void Rectangle_Delete(Rectangle * const self)
 {
     if (!self)
         return;
@@ -52,18 +52,26 @@ void Rectangle_Delete(Rectangle *const self)
     free(self);
 }
 
-void Rectangle_Draw(Rectangle *const self)
+void Rectangle_Draw(Rectangle * const self)
 {
     SDL_SetRenderDrawColor(self->renderer, self->color.r, self->color.g, self->color.b, self->color.a);
     SDL_RenderFillRectF(self->renderer, Box_Rect(self->box));
 }
 
-void Rectangle_SetColor(Rectangle *const self, SDL_Color color)
+void Rectangle_SetColor(Rectangle * const self, SDL_Color color)
 {
     self->color = color;
 }
 
-void Rectangle_SetColorRGBA(Rectangle *const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+void Rectangle_SetColorRGB(Rectangle * const self, uint8_t r, uint8_t g, uint8_t b)
+{
+    self->color.r = r;
+    self->color.g = g;
+    self->color.b = b;
+    self->color.a = 255;
+}
+
+void Rectangle_SetColorRGBA(Rectangle * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
     self->color.r = r;
     self->color.g = g;
@@ -71,12 +79,12 @@ void Rectangle_SetColorRGBA(Rectangle *const self, uint8_t r, uint8_t g, uint8_t
     self->color.a = a;
 }
 
-SDL_Color Rectangle_Color(Rectangle *const self)
+SDL_Color Rectangle_Color(Rectangle * const self)
 {
     return self->color;
 }
 
-Box *Rectangle_Box(Rectangle *const self)
+Box *Rectangle_Box(Rectangle * const self)
 {
     return self->box;
 }

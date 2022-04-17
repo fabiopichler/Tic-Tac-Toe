@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,7 +32,7 @@ SOFTWARE.
 typedef struct Footer Footer;
 
 Footer *Footer_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect);
-void Footer_Delete(Footer *const self);
-void Footer_ProcessEvent(Footer *const self, const SDL_Event *event);
-void Footer_Draw(Footer *const self);
-Button *Footer_GetRestartButton(Footer *const self);
+void Footer_Delete(Footer * const self);
+void Footer_ProcessEvent(Footer * const self, const SDL_Event *event);
+void Footer_Draw(Footer * const self);
+Button *Footer_GetRestartButton(Footer * const self);

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include "Texture.h"
 #include "Box.h"
+#include "DataZipFile.h"
 
 #include "malloc.h"
 
@@ -50,11 +51,11 @@ struct Texture
     double angle;
 };
 
-bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface);
+bool Texture_CreateTexture(Texture * const self, SDL_Surface *surface);
 
 Texture *Texture_New(SDL_Renderer *renderer)
 {
-    Texture *const self = malloc(sizeof (Texture));
+    Texture * const self = malloc(sizeof (Texture));
 
     self->renderer = renderer;
     self->texture = NULL;
@@ -74,7 +75,7 @@ Texture *Texture_New(SDL_Renderer *renderer)
     return self;
 }
 
-void Texture_Delete(Texture *const self)
+void Texture_Delete(Texture * const self)
 {
     if (!self)
         return;
@@ -88,18 +89,28 @@ void Texture_Delete(Texture *const self)
     free(self);
 }
 
-bool Texture_LoadImageFromFile(Texture *const self, const char *fileName)
+bool Texture_LoadImageFromFile(Texture * const self, const char *fileName)
 {
-    return Texture_CreateTexture(self, IMG_Load(fileName));
+#ifdef USE_DATA_ZIP
+    SDL_Surface *surface = IMG_Load_RW(DataZipFile_Load_RW(fileName), 1);
+#else
+    SDL_Surface *surface = IMG_Load(fileName);
+#endif
+
+    return Texture_CreateTexture(self, surface);
 }
 
-bool Texture_MakeText(Texture *const self)
+bool Texture_MakeText(Texture * const self)
 {
     if (!self->font || self->reloadFont)
     {
         TTF_CloseFont(self->font);
 
+#ifdef USE_DATA_ZIP
+        if (!(self->font = TTF_OpenFontRW(DataZipFile_Load_RW("fonts/NotoSans-Bold.ttf"), 1, self->fontSize)))
+#else
         if (!(self->font = TTF_OpenFont("fonts/NotoSans-Bold.ttf", self->fontSize)))
+#endif
         {
             printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
             return false;
@@ -113,24 +124,17 @@ bool Texture_MakeText(Texture *const self)
     return Texture_CreateTexture(self, surface);
 }
 
-void Texture_SetupText(Texture *const self, const char *text, int ptsize, const SDL_Color *color)
-{
-    Texture_SetText(self, text);
-    Texture_SetTextSize(self, ptsize);
-    Texture_SetTextColor(self, color);
-}
-
-void Texture_SetText(Texture *const self, const char *text)
+void Texture_SetText(Texture * const self, const char *text)
 {
     free(self->text);
 
-    size_t size = strlen(text) + 1;
+    const size_t size = strlen(text) + 1;
     self->text = malloc(size);
 
     memcpy(self->text, text, size);
 }
 
-void Texture_SetTextSize(Texture *const self, int ptsize)
+void Texture_SetTextSize(Texture * const self, int ptsize)
 {
     if (self->fontSize != ptsize)
     {
@@ -139,29 +143,47 @@ void Texture_SetTextSize(Texture *const self, int ptsize)
     }
 }
 
-void Texture_SetTextColor(Texture *const self, const SDL_Color *color)
+void Texture_SetTextColor(Texture * const self, const SDL_Color *color)
 {
     if (color)
         self->textColor = *color;
+    else
+        self->textColor = (SDL_Color) {60, 60, 60, 255};
 }
 
-void Texture_SetSourceRect(Texture *const self, SDL_Rect srcrect)
+void Texture_SetTextColorRGB(Texture * const self, uint8_t r, uint8_t g, uint8_t b)
+{
+    self->textColor.r = r;
+    self->textColor.g = g;
+    self->textColor.b = b;
+    self->textColor.a = 255;
+}
+
+void Texture_SetTextColorRGBA(Texture * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    self->textColor.r = r;
+    self->textColor.g = g;
+    self->textColor.b = b;
+    self->textColor.a = a;
+}
+
+void Texture_SetSourceRect(Texture * const self, SDL_Rect srcrect)
 {
     self->srcrect = srcrect;
 }
 
-void Texture_SetAngle(Texture *self, double angle)
+void Texture_SetAngle(Texture * const self, double angle)
 {
     self->angle = angle;
 }
 
-void Texture_Draw(Texture *const self)
+void Texture_Draw(Texture * const self)
 {
     if (self->texture)
         SDL_RenderCopyExF(self->renderer, self->texture, &self->srcrect, Box_Rect(self->box), self->angle, NULL, SDL_FLIP_NONE);
 }
 
-bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface)
+bool Texture_CreateTexture(Texture * const self, SDL_Surface *surface)
 {
     if (surface)
     {
@@ -196,17 +218,17 @@ bool Texture_CreateTexture(Texture *const self, SDL_Surface *surface)
     return self->texture != NULL;
 }
 
-int Texture_GetWidth(Texture *const self)
+int Texture_GetWidth(Texture * const self)
 {
     return self->w;
 }
 
-int Texture_GetHeight(Texture *const self)
+int Texture_GetHeight(Texture * const self)
 {
     return self->h;
 }
 
-Box *Texture_Box(Texture *const self)
+Box *Texture_Box(Texture * const self)
 {
     return self->box;
 }

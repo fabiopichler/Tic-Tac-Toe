@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,8 +32,8 @@ SOFTWARE.
 typedef struct Header Header;
 
 Header *Header_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect);
-void Header_Delete(Header *const self);
-void Header_ProcessEvent(Header *const self, const SDL_Event *event);
-void Header_Update(Header *const self, double deltaTime);
-void Header_Draw(Header *const self);
-void Header_SetCurrentPlayer(Header *const self, Player currentPlayer, Player gameResult);
+void Header_Delete(Header * const self);
+void Header_ProcessEvent(Header * const self, const SDL_Event *event);
+void Header_Update(Header * const self, double deltaTime);
+void Header_Draw(Header * const self);
+void Header_SetCurrentPlayer(Header * const self, Player currentPlayer, Player gameResult);

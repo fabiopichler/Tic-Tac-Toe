@@ -22,23 +22,81 @@ SOFTWARE.
 
 -------------------------------------------------------------------------------*/
 
-#include "App.h"
+#include "DataZipFile.h"
 
-#include "SDL2/SDL_main.h"
+#ifdef USE_DATA_ZIP
 
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char *argv[])
+#include <physfs.h>
+
+bool DataZipFile_Init()
 {
-    (void)argc;(void)argv;
+    if (!PHYSFS_init(NULL))
+    {
+        printf("Failure. reason: %s.\n", PHYSFS_getLastError());
 
-    setbuf(stdout, NULL);
+        return false;
+    }
 
-    App *app = App_New();
+    if (!PHYSFS_mount("data.zip", NULL, 1))
+    {
+        PHYSFS_deinit();
+        printf("Failure. reason: %s.\n", PHYSFS_getLastError());
 
-    App_Run(app);
-    App_Delete(app);
+        return false;
+    }
 
-    return EXIT_SUCCESS;
+    return true;
 }
+
+void DataZipFile_Close()
+{
+    PHYSFS_deinit();
+}
+
+int DataZipFile_Read(const char *filename, char **buffer)
+{
+    PHYSFS_File *file = PHYSFS_openRead(filename);
+
+    if (file)
+    {
+        PHYSFS_sint64 size = PHYSFS_fileLength(file);
+
+        if (size > 0)
+        {
+            *buffer = malloc(size);
+            PHYSFS_sint64 readed = PHYSFS_readBytes(file, *buffer, size);
+            PHYSFS_close(file);
+
+            if (readed == size)
+                return readed;
+
+            free(*buffer);
+        }
+        else
+        {
+            PHYSFS_close(file);
+        }
+    }
+
+    printf("failed to open. Reason: [%s].\n", PHYSFS_getLastError());
+
+    *buffer = NULL;
+
+    return 0;
+}
+
+SDL_RWops *DataZipFile_Load_RW(const char *filename)
+{
+    char *buffer;
+    int size = DataZipFile_Read(filename, &buffer);
+
+    if (size > 0)
+        return SDL_RWFromConstMem(buffer, size);
+
+    return NULL;
+}
+
+#endif // USE_DATA_ZIP

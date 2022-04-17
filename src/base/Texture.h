@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,24 +37,25 @@ typedef struct Box Box;
 typedef struct Texture Texture;
 
 Texture *Texture_New(SDL_Renderer *renderer);
-void Texture_Delete(Texture *self);
+void Texture_Delete(Texture * const self);
 
-bool Texture_LoadImageFromFile(Texture *self, const char *fileName);
+bool Texture_LoadImageFromFile(Texture * const self, const char *fileName);
 
-bool Texture_MakeText(Texture *self);
-void Texture_SetupText(Texture *self, const char *text, int ptsize, const SDL_Color *color);
-void Texture_SetText(Texture *self, const char *text);
-void Texture_SetTextSize(Texture *self, int ptsize);
-void Texture_SetTextColor(Texture *self, const SDL_Color *color);
+bool Texture_MakeText(Texture * const self);
+void Texture_SetText(Texture * const self, const char *text);
+void Texture_SetTextSize(Texture * const self, int ptsize);
+void Texture_SetTextColor(Texture * const self, const SDL_Color *color);
+void Texture_SetTextColorRGB(Texture * const self, uint8_t r, uint8_t g, uint8_t b);
+void Texture_SetTextColorRGBA(Texture * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
-void Texture_SetSourceRect(Texture *const self, SDL_Rect srcrect);
-void Texture_SetAngle(Texture *self, double angle);
+void Texture_SetSourceRect(Texture * const self, SDL_Rect srcrect);
+void Texture_SetAngle(Texture * const self, double angle);
 
-void Texture_Draw(Texture *self);
+void Texture_Draw(Texture * const self);
 
-int Texture_GetWidth(Texture *self);
-int Texture_GetHeight(Texture *self);
-Box *Texture_Box(Texture *const self);
+int Texture_GetWidth(Texture * const self);
+int Texture_GetHeight(Texture * const self);
+Box *Texture_Box(Texture * const self);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,11 +36,11 @@ struct Box
     Box_UpdatedEvent updatedEvent;
 };
 
-void Box_CallUpdatedEvent(Box *const self);
+void Box_CallUpdatedEvent(Box * const self);
 
 Box *Box_New(float x, float y, float width, float height)
 {
-    Box *const self = malloc(sizeof (Box));
+    Box * const self = malloc(sizeof (Box));
 
     self->rect = (SDL_FRect) {x, y, width, height};
     self->updatedEvent = (Box_UpdatedEvent) {NULL, NULL};
@@ -48,7 +48,7 @@ Box *Box_New(float x, float y, float width, float height)
     return self;
 }
 
-void Box_Delete(Box *const self)
+void Box_Delete(Box * const self)
 {
     if (!self)
         return;
@@ -56,24 +56,24 @@ void Box_Delete(Box *const self)
     free(self);
 }
 
-void Box_SetOnPressEvent(Box *self, Box_OnUpdateEvent callback, void *userdata)
+void Box_SetOnPressEvent(Box * const self, Box_OnUpdateEvent callback, void *userdata)
 {
     self->updatedEvent.function = callback;
     self->updatedEvent.userdata = userdata;
 }
 
-void *Box_GetEventUserData(Box *self)
+void *Box_GetEventUserData(Box * const self)
 {
     return self->updatedEvent.userdata;
 }
 
-void Box_CallUpdatedEvent(Box *const self)
+void Box_CallUpdatedEvent(Box * const self)
 {
     if (self->updatedEvent.function)
         self->updatedEvent.function(self, self->updatedEvent.userdata);
 }
 
-void Box_SetSize(Box *const self, float w, float h)
+void Box_SetSize(Box * const self, float w, float h)
 {
     self->rect.w = w;
     self->rect.h = h;
@@ -81,7 +81,7 @@ void Box_SetSize(Box *const self, float w, float h)
     Box_CallUpdatedEvent(self);
 }
 
-void Box_SetPosition(Box *const self, float x, float y)
+void Box_SetPosition(Box * const self, float x, float y)
 {
     self->rect.x = x;
     self->rect.y = y;
@@ -89,35 +89,35 @@ void Box_SetPosition(Box *const self, float x, float y)
     Box_CallUpdatedEvent(self);
 }
 
-void Box_SetX(Box *const self, float x)
+void Box_SetX(Box * const self, float x)
 {
     self->rect.x = x;
 
     Box_CallUpdatedEvent(self);
 }
 
-void Box_SetY(Box *const self, float y)
+void Box_SetY(Box * const self, float y)
 {
     self->rect.y = y;
 
     Box_CallUpdatedEvent(self);
 }
 
-void Box_SetWidth(Box *const self, float w)
+void Box_SetWidth(Box * const self, float w)
 {
     self->rect.w = w;
 
     Box_CallUpdatedEvent(self);
 }
 
-void Box_SetHeight(Box *const self, float h)
+void Box_SetHeight(Box * const self, float h)
 {
     self->rect.h = h;
 
     Box_CallUpdatedEvent(self);
 }
 
-void Box_Move(Box *const self, float velX, float velY)
+void Box_Move(Box * const self, float velX, float velY)
 {
     self->rect.x += velX;
     self->rect.y += velY;
@@ -125,27 +125,27 @@ void Box_Move(Box *const self, float velX, float velY)
     Box_CallUpdatedEvent(self);
 }
 
-float Box_X(Box *const self)
+float Box_X(Box * const self)
 {
     return self->rect.x;
 }
 
-float Box_Y(Box *const self)
+float Box_Y(Box * const self)
 {
     return self->rect.y;
 }
 
-float Box_Width(Box *const self)
+float Box_Width(Box * const self)
 {
     return self->rect.w;
 }
 
-float Box_Height(Box *const self)
+float Box_Height(Box * const self)
 {
     return self->rect.h;
 }
 
-const SDL_FRect *Box_Rect(Box *const self)
+const SDL_FRect *Box_Rect(Box * const self)
 {
     return &self->rect;
 }

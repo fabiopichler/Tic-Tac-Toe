@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -54,17 +54,17 @@ struct Header
     Texture *player2Icon;
 };
 
-void Header_CreateBackgrounds(Header *const self);
-void Header_CreateResultText(Header *const self);
-void Header_CreatePlayer1Text(Header *const self);
-void Header_CreatePlayer2Text(Header *const self);
-void Header_SetupResultText(Header *const self);
-void Header_SetupPlayer1Text(Header *const self);
-void Header_SetupPlayer2Text(Header *const self);
+void Header_CreateBackgrounds(Header * const self);
+void Header_CreateResultText(Header * const self);
+void Header_CreatePlayer1Text(Header * const self);
+void Header_CreatePlayer2Text(Header * const self);
+void Header_SetupResultText(Header * const self);
+void Header_SetupPlayer1Text(Header * const self);
+void Header_SetupPlayer2Text(Header * const self);
 
 Header *Header_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 {
-    Header *const self = malloc(sizeof (Header));
+    Header * const self = malloc(sizeof (Header));
 
     self->space = 6;
     self->margin = 20;
@@ -91,7 +91,7 @@ Header *Header_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
     return self;
 }
 
-void Header_Delete(Header *const self)
+void Header_Delete(Header * const self)
 {
     if (!self)
         return;
@@ -109,14 +109,14 @@ void Header_Delete(Header *const self)
     free(self);
 }
 
-void Header_ProcessEvent(Header *const self, const SDL_Event *event)
+void Header_ProcessEvent(Header * const self, const SDL_Event *event)
 {
     (void)self;(void)event;
 }
 
-void Header_Update(Header *const self, double deltaTime)
+void Header_Update(Header * const self, double deltaTime)
 {
-    Box *const lineBox = Rectangle_Box(self->line);
+    Box * const lineBox = Rectangle_Box(self->line);
     const float x = Box_X(lineBox);
 
     if (self->currentPlayer == Player_1 && x >= self->line_p1_x)
@@ -126,7 +126,7 @@ void Header_Update(Header *const self, double deltaTime)
         Box_SetX(lineBox, fmin(x + (800.0 * deltaTime), self->line_p2_x));
 }
 
-void Header_Draw(Header *const self)
+void Header_Draw(Header * const self)
 {
     if (self->gameResult == None)
     {
@@ -146,7 +146,7 @@ void Header_Draw(Header *const self)
     }
 }
 
-void Header_SetCurrentPlayer(Header *const self, Player currentPlayer, Player gameResult)
+void Header_SetCurrentPlayer(Header * const self, Player currentPlayer, Player gameResult)
 {
     self->currentPlayer = currentPlayer;
     self->gameResult = gameResult;
@@ -167,16 +167,19 @@ void Header_SetCurrentPlayer(Header *const self, Player currentPlayer, Player ga
     }
 }
 
-void Header_CreateResultText(Header *const self)
+void Header_CreateResultText(Header * const self)
 {
     self->result = Texture_New(self->renderer);
-    Texture_SetupText(self->result, "...", 24, &(SDL_Color) {30, 120, 120, 255});
+
+    Texture_SetText(self->result, "...");
+    Texture_SetTextSize(self->result, 24);
+    Texture_SetTextColorRGB(self->result, 30, 120, 120);
     Texture_MakeText(self->result);
 
     Header_SetupResultText(self);
 }
 
-void Header_CreateBackgrounds(Header *const self)
+void Header_CreateBackgrounds(Header * const self)
 {
     int w = 302, h = 58;
     int x = self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - w) / 2);
@@ -193,10 +196,13 @@ void Header_CreateBackgrounds(Header *const self)
     Rectangle_SetColorRGBA(self->background2, 230, 240, 240, 255);
 }
 
-void Header_CreatePlayer1Text(Header *const self)
+void Header_CreatePlayer1Text(Header * const self)
 {
     self->player1 = Texture_New(self->renderer);
-    Texture_SetupText(self->player1, "Jogador 1", 20, &(SDL_Color) {30, 120, 120, 255});
+
+    Texture_SetText(self->player1, "Jogador 1");
+    Texture_SetTextSize(self->player1, 20);
+    Texture_SetTextColorRGB(self->player1, 30, 120, 120);
     Texture_MakeText(self->player1);
 
     self->player1Icon = Texture_New(self->renderer);
@@ -205,10 +211,13 @@ void Header_CreatePlayer1Text(Header *const self)
     Header_SetupPlayer1Text(self);
 }
 
-void Header_CreatePlayer2Text(Header *const self)
+void Header_CreatePlayer2Text(Header * const self)
 {
     self->player2 = Texture_New(self->renderer);
-    Texture_SetupText(self->player2, "Jogador 2", 20, &(SDL_Color) {30, 120, 120, 255});
+
+    Texture_SetText(self->player2, "Jogador 2");
+    Texture_SetTextSize(self->player2, 20);
+    Texture_SetTextColorRGB(self->player2, 30, 120, 120);
     Texture_MakeText(self->player2);
 
     self->player2Icon = Texture_New(self->renderer);
@@ -217,7 +226,7 @@ void Header_CreatePlayer2Text(Header *const self)
     Header_SetupPlayer2Text(self);
 }
 
-void Header_SetupResultText(Header *const self)
+void Header_SetupResultText(Header * const self)
 {
     int w = Texture_GetWidth(self->result);
     int h = Texture_GetHeight(self->result);
@@ -226,7 +235,7 @@ void Header_SetupResultText(Header *const self)
     Box_SetPosition(Texture_Box(self->result), self->sceneGameRect->sidebar_w + ((self->sceneGameRect->content_w - w) / 2), 26);
 }
 
-void Header_SetupPlayer1Text(Header *const self)
+void Header_SetupPlayer1Text(Header * const self)
 {
     int text_w = Texture_GetWidth(self->player1);
     int text_h = Texture_GetHeight(self->player1);
@@ -243,7 +252,7 @@ void Header_SetupPlayer1Text(Header *const self)
     Box_SetPosition(Texture_Box(self->player1Icon), icon_x, 32);
 }
 
-void Header_SetupPlayer2Text(Header *const self)
+void Header_SetupPlayer2Text(Header * const self)
 {
     int text_w = Texture_GetWidth(self->player2);
     int text_h = Texture_GetHeight(self->player2);

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,12 +26,12 @@ SOFTWARE.
 
 #include <SDL2/SDL.h>
 
-typedef struct BasicSceneManager BasicSceneManager;
+typedef struct SceneManager SceneManager;
 
 typedef struct SceneGame SceneGame;
 
-SceneGame *SceneGame_OnNew(BasicSceneManager *sceneManager);
-void SceneGame_OnDelete(SceneGame *const self);
-void SceneGame_OnProcessEvent(SceneGame *const self, const SDL_Event *event);
-void SceneGame_OnUpdate(SceneGame *const self, double deltaTime);
-void SceneGame_OnDraw(SceneGame *const self);
+SceneGame *SceneGame_OnNew(SceneManager *sceneManager);
+void SceneGame_OnDelete(SceneGame * const self);
+void SceneGame_OnProcessEvent(SceneGame * const self, const SDL_Event *event);
+void SceneGame_OnUpdate(SceneGame * const self, double deltaTime);
+void SceneGame_OnDraw(SceneGame * const self);

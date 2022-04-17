@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -56,14 +56,14 @@ struct Sidebar
     Texture *tiedCountText;
 };
 
-void Sidebar_SetupSizes(Sidebar *const self);
-void Sidebar_CreateTextures(Sidebar *const self);
-void Sidebar_UpdateTextRect(Sidebar *const self, Texture *texture, int y);
-void Sidebar_UpdateText(Sidebar *const self, Texture *texture, int pos_y, int count);
+void Sidebar_SetupSizes(Sidebar * const self);
+void Sidebar_CreateTextures(Sidebar * const self);
+void Sidebar_UpdateTextRect(Sidebar * const self, Texture *texture, int y);
+void Sidebar_UpdateText(Sidebar * const self, Texture *texture, int pos_y, int count);
 
 Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 {
-    Sidebar *const self = malloc(sizeof (Sidebar));
+    Sidebar * const self = malloc(sizeof (Sidebar));
 
     self->renderer = renderer;
     self->sceneGameRect = sceneGameRect;
@@ -75,7 +75,7 @@ Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
     return self;
 }
 
-void Sidebar_Delete(Sidebar *const self)
+void Sidebar_Delete(Sidebar * const self)
 {
     if (!self)
         return;
@@ -90,7 +90,7 @@ void Sidebar_Delete(Sidebar *const self)
     free(self);
 }
 
-void Sidebar_Draw(Sidebar *const self)
+void Sidebar_Draw(Sidebar * const self)
 {
     Rectangle_Draw(self->background);
     Rectangle_Draw(self->verticalLine);
@@ -105,22 +105,22 @@ void Sidebar_Draw(Sidebar *const self)
     Texture_Draw(self->tiedCountText);
 }
 
-void Sidebar_SetPlayer1WinText(Sidebar *const self, int count)
+void Sidebar_SetPlayer1WinText(Sidebar * const self, int count)
 {
     Sidebar_UpdateText(self, self->player1WinText, self->player1Win_y, count);
 }
 
-void Sidebar_SetPlayer2WinText(Sidebar *const self, int count)
+void Sidebar_SetPlayer2WinText(Sidebar * const self, int count)
 {
     Sidebar_UpdateText(self, self->player2WinText, self->player2Win_y, count);
 }
 
-void Sidebar_SetTiedCountText(Sidebar *const self, int count)
+void Sidebar_SetTiedCountText(Sidebar * const self, int count)
 {
     Sidebar_UpdateText(self, self->tiedCountText, self->tiedCount_y, count);
 }
 
-void Sidebar_SetupSizes(Sidebar *const self)
+void Sidebar_SetupSizes(Sidebar * const self)
 {
     const int border_w = 2;
     const int title_margin = 30;
@@ -152,7 +152,7 @@ void Sidebar_SetupSizes(Sidebar *const self)
     Box_SetPosition(Rectangle_Box(self->horizontalLine2), 0, third_block - border_w);
 }
 
-void Sidebar_CreateTextures(Sidebar *const self)
+void Sidebar_CreateTextures(Sidebar * const self)
 {
     self->player1Text = Texture_New(self->renderer);
     self->player1WinText = Texture_New(self->renderer);
@@ -161,12 +161,26 @@ void Sidebar_CreateTextures(Sidebar *const self)
     self->tiedText = Texture_New(self->renderer);
     self->tiedCountText = Texture_New(self->renderer);
 
-    Texture_SetupText(self->player1Text, "Vitórias do jogador 1", 16, &self->textColor);
-    Texture_SetupText(self->player1WinText, "0", 40, &self->textColor);
-    Texture_SetupText(self->player2Text, "Vitórias do jogador 2", 16, &self->textColor);
-    Texture_SetupText(self->player2WinText, "0", 40, &self->textColor);
-    Texture_SetupText(self->tiedText, "Total de empates", 16, &self->textColor);
-    Texture_SetupText(self->tiedCountText, "0", 40, &self->textColor);
+    Texture_SetText(self->player1Text, "Vitórias do jogador 1");
+    Texture_SetText(self->player1WinText, "0");
+    Texture_SetText(self->player2Text, "Vitórias do jogador 2");
+    Texture_SetText(self->player2WinText, "0");
+    Texture_SetText(self->tiedText, "Total de empates");
+    Texture_SetText(self->tiedCountText, "0");
+
+    Texture_SetTextSize(self->player1Text, 16);
+    Texture_SetTextSize(self->player1WinText, 40);
+    Texture_SetTextSize(self->player2Text, 16);
+    Texture_SetTextSize(self->player2WinText, 40);
+    Texture_SetTextSize(self->tiedText, 16);
+    Texture_SetTextSize(self->tiedCountText, 40);
+
+    Texture_SetTextColor(self->player1Text, &self->textColor);
+    Texture_SetTextColor(self->player1WinText, &self->textColor);
+    Texture_SetTextColor(self->player2Text, &self->textColor);
+    Texture_SetTextColor(self->player2WinText, &self->textColor);
+    Texture_SetTextColor(self->tiedText, &self->textColor);
+    Texture_SetTextColor(self->tiedCountText, &self->textColor);
 
     Texture_MakeText(self->player1Text);
     Texture_MakeText(self->player1WinText);
@@ -183,7 +197,7 @@ void Sidebar_CreateTextures(Sidebar *const self)
     Sidebar_UpdateTextRect(self, self->tiedCountText, self->tiedCount_y);
 }
 
-void Sidebar_UpdateTextRect(Sidebar *const self, Texture *texture, int y)
+void Sidebar_UpdateTextRect(Sidebar * const self, Texture *texture, int y)
 {
     (void)self;
 
@@ -194,7 +208,7 @@ void Sidebar_UpdateTextRect(Sidebar *const self, Texture *texture, int y)
     Box_SetPosition(Texture_Box(texture), (self->width - w) / 2, y);
 }
 
-void Sidebar_UpdateText(Sidebar *const self, Texture *texture, int pos_y, int count)
+void Sidebar_UpdateText(Sidebar * const self, Texture *texture, int pos_y, int count)
 {
     char text[6];
 

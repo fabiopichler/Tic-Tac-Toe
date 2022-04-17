@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,23 +38,27 @@ typedef struct Texture Texture;
 
 typedef struct Button Button;
 
-typedef void (*Button_OnPressEvent)(Button *const button, void *user);
+typedef void (*Button_OnPressEvent)(Button * const button, void *user);
 
 Button *Button_New(SDL_Renderer *renderer);
-void Button_Delete(Button *self);
-void Button_SetBackgroundColor(Button *self, const SDL_Color *color);
-void Button_SetBackgroundHoverColor(Button *self, const SDL_Color *color);
-void Button_SetBackgroundPressedColor(Button *self, const SDL_Color *color);
-void Button_SetTextColor(Button *self, const SDL_Color *color);
-bool Button_SetText(Button *self, const char *text, int ptsize);
-void Button_SetIcon(Button *self, Texture *texture);
-void Button_SetOnPressEvent(Button *self, Button_OnPressEvent callback, void *userdata);
-void *Button_GetEventUserData(Button *self);
-void Button_ProcessEvent(Button *self, const SDL_Event *event);
-void Button_Draw(Button *self);
+void Button_Delete(Button * const self);
+void Button_SetBackgroundColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b);
+void Button_SetBackgroundColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+void Button_SetBackgroundHoverColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b);
+void Button_SetBackgroundHoverColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+void Button_SetBackgroundPressedColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b);
+void Button_SetBackgroundPressedColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+void Button_SetTextColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b);
+void Button_SetTextColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+bool Button_SetText(Button * const self, const char *text, int ptsize);
+void Button_SetIcon(Button * const self, Texture *texture);
+void Button_SetOnPressEvent(Button * const self, Button_OnPressEvent callback, void *userdata);
+void *Button_GetEventUserData(Button * const self);
+void Button_ProcessEvent(Button * const self, const SDL_Event *event);
+void Button_Draw(Button * const self);
 
-Box *Button_Box(Button *const self);
-Texture *Button_Icon(Button *const self);
+Box *Button_Box(Button * const self);
+Texture *Button_Icon(Button * const self);
 
 #ifdef __cplusplus
 }

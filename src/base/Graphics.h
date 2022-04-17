@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,8 +35,9 @@ extern "C" {
 typedef struct Graphics Graphics;
 
 Graphics *Graphics_New(Window *window);
-void Graphics_Delete(Graphics *self);
-SDL_Renderer *Graphics_GetRenderer(Graphics *self);
+void Graphics_Delete(Graphics * const self);
+SDL_Renderer *Graphics_GetRenderer(Graphics * const self);
+int SetRenderLogicalSize(Graphics * const self, int w, int h);
 
 #ifdef __cplusplus
 }

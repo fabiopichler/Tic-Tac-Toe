@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,14 +35,15 @@ typedef struct Box Box;
 typedef struct Rectangle Rectangle;
 
 Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height);
-void Rectangle_Delete(Rectangle *const self);
-void Rectangle_Draw(Rectangle *const self);
+void Rectangle_Delete(Rectangle * const self);
+void Rectangle_Draw(Rectangle * const self);
 
-void Rectangle_SetColor(Rectangle *const self, SDL_Color color);
-void Rectangle_SetColorRGBA(Rectangle *const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
-SDL_Color Rectangle_Color(Rectangle *const self);
+void Rectangle_SetColor(Rectangle * const self, SDL_Color color);
+void Rectangle_SetColorRGB(Rectangle * const self, uint8_t r, uint8_t g, uint8_t b);
+void Rectangle_SetColorRGBA(Rectangle * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+SDL_Color Rectangle_Color(Rectangle * const self);
 
-Box *Rectangle_Box(Rectangle *const self);
+Box *Rectangle_Box(Rectangle * const self);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,8 +31,8 @@ SOFTWARE.
 typedef struct Sidebar Sidebar;
 
 Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect);
-void Sidebar_Delete(Sidebar *const self);
-void Sidebar_Draw(Sidebar *const self);
-void Sidebar_SetPlayer1WinText(Sidebar *const self, int count);
-void Sidebar_SetPlayer2WinText(Sidebar *const self, int count);
-void Sidebar_SetTiedCountText(Sidebar *const self, int count);
+void Sidebar_Delete(Sidebar * const self);
+void Sidebar_Draw(Sidebar * const self);
+void Sidebar_SetPlayer1WinText(Sidebar * const self, int count);
+void Sidebar_SetPlayer2WinText(Sidebar * const self, int count);
+void Sidebar_SetTiedCountText(Sidebar * const self, int count);

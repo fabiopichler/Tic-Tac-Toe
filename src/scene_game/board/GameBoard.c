@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -60,14 +60,14 @@ struct GameBoard
     double p1Angle;
 };
 
-void GameBoard_SetupBoard(GameBoard *const self);
-void GameBoard_OnItemPress(Button *const button, void *user);
-void GameBoard_Check(GameBoard *const self, BoardItem *item);
-Player GameBoard_CheckWinner(GameBoard *const self);
+void GameBoard_SetupBoard(GameBoard * const self);
+void GameBoard_OnItemPress(Button * const button, void *user);
+void GameBoard_Check(GameBoard * const self, BoardItem *item);
+Player GameBoard_CheckWinner(GameBoard * const self);
 
 GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 {
-    GameBoard *const self = malloc(sizeof (GameBoard));
+    GameBoard * const self = malloc(sizeof (GameBoard));
 
     const int board_size = 304;
     int board_x = sceneGameRect->sidebar_w + ((sceneGameRect->content_w - board_size) / 2);
@@ -98,7 +98,7 @@ GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
     return self;
 }
 
-void GameBoard_Delete(GameBoard *const self)
+void GameBoard_Delete(GameBoard * const self)
 {
     if (!self)
         return;
@@ -113,14 +113,14 @@ void GameBoard_Delete(GameBoard *const self)
     free(self);
 }
 
-void GameBoard_ProcessEvent(GameBoard *const self, const SDL_Event *event)
+void GameBoard_ProcessEvent(GameBoard * const self, const SDL_Event *event)
 {
     for (int row = 0; row < 3; ++row)
         for (int col = 0; col < 3; ++col)
             Button_ProcessEvent(self->board.items[row][col].button, event);
 }
 
-void GameBoard_Update(GameBoard *const self, double deltaTime)
+void GameBoard_Update(GameBoard * const self, double deltaTime)
 {
     self->p1Angle = self->p1Angle + 30.0 * deltaTime;
 
@@ -140,7 +140,7 @@ void GameBoard_Update(GameBoard *const self, double deltaTime)
     }
 }
 
-void GameBoard_Draw(GameBoard *const self)
+void GameBoard_Draw(GameBoard * const self)
 {
     Rectangle_Draw(self->background);
 
@@ -149,23 +149,23 @@ void GameBoard_Draw(GameBoard *const self)
             Button_Draw(self->board.items[row][col].button);
 }
 
-void GameBoard_SetGameEvent(GameBoard *const self, GameEventHandler callback, void *user)
+void GameBoard_SetGameEvent(GameBoard * const self, GameEventHandler callback, void *user)
 {
     self->gameEvent.function = callback;
     self->gameEvent.userdata = user;
 }
 
-int GameBoard_GetCurrentPlayer(GameBoard *const self)
+int GameBoard_GetCurrentPlayer(GameBoard * const self)
 {
     return self->player;
 }
 
-int GameBoard_GetGameResult(GameBoard *const self)
+int GameBoard_GetGameResult(GameBoard * const self)
 {
     return self->gameResult;
 }
 
-void GameBoard_SetupBoard(GameBoard *const self)
+void GameBoard_SetupBoard(GameBoard * const self)
 {
     for (int row = 0; row < 3; ++row)
     {
@@ -180,14 +180,14 @@ void GameBoard_SetupBoard(GameBoard *const self)
                             self->board.rect.y + (row * self->board.item_size) + (row * self->board.space));
 
             Button_SetOnPressEvent(item->button, GameBoard_OnItemPress, self);
-            Button_SetBackgroundColor(item->button, &(SDL_Color) {210, 240, 240, 255});
-            Button_SetBackgroundHoverColor(item->button, &(SDL_Color) {225, 255, 255, 255});
-            Button_SetBackgroundPressedColor(item->button, &(SDL_Color) {180, 230, 230, 255});
+            Button_SetBackgroundColorRGB(item->button, 210, 240, 240);
+            Button_SetBackgroundHoverColorRGB(item->button, 225, 255, 255);
+            Button_SetBackgroundPressedColorRGB(item->button, 180, 230, 230);
         }
     }
 }
 
-void GameBoard_OnItemPress(Button *const button, void *user)
+void GameBoard_OnItemPress(Button * const button, void *user)
 {
     GameBoard *self = user;
 
@@ -200,13 +200,14 @@ void GameBoard_OnItemPress(Button *const button, void *user)
             if (item->button == button)
             {
                 GameBoard_Check(self, item);
+
                 return;
             }
         }
     }
 }
 
-void GameBoard_Check(GameBoard *const self, BoardItem *item)
+void GameBoard_Check(GameBoard * const self, BoardItem *item)
 {
     if (item->player != None || self->gameResult != None)
         return;
@@ -223,7 +224,7 @@ void GameBoard_Check(GameBoard *const self, BoardItem *item)
     self->round++;
 }
 
-Player GameBoard_CheckWinner(GameBoard *const self)
+Player GameBoard_CheckWinner(GameBoard * const self)
 {
     Player player = CheckBoardRows(3, self->board.items);
 

@@ -1,6 +1,6 @@
-MIT License
-
-Copyright (c) 2020-2022 Fábio Pichler
+//-------------------------------------------------------------------------------
+// Copyright (c) 2020-2022 Fábio Pichler
+/*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-------------------------------------------------------------------------------*/
+
+#pragma once
+
+#ifdef USE_DATA_ZIP
+
+#include <SDL2/SDL.h>
+#include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+bool DataZipFile_Init();
+void DataZipFile_Close();
+int DataZipFile_Read(const char *filename, char **buffer);
+SDL_RWops *DataZipFile_Load_RW(const char *filename);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // USE_DATA_ZIP

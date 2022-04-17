@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,7 +33,7 @@ struct Graphics
 
 Graphics *Graphics_New(Window *window)
 {
-    Graphics *const self = malloc(sizeof (Graphics));
+    Graphics * const self = malloc(sizeof (Graphics));
 
     self->renderer = SDL_CreateRenderer(
                 Window_GetSDLWindow(window),
@@ -49,21 +49,27 @@ Graphics *Graphics_New(Window *window)
     }
 
     SDL_Rect rect = Window_GetRect(window);
-    SDL_RenderSetLogicalSize(self->renderer, rect.w, rect.h);
+    SetRenderLogicalSize(self, rect.w, rect.h);
 
     return self;
 }
 
-void Graphics_Delete(Graphics *const self)
+void Graphics_Delete(Graphics * const self)
 {
     if (!self)
         return;
 
     SDL_DestroyRenderer(self->renderer);
+
     free(self);
 }
 
-SDL_Renderer *Graphics_GetRenderer(Graphics *const self)
+SDL_Renderer *Graphics_GetRenderer(Graphics * const self)
 {
     return self->renderer;
+}
+
+int SetRenderLogicalSize(Graphics * const self, int w, int h)
+{
+    return SDL_RenderSetLogicalSize(self->renderer, w, h);
 }

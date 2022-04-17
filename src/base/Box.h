@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,30 +31,30 @@ extern "C" {
 #endif
 
 typedef struct Box Box;
-typedef void (*Box_OnUpdateEvent)(Box *const box, void *userdata);
+typedef void (*Box_OnUpdateEvent)(Box * const box, void *userdata);
 
 Box *Box_New(float x, float y, float width, float height);
-void Box_Delete(Box *const self);
+void Box_Delete(Box * const self);
 
-void Box_SetOnPressEvent(Box *self, Box_OnUpdateEvent callback, void *userdata);
-void *Box_GetEventUserData(Box *self);
+void Box_SetOnPressEvent(Box * const self, Box_OnUpdateEvent callback, void *userdata);
+void *Box_GetEventUserData(Box * const self);
 
-void Box_SetSize(Box *const self, float w, float h);
-void Box_SetPosition(Box *const self, float x, float y);
+void Box_SetSize(Box * const self, float w, float h);
+void Box_SetPosition(Box * const self, float x, float y);
 
-void Box_SetX(Box *const self, float x);
-void Box_SetY(Box *const self, float y);
-void Box_SetWidth(Box *const self, float w);
-void Box_SetHeight(Box *const self, float h);
+void Box_SetX(Box * const self, float x);
+void Box_SetY(Box * const self, float y);
+void Box_SetWidth(Box * const self, float w);
+void Box_SetHeight(Box * const self, float h);
 
-void Box_Move(Box *const self, float velX, float velY);
+void Box_Move(Box * const self, float velX, float velY);
 
-float Box_X(Box *const self);
-float Box_Y(Box *const self);
-float Box_Width(Box *const self);
-float Box_Height(Box *const self);
+float Box_X(Box * const self);
+float Box_Y(Box * const self);
+float Box_Width(Box * const self);
+float Box_Height(Box * const self);
 
-const SDL_FRect *Box_Rect(Box *const self);
+const SDL_FRect *Box_Rect(Box * const self);
 
 #ifdef __cplusplus
 }

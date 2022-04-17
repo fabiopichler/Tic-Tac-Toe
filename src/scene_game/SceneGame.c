@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,7 +27,7 @@ SOFTWARE.
 #include "board/GameBoard.h"
 #include "../base/Window.h"
 #include "../base/Graphics.h"
-#include "../base/BasicSceneManager.h"
+#include "../base/SceneManager.h"
 #include "../base/Button.h"
 #include "../base/Texture.h"
 #include "../base/Rectangle.h"
@@ -54,16 +54,16 @@ struct SceneGame
     Footer *footer;
 };
 
-void SceneGame_NewGame(SceneGame *const self);
-void SceneGame_OnPressed(Button *const button, void *user);
-void SceneGame_OnGameEvent(GameBoard *const game, void *user);
+void SceneGame_NewGame(SceneGame * const self);
+void SceneGame_OnPressed(Button * const button, void *user);
+void SceneGame_OnGameEvent(GameBoard * const game, void *user);
 
-SceneGame *SceneGame_OnNew(BasicSceneManager *sceneManager)
+SceneGame *SceneGame_OnNew(SceneManager *sceneManager)
 {
-    SceneGame *const self = malloc(sizeof (SceneGame));
+    SceneGame * const self = malloc(sizeof (SceneGame));
 
-    Window *window = BasicSceneManager_Window(sceneManager);
-    Graphics *graphics = BasicSceneManager_Graphics(sceneManager);
+    Window *window = SceneManager_Window(sceneManager);
+    Graphics *graphics = SceneManager_Graphics(sceneManager);
     SDL_Rect windowRect = Window_GetRect(window);
 
     self->sceneGameRect.window_w = windowRect.w;
@@ -95,7 +95,7 @@ SceneGame *SceneGame_OnNew(BasicSceneManager *sceneManager)
     return self;
 }
 
-void SceneGame_OnDelete(SceneGame *const self)
+void SceneGame_OnDelete(SceneGame * const self)
 {
     if (!self)
         return;
@@ -109,20 +109,20 @@ void SceneGame_OnDelete(SceneGame *const self)
     free(self);
 }
 
-void SceneGame_OnProcessEvent(SceneGame *const self, const SDL_Event *event)
+void SceneGame_OnProcessEvent(SceneGame * const self, const SDL_Event *event)
 {
     Header_ProcessEvent(self->header, event);
     Footer_ProcessEvent(self->footer, event);
     GameBoard_ProcessEvent(self->gameBoard, event);
 }
 
-void SceneGame_OnUpdate(SceneGame *const self, double deltaTime)
+void SceneGame_OnUpdate(SceneGame * const self, double deltaTime)
 {
     Header_Update(self->header, deltaTime);
     GameBoard_Update(self->gameBoard, deltaTime);
 }
 
-void SceneGame_OnDraw(SceneGame *const self)
+void SceneGame_OnDraw(SceneGame * const self)
 {
     Rectangle_Draw(self->background);
     GameBoard_Draw(self->gameBoard);
@@ -131,7 +131,7 @@ void SceneGame_OnDraw(SceneGame *const self)
     Sidebar_Draw(self->sidebar);
 }
 
-void SceneGame_NewGame(SceneGame *const self)
+void SceneGame_NewGame(SceneGame * const self)
 {
     GameBoard_Delete(self->gameBoard);
 
@@ -141,15 +141,15 @@ void SceneGame_NewGame(SceneGame *const self)
     Header_SetCurrentPlayer(self->header, Player_1, None);
 }
 
-void SceneGame_OnPressed(Button *const button, void *user)
+void SceneGame_OnPressed(Button * const button, void *user)
 {
     (void)button;
     SceneGame_NewGame(user);
 }
 
-void SceneGame_OnGameEvent(GameBoard *const gameBoard, void *user)
+void SceneGame_OnGameEvent(GameBoard * const gameBoard, void *user)
 {
-    SceneGame *const self = user;
+    SceneGame * const self = user;
     Player player = GameBoard_GetCurrentPlayer(gameBoard);
     Player gameResult = GameBoard_GetGameResult(gameBoard);
 

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,6 +23,7 @@ SOFTWARE.
 -------------------------------------------------------------------------------*/
 
 #include "Window.h"
+#include "DataZipFile.h"
 
 #include <SDL2/SDL_image.h>
 
@@ -34,13 +35,13 @@ struct Window
     SDL_Rect rect;
 };
 
-Window *Window_New(int width, int height)
+Window *Window_New(int width, int height, const char *title)
 {
-    Window *const self = malloc(sizeof (Window));
+    Window * const self = malloc(sizeof (Window));
 
     self->rect = (SDL_Rect) { .x = 0, .y = 0, .w = width, .h = height };
 
-    self->window = SDL_CreateWindow("Tic Tac Toe",
+    self->window = SDL_CreateWindow(title,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 self->rect.w,
@@ -54,28 +55,41 @@ Window *Window_New(int width, int height)
         exit(-1);
     }
 
-    SDL_Surface *icon = IMG_Load("images/window-icon.png");
-    SDL_SetWindowIcon(self->window, icon);
-    SDL_FreeSurface(icon);
-
     return self;
 }
 
-void Window_Delete(Window *const self)
+void Window_Delete(Window * const self)
 {
     if (!self)
         return;
 
     SDL_DestroyWindow(self->window);
+
     free(self);
 }
 
-SDL_Window *Window_GetSDLWindow(Window *const self)
+void Window_SetWindowIcon(Window * const self, const char *filename)
+{
+#ifdef USE_DATA_ZIP
+    SDL_Surface *surface = IMG_Load_RW(DataZipFile_Load_RW(filename), 1);
+#else
+    SDL_Surface *surface = IMG_Load(filename);
+#endif
+    SDL_SetWindowIcon(self->window, surface);
+    SDL_FreeSurface(surface);
+}
+
+void Window_SetWindowTitle(Window * const self, const char *title)
+{
+    SDL_SetWindowTitle(self->window, title);
+}
+
+SDL_Window *Window_GetSDLWindow(Window * const self)
 {
     return self->window;
 }
 
-SDL_Rect Window_GetRect(Window *const self)
+SDL_Rect Window_GetRect(Window * const self)
 {
     return self->rect;
 }

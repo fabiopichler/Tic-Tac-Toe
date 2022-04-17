@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,18 +22,17 @@ SOFTWARE.
 
 -------------------------------------------------------------------------------*/
 
-#include "BasicSceneManager.h"
+#include "SceneManager.h"
 #include "Window.h"
 #include "Graphics.h"
-
-#include <SDL2/SDL.h>
+#include "private/Timer.h"
 
 #ifdef __EMSCRIPTEN__
-    #include <emscripten.h>
-    #include <emscripten/html5.h>
+  #include <emscripten.h>
+  #include <emscripten/html5.h>
 #endif
 
-struct BasicSceneManager
+struct SceneManager
 {
     SDL_Event event;
     uint64_t lastPerformanceCounter;
@@ -41,18 +40,20 @@ struct BasicSceneManager
     Graphics *graphics;
     SDL_Renderer *renderer;
 
-    BasicSceneManager_CurrentScene newScene;
+    SceneManager_CurrentScene newScene;
 
     struct
     {
-        BasicSceneManager_CurrentScene func;
+        SceneManager_CurrentScene func;
         void *self;
     } scene;
+
+    Timer *timer;
 };
 
-static void OverrideSceneFunctions(BasicSceneManager_CurrentScene *func)
+static void OverrideSceneFunctions(SceneManager_CurrentScene *func)
 {
-    *func = (BasicSceneManager_CurrentScene) {
+    *func = (SceneManager_CurrentScene) {
             .onNew = NULL,
             .onDelete = NULL,
             .onProcessEvent = NULL,
@@ -61,14 +62,14 @@ static void OverrideSceneFunctions(BasicSceneManager_CurrentScene *func)
         };
 }
 
-static void BasicSceneManager_InitScene(BasicSceneManager *const self);
-static void BasicSceneManager_Update(BasicSceneManager *const self);
-static void BasicSceneManager_Draw(BasicSceneManager *const self);
-static bool BasicSceneManager_MainLoop(BasicSceneManager *const self);
+void SceneManager_InitScene(SceneManager * const self);
+void SceneManager_Update(SceneManager * const self);
+void SceneManager_Draw(SceneManager * const self);
+bool SceneManager_MainLoop(SceneManager * const self);
 
-BasicSceneManager *BasicSceneManager_New(Window *window, Graphics *graphics)
+SceneManager *SceneManager_New(Window *window, Graphics *graphics)
 {
-    BasicSceneManager *const self = malloc(sizeof (BasicSceneManager));
+    SceneManager * const self = malloc(sizeof (SceneManager));
 
     self->window = window;
     self->graphics = graphics;
@@ -79,23 +80,30 @@ BasicSceneManager *BasicSceneManager_New(Window *window, Graphics *graphics)
     OverrideSceneFunctions(&self->scene.func);
     self->scene.self = NULL;
 
+    self->timer = Timer_New();
+
     return self;
 }
 
-void BasicSceneManager_Delete(BasicSceneManager *const self)
+void SceneManager_Delete(SceneManager * const self)
 {
+    if (!self)
+        return;
+
+    Timer_Delete(self->timer);
+
     if (self->scene.func.onDelete)
         self->scene.func.onDelete(self->scene.self);
 
     free(self);
 }
 
-void BasicSceneManager_GoTo(BasicSceneManager *const self, const BasicSceneManager_CurrentScene *scene)
+void SceneManager_GoTo(SceneManager * const self, const SceneManager_CurrentScene *scene)
 {
     self->newScene = *scene;
 }
 
-void BasicSceneManager_InitScene(BasicSceneManager *const self)
+void SceneManager_InitScene(SceneManager * const self)
 {
     if (self->newScene.onNew)
     {
@@ -109,9 +117,19 @@ void BasicSceneManager_InitScene(BasicSceneManager *const self)
     }
 }
 
-bool BasicSceneManager_MainLoop(BasicSceneManager *const self)
+void SceneManager_AddTimer(SceneManager * const self, Uint32 interval, SceneManager_TimerCallback callback, void *userdata)
 {
-    BasicSceneManager_InitScene(self);
+    Timer_Add(self->timer, interval, callback, userdata);
+}
+
+void SceneManager_ClearTimers(SceneManager * const self)
+{
+    Timer_Clear(self->timer);
+}
+
+bool SceneManager_MainLoop(SceneManager * const self)
+{
+    SceneManager_InitScene(self);
 
     while (SDL_PollEvent(&self->event))
     {
@@ -120,10 +138,14 @@ bool BasicSceneManager_MainLoop(BasicSceneManager *const self)
 
         if (self->scene.func.onProcessEvent)
             self->scene.func.onProcessEvent(self->scene.self, &self->event);
+
+        Timer_ProcessEvent(self->timer, self, &self->event);
     }
 
-    BasicSceneManager_Update(self);
-    BasicSceneManager_Draw(self);
+    Timer_Update(self->timer, self);
+
+    SceneManager_Update(self);
+    SceneManager_Draw(self);
 
     return true;
 }
@@ -131,28 +153,30 @@ bool BasicSceneManager_MainLoop(BasicSceneManager *const self)
 #ifdef __EMSCRIPTEN__
 static int FrameLoop(double time, void *userData)
 {
-    BasicSceneManager *const self = userData;
+    (void)time;
 
-    if (BasicSceneManager_MainLoop(self))
+    SceneManager * const self = userData;
+
+    if (SceneManager_MainLoop(self))
         return EM_TRUE;
 
     return EM_FALSE;
 }
 #endif
 
-void BasicSceneManager_Run(BasicSceneManager *const self)
+void SceneManager_Run(SceneManager * const self)
 {
 #ifdef __EMSCRIPTEN__
-    //emscripten_set_main_loop_arg(MainLoop, self, 60, 1);
+    //emscripten_set_main_loop_arg(MainLoop, self, 0, 1);
     emscripten_request_animation_frame_loop(FrameLoop, self);
 #else
     while (1)
-        if (!BasicSceneManager_MainLoop(self))
+        if (!SceneManager_MainLoop(self))
             return;
 #endif
 }
 
-void BasicSceneManager_Update(BasicSceneManager *const self)
+void SceneManager_Update(SceneManager * const self)
 {
     Uint64 now = SDL_GetPerformanceCounter();
     double deltaTime = (double)(now - self->lastPerformanceCounter) / (double)SDL_GetPerformanceFrequency();
@@ -162,7 +186,7 @@ void BasicSceneManager_Update(BasicSceneManager *const self)
         self->scene.func.onUpdate(self->scene.self, deltaTime);
 }
 
-void BasicSceneManager_Draw(BasicSceneManager *const self)
+void SceneManager_Draw(SceneManager * const self)
 {
     SDL_SetRenderDrawColor(self->renderer, 0, 0, 0, 255);
     SDL_RenderClear(self->renderer);
@@ -173,12 +197,12 @@ void BasicSceneManager_Draw(BasicSceneManager *const self)
     SDL_RenderPresent(self->renderer);
 }
 
-Window *BasicSceneManager_Window(BasicSceneManager *const self)
+Window *SceneManager_Window(SceneManager * const self)
 {
     return self->window;
 }
 
-Graphics *BasicSceneManager_Graphics(BasicSceneManager *const self)
+Graphics *SceneManager_Graphics(SceneManager * const self)
 {
     return self->graphics;
 }

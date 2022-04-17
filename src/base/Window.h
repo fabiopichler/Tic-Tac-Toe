@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------
-// Copyright (c) 2020 Fábio Pichler
+// Copyright (c) 2020-2022 Fábio Pichler
 /*-------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,10 +32,12 @@ extern "C" {
 
 typedef struct Window Window;
 
-Window *Window_New(int width, int height);
-void Window_Delete(Window *self);
-SDL_Window *Window_GetSDLWindow(Window *self);
-SDL_Rect Window_GetRect(Window *self);
+Window *Window_New(int width, int height, const char *title);
+void Window_Delete(Window * const self);
+void Window_SetWindowIcon(Window * const self, const char *filename);
+void Window_SetWindowTitle(Window * const self, const char *title);
+SDL_Window *Window_GetSDLWindow(Window * const self);
+SDL_Rect Window_GetRect(Window * const self);
 
 #ifdef __cplusplus
 }
