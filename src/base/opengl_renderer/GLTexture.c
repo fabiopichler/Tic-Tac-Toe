@@ -104,6 +104,9 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
         }
     }
 
+    if (image->pitch / image->bytesPerPixel != image->width)
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, image->pitch / image->bytesPerPixel);
+
     glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->pixels);
 
     if (glGetError() != GL_NO_ERROR)
@@ -117,6 +120,7 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
 
     SetTextureFilter(filter);
 
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     Texture2D *texture2D = malloc(sizeof (Texture2D));

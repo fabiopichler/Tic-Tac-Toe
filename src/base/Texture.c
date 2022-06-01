@@ -122,13 +122,9 @@ bool Texture_MakeText(Texture * const self)
     }
 
     SDL_Color color = { self->textColor.r, self->textColor.g, self->textColor.b, self->textColor.a };
-    SDL_Surface *text = TTF_RenderUTF8_Blended(self->font, self->text, color);
-    SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, text->w, text->h, 32, SDL_PIXELFORMAT_BGRA32);
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(self->font, self->text, color);
 
-    SDL_BlitSurface(text, NULL, surface, NULL);
-    SDL_FreeSurface(text);
-
-    return Texture_CreateTexture(self, surface, Linear);
+    return Texture_CreateTexture(self, surface, Nearest);
 }
 
 void Texture_SetText(Texture * const self, const char *text)
@@ -200,6 +196,7 @@ bool Texture_CreateTexture(Texture * const self, SDL_Surface *surface, TextureFi
             .width = surface->w,
             .height = surface->h,
             .bytesPerPixel = surface->format->BytesPerPixel,
+            .pitch = surface->pitch,
             .rmask = surface->format->Rmask,
             .pixels = surface->pixels,
         };

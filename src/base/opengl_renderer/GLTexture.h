@@ -54,6 +54,7 @@ typedef struct Image
     int width;
     int height;
     int bytesPerPixel;
+    int pitch;
     uint32_t rmask;
     unsigned char *pixels;
 } Image;
