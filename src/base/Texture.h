@@ -24,31 +24,36 @@ SOFTWARE.
 
 #pragma once
 
-#include <stdbool.h>
+#include "TextureFilter.h"
 
-#include <SDL2/SDL.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+typedef struct Color Color;
+typedef struct IRect IRect;
+
+typedef struct OpenGLRenderer OpenGLRenderer;
 typedef struct Box Box;
 
 typedef struct Texture Texture;
 
-Texture *Texture_New(SDL_Renderer *renderer);
+Texture *Texture_New(OpenGLRenderer *renderer);
 void Texture_Delete(Texture * const self);
 
-bool Texture_LoadImageFromFile(Texture * const self, const char *fileName);
+bool Texture_LoadImageFromFile(Texture * const self, const char *fileName, TextureFilter filter);
 
 bool Texture_MakeText(Texture * const self);
 void Texture_SetText(Texture * const self, const char *text);
 void Texture_SetTextSize(Texture * const self, int ptsize);
-void Texture_SetTextColor(Texture * const self, const SDL_Color *color);
+void Texture_SetTextColor(Texture * const self, const Color *color);
 void Texture_SetTextColorRGB(Texture * const self, uint8_t r, uint8_t g, uint8_t b);
 void Texture_SetTextColorRGBA(Texture * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
-void Texture_SetSourceRect(Texture * const self, SDL_Rect srcrect);
+void Texture_SetSourceRect(Texture * const self, IRect srcrect);
 void Texture_SetAngle(Texture * const self, double angle);
 
 void Texture_Draw(Texture * const self);

@@ -25,6 +25,7 @@ SOFTWARE.
 #include "SceneManager.h"
 #include "Window.h"
 #include "Graphics.h"
+#include "opengl_renderer/OpenGLRenderer.h"
 #include "private/Timer.h"
 
 #ifdef __EMSCRIPTEN__
@@ -32,13 +33,15 @@ SOFTWARE.
   #include <emscripten/html5.h>
 #endif
 
+#include <SDL2/SDL.h>
+
 struct SceneManager
 {
     SDL_Event event;
     uint64_t lastPerformanceCounter;
     Window *window;
     Graphics *graphics;
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
 
     SceneManager_CurrentScene newScene;
 
@@ -117,7 +120,7 @@ void SceneManager_InitScene(SceneManager * const self)
     }
 }
 
-void SceneManager_AddTimer(SceneManager * const self, Uint32 interval, SceneManager_TimerCallback callback, void *userdata)
+void SceneManager_AddTimer(SceneManager * const self, uint32_t interval, SceneManager_TimerCallback callback, void *userdata)
 {
     Timer_Add(self->timer, interval, callback, userdata);
 }
@@ -188,13 +191,12 @@ void SceneManager_Update(SceneManager * const self)
 
 void SceneManager_Draw(SceneManager * const self)
 {
-    SDL_SetRenderDrawColor(self->renderer, 0, 0, 0, 255);
-    SDL_RenderClear(self->renderer);
+    OpenGLRenderer_Clear(self->renderer);
 
     if (self->scene.func.onDraw)
         self->scene.func.onDraw(self->scene.self);
 
-    SDL_RenderPresent(self->renderer);
+    Window_SwapWindow(self->window);
 }
 
 Window *SceneManager_Window(SceneManager * const self)

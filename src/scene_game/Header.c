@@ -37,7 +37,7 @@ struct Header
     float line_p1_x;
     float line_p2_x;
 
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
     SceneGameRect *sceneGameRect;
 
     Rectangle *background1;
@@ -62,7 +62,7 @@ void Header_SetupResultText(Header * const self);
 void Header_SetupPlayer1Text(Header * const self);
 void Header_SetupPlayer2Text(Header * const self);
 
-Header *Header_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
+Header *Header_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect)
 {
     Header * const self = malloc(sizeof (Header));
 
@@ -206,7 +206,7 @@ void Header_CreatePlayer1Text(Header * const self)
     Texture_MakeText(self->player1);
 
     self->player1Icon = Texture_New(self->renderer);
-    Texture_LoadImageFromFile(self->player1Icon, "images/player_1.png");
+    Texture_LoadImageFromFile(self->player1Icon, "images/player_1.png", Nearest);
 
     Header_SetupPlayer1Text(self);
 }
@@ -221,7 +221,7 @@ void Header_CreatePlayer2Text(Header * const self)
     Texture_MakeText(self->player2);
 
     self->player2Icon = Texture_New(self->renderer);
-    Texture_LoadImageFromFile(self->player2Icon, "images/player_2.png");
+    Texture_LoadImageFromFile(self->player2Icon, "images/player_2.png", Nearest);
 
     Header_SetupPlayer2Text(self);
 }

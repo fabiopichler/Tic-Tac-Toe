@@ -24,14 +24,42 @@ SOFTWARE.
 
 #pragma once
 
-#include "SceneGameRect.h"
-#include "board/board_util.h"
+#include "GL.h"
 
-typedef struct Header Header;
+#include <string.h>
 
-Header *Header_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect);
-void Header_Delete(Header * const self);
-void Header_ProcessEvent(Header * const self, const SDL_Event *event);
-void Header_Update(Header * const self, double deltaTime);
-void Header_Draw(Header * const self);
-void Header_SetCurrentPlayer(Header * const self, Player currentPlayer, Player gameResult);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef enum GLProgramLocation_Type
+{
+    Type_Color = 0,
+    Type_Texture = 1,
+    Type_TextureBGRA = 2,
+    _Type_size = 3
+} GLProgramLocation_Type;
+
+typedef struct GLProgramLocation
+{
+    GLuint program;
+    GLint aPosition;
+    GLint aUV;
+    GLint aColor;
+    GLint uProjection;
+    GLint uSampler;
+    GLint uSourcePosition;
+    GLint uTransform;
+} GLProgramLocation;
+
+typedef struct GLProgram GLProgram;
+
+GLProgram *GLProgram_New();
+void GLProgram_Delete(GLProgram * const self);
+
+const GLProgramLocation *GLProgram_InitProgram(GLProgram * const self, GLProgramLocation_Type type);
+const GLProgramLocation *GLProgram_GetProgram(GLProgram * const self, GLProgramLocation_Type type);
+
+#ifdef __cplusplus
+}
+#endif

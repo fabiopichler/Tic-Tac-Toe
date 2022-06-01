@@ -37,6 +37,9 @@ int main(int argc, char *argv[])
 
     App *app = App_New();
 
+    if (!app)
+        return EXIT_FAILURE;
+
     App_Run(app);
     App_Delete(app);
 

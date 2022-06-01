@@ -24,14 +24,17 @@ SOFTWARE.
 
 #pragma once
 
-#include "SceneGameRect.h"
-#include "board/board_util.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef struct Header Header;
+typedef enum TextureFilter
+{
+    Nearest,
+    Linear,
+    Mipmap
+} TextureFilter;
 
-Header *Header_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect);
-void Header_Delete(Header * const self);
-void Header_ProcessEvent(Header * const self, const SDL_Event *event);
-void Header_Update(Header * const self, double deltaTime);
-void Header_Draw(Header * const self);
-void Header_SetCurrentPlayer(Header * const self, Player currentPlayer, Player gameResult);
+#ifdef __cplusplus
+}
+#endif

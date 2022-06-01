@@ -25,8 +25,10 @@ SOFTWARE.
 #include "Texture.h"
 #include "Box.h"
 #include "DataZipFile.h"
+#include "rect.h"
 
 #include "malloc.h"
+#include "opengl_renderer/OpenGLRenderer.h"
 
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -35,8 +37,8 @@ SOFTWARE.
 
 struct Texture
 {
-    SDL_Renderer *renderer;
-    SDL_Texture *texture;
+    OpenGLRenderer *renderer;
+    Texture2D *texture;
     int w;
     int h;
 
@@ -45,15 +47,15 @@ struct Texture
     TTF_Font *font;
     int fontSize;
     bool reloadFont;
-    SDL_Color textColor;
+    Color textColor;
 
-    SDL_Rect srcrect;
+    IRect srcrect;
     double angle;
 };
 
-bool Texture_CreateTexture(Texture * const self, SDL_Surface *surface);
+bool Texture_CreateTexture(Texture * const self, SDL_Surface *surface, TextureFilter filter);
 
-Texture *Texture_New(SDL_Renderer *renderer)
+Texture *Texture_New(OpenGLRenderer *renderer)
 {
     Texture * const self = malloc(sizeof (Texture));
 
@@ -67,9 +69,9 @@ Texture *Texture_New(SDL_Renderer *renderer)
     self->font = NULL;
     self->fontSize = 16;
     self->reloadFont = false;
-    self->textColor = (SDL_Color) {60, 60, 60, 255};
+    self->textColor = (Color) {60, 60, 60, 255};
 
-    self->srcrect = (SDL_Rect) {0, 0, 0, 0};
+    self->srcrect = (IRect) {0, 0, 0, 0};
     self->angle = 0.0;
 
     return self;
@@ -82,14 +84,14 @@ void Texture_Delete(Texture * const self)
 
     Box_Delete(self->box);
 
-    SDL_DestroyTexture(self->texture);
+    OpenGLRenderer_DestroyTexture(self->renderer, self->texture);
     TTF_CloseFont(self->font);
 
     free(self->text);
     free(self);
 }
 
-bool Texture_LoadImageFromFile(Texture * const self, const char *fileName)
+bool Texture_LoadImageFromFile(Texture * const self, const char *fileName, TextureFilter filter)
 {
 #ifdef USE_DATA_ZIP
     SDL_Surface *surface = IMG_Load_RW(DataZipFile_Load_RW(fileName), 1);
@@ -97,7 +99,7 @@ bool Texture_LoadImageFromFile(Texture * const self, const char *fileName)
     SDL_Surface *surface = IMG_Load(fileName);
 #endif
 
-    return Texture_CreateTexture(self, surface);
+    return Texture_CreateTexture(self, surface, filter);
 }
 
 bool Texture_MakeText(Texture * const self)
@@ -119,9 +121,14 @@ bool Texture_MakeText(Texture * const self)
         self->reloadFont = false;
     }
 
-    SDL_Surface *surface = TTF_RenderUTF8_Blended(self->font, self->text, self->textColor);
+    SDL_Color color = { self->textColor.r, self->textColor.g, self->textColor.b, self->textColor.a };
+    SDL_Surface *text = TTF_RenderUTF8_Blended(self->font, self->text, color);
+    SDL_Surface *surface = SDL_CreateRGBSurface(0, text->w, text->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
-    return Texture_CreateTexture(self, surface);
+    SDL_BlitSurface(text, NULL, surface, NULL);
+    SDL_FreeSurface(text);
+
+    return Texture_CreateTexture(self, surface, Linear);
 }
 
 void Texture_SetText(Texture * const self, const char *text)
@@ -143,12 +150,12 @@ void Texture_SetTextSize(Texture * const self, int ptsize)
     }
 }
 
-void Texture_SetTextColor(Texture * const self, const SDL_Color *color)
+void Texture_SetTextColor(Texture * const self, const Color *color)
 {
     if (color)
         self->textColor = *color;
     else
-        self->textColor = (SDL_Color) {60, 60, 60, 255};
+        self->textColor = (Color) {60, 60, 60, 255};
 }
 
 void Texture_SetTextColorRGB(Texture * const self, uint8_t r, uint8_t g, uint8_t b)
@@ -167,7 +174,7 @@ void Texture_SetTextColorRGBA(Texture * const self, uint8_t r, uint8_t g, uint8_
     self->textColor.a = a;
 }
 
-void Texture_SetSourceRect(Texture * const self, SDL_Rect srcrect)
+void Texture_SetSourceRect(Texture * const self, IRect srcrect)
 {
     self->srcrect = srcrect;
 }
@@ -180,19 +187,24 @@ void Texture_SetAngle(Texture * const self, double angle)
 void Texture_Draw(Texture * const self)
 {
     if (self->texture)
-        SDL_RenderCopyExF(self->renderer, self->texture, &self->srcrect, Box_Rect(self->box), self->angle, NULL, SDL_FLIP_NONE);
+        OpenGLRenderer_Draw(self->renderer, self->texture, &self->srcrect, Box_Rect(self->box), self->angle);
 }
 
-bool Texture_CreateTexture(Texture * const self, SDL_Surface *surface)
+bool Texture_CreateTexture(Texture * const self, SDL_Surface *surface, TextureFilter filter)
 {
     if (surface)
     {
-        if (self->texture)
-            SDL_DestroyTexture(self->texture);
-            //SDL_UpdateTexture(self->texture, NULL, surface->pixels, surface->pitch);
-        //else
+        OpenGLRenderer_DestroyTexture(self->renderer, self->texture);
 
-        self->texture = SDL_CreateTextureFromSurface(self->renderer, surface);
+        Image image = {
+            .width = surface->w,
+            .height = surface->h,
+            .bytesPerPixel = surface->format->BytesPerPixel,
+            .rmask = surface->format->Rmask,
+            .pixels = surface->pixels,
+        };
+
+        self->texture = OpenGLRenderer_CreateTexture(self->renderer, &image, filter);
 
         if (self->texture)
         {

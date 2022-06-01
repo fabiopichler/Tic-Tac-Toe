@@ -21,8 +21,19 @@ set(SRC_FILES
     src/base/DataZipFile.c
     src/base/LinkedList.h
     src/base/LinkedList.c
+    src/base/rect.h
+    src/base/TextureFilter.h
     src/base/private/Timer.h
     src/base/private/Timer.c
+    src/base/opengl_renderer/GL.h
+    src/base/opengl_renderer/GLProgram.h
+    src/base/opengl_renderer/GLProgram.c
+    src/base/opengl_renderer/OpenGLRenderer.c
+    src/base/opengl_renderer/OpenGLRenderer.h
+    src/base/opengl_renderer/GLBuffer.h
+    src/base/opengl_renderer/GLBuffer.c
+    src/base/opengl_renderer/GLTexture.h
+    src/base/opengl_renderer/GLTexture.c
     src/scene_game/SceneGameRect.h
     src/scene_game/SceneGame.c
     src/scene_game/SceneGame.h

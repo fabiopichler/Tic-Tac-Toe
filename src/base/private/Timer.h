@@ -24,11 +24,11 @@ SOFTWARE.
 
 #pragma once
 
-#include <SDL2/SDL.h>
 #include <stdint.h>
 
-typedef struct SceneManager SceneManager;
+typedef union SDL_Event SDL_Event;
 
+typedef struct SceneManager SceneManager;
 typedef struct Timer Timer;
 
 typedef void (*Timer_TimerCallback)(void * const manager, void *userdata);
@@ -37,6 +37,6 @@ Timer *Timer_New();
 void Timer_Delete(Timer * const self);
 
 void Timer_Clear(Timer * const self);
-void Timer_Add(Timer * const self, Uint32 interval, Timer_TimerCallback callback, void *userdata);
+void Timer_Add(Timer * const self, uint32_t interval, Timer_TimerCallback callback, void *userdata);
 void Timer_ProcessEvent(Timer * const self, SceneManager *sceneManager, SDL_Event *event);
 void Timer_Update(Timer * const self, SceneManager *sceneManager);

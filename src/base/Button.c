@@ -25,8 +25,11 @@ SOFTWARE.
 #include "Button.h"
 #include "Rectangle.h"
 #include "Box.h"
+#include "rect.h"
 
 #include <malloc.h>
+
+#include <SDL2/SDL_events.h>
 
 typedef enum State
 {
@@ -43,18 +46,18 @@ typedef struct Button_PressedEvent
 
 struct Button
 {
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
 
     Texture *textTexture;
     Texture *iconTexture;
 
     Box *box;
 
-    SDL_Color color;
-    SDL_Color colorHover;
-    SDL_Color colorPressed;
+    Color color;
+    Color colorHover;
+    Color colorPressed;
 
-    SDL_Color textColor;
+    Color textColor;
 
     Rectangle *background;
 
@@ -68,7 +71,7 @@ void Button_OnUpdateBox(Button * const self);
 void Button_CallPressedEvent(Button * const self);
 void Button_BoxOnUpdateEvent(Box * const box, void *userdata);
 
-Button *Button_New(SDL_Renderer *renderer)
+Button *Button_New(OpenGLRenderer *renderer)
 {
     Button * const self = malloc(sizeof (Button));
 
@@ -76,10 +79,10 @@ Button *Button_New(SDL_Renderer *renderer)
     self->textTexture = NULL;
     self->iconTexture = NULL;
 
-    self->color = (SDL_Color) {50, 140, 140, 255};
-    self->colorHover = (SDL_Color) {30, 120, 120, 255};
-    self->colorPressed = (SDL_Color) {60, 60, 60, 255};
-    self->textColor = (SDL_Color) {255, 255, 255, 255};
+    self->color = (Color) {50, 140, 140, 255};
+    self->colorHover = (Color) {30, 120, 120, 255};
+    self->colorPressed = (Color) {60, 60, 60, 255};
+    self->textColor = (Color) {255, 255, 255, 255};
 
     self->state = Normal;
     self->pressedEvent = (Button_PressedEvent) {NULL, NULL};
@@ -256,7 +259,7 @@ void Button_Draw(Button * const self)
 
 bool Button_PointerIsHovering(Button * const self, const SDL_Event *event)
 {
-    const SDL_FRect *rect = Box_Rect(self->box);
+    const Rect *rect = Box_Rect(self->box);
 
     return event->button.x >= rect->x
             && event->button.x <= (rect->x + rect->w)
@@ -267,7 +270,7 @@ bool Button_PointerIsHovering(Button * const self, const SDL_Event *event)
 void Button_OnUpdateBox(Button * const self)
 {
     Texture *texture = self->textTexture ? self->textTexture : self->iconTexture;
-    const SDL_FRect *rect = Box_Rect(self->box);
+    const Rect *rect = Box_Rect(self->box);
 
     if (texture)
     {

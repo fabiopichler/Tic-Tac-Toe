@@ -26,7 +26,8 @@ SOFTWARE.
 
 #ifdef USE_DATA_ZIP
 
-#include <SDL2/SDL.h>
+typedef struct SDL_RWops SDL_RWops
+
 #include <stdbool.h>
 
 #ifdef __cplusplus

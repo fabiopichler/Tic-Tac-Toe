@@ -24,12 +24,11 @@ SOFTWARE.
 
 #pragma once
 
-#include <SDL2/SDL.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+typedef struct Rect Rect;
 typedef struct Box Box;
 typedef void (*Box_OnUpdateEvent)(Box * const box, void *userdata);
 
@@ -54,7 +53,7 @@ float Box_Y(Box * const self);
 float Box_Width(Box * const self);
 float Box_Height(Box * const self);
 
-const SDL_FRect *Box_Rect(Box * const self);
+const Rect *Box_Rect(Box * const self);
 
 #ifdef __cplusplus
 }

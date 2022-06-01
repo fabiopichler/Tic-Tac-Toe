@@ -24,24 +24,26 @@ SOFTWARE.
 
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+typedef struct Color Color;
+typedef struct OpenGLRenderer OpenGLRenderer;
 typedef struct Box Box;
 
 typedef struct Rectangle Rectangle;
 
-Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height);
+Rectangle *Rectangle_New(OpenGLRenderer *renderer, float width, float height);
 void Rectangle_Delete(Rectangle * const self);
 void Rectangle_Draw(Rectangle * const self);
 
-void Rectangle_SetColor(Rectangle * const self, SDL_Color color);
+void Rectangle_SetColor(Rectangle * const self, Color color);
 void Rectangle_SetColorRGB(Rectangle * const self, uint8_t r, uint8_t g, uint8_t b);
 void Rectangle_SetColorRGBA(Rectangle * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
-SDL_Color Rectangle_Color(Rectangle * const self);
+Color Rectangle_Color(Rectangle * const self);
 
 Box *Rectangle_Box(Rectangle * const self);
 

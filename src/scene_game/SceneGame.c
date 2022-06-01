@@ -31,6 +31,7 @@ SOFTWARE.
 #include "../base/Button.h"
 #include "../base/Texture.h"
 #include "../base/Rectangle.h"
+#include "../base/rect.h"
 #include "board/board_util.h"
 #include "Sidebar.h"
 #include "Header.h"
@@ -40,7 +41,7 @@ SOFTWARE.
 
 struct SceneGame
 {
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
     SceneGameRect sceneGameRect;
 
     int player1WinCount;
@@ -64,7 +65,7 @@ SceneGame *SceneGame_OnNew(SceneManager *sceneManager)
 
     Window *window = SceneManager_Window(sceneManager);
     Graphics *graphics = SceneManager_Graphics(sceneManager);
-    SDL_Rect windowRect = Window_GetRect(window);
+    IRect windowRect = Window_GetRect(window);
 
     self->sceneGameRect.window_w = windowRect.w;
     self->sceneGameRect.window_h = windowRect.h;

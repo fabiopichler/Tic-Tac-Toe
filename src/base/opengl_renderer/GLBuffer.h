@@ -24,14 +24,39 @@ SOFTWARE.
 
 #pragma once
 
-#include "SceneGameRect.h"
-#include "board/board_util.h"
+#include "GL.h"
 
-typedef struct Header Header;
+#include <cglm/vec2.h>
+#include <cglm/vec3.h>
+#include <cglm/mat4.h>
+#include <cglm/affine.h>
 
-Header *Header_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect);
-void Header_Delete(Header * const self);
-void Header_ProcessEvent(Header * const self, const SDL_Event *event);
-void Header_Update(Header * const self, double deltaTime);
-void Header_Draw(Header * const self);
-void Header_SetCurrentPlayer(Header * const self, Player currentPlayer, Player gameResult);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct Vertex
+{
+    vec2 position;
+    vec2 UV;
+} Vertex;
+
+typedef struct GLProgramLocation GLProgramLocation;
+
+typedef struct GLBuffer GLBuffer;
+
+GLBuffer *GLBuffer_New();
+void GLBuffer_Delete(GLBuffer * const self);
+
+void GLBuffer_Init(GLBuffer * const self);
+void GLBuffer_EnablePositionVBO(GLBuffer * const self, const GLProgramLocation *program);
+void GLBuffer_DisablePositionVBO(GLBuffer * const self, const GLProgramLocation *program);
+
+void GLBuffer_EnableColorVBO(GLBuffer * const self, const GLProgramLocation *program, const vec4 colors[4]);
+void GLBuffer_DisableColorVBO(GLBuffer * const self, const GLProgramLocation *program);
+
+void GLBuffer_DrawElements(GLBuffer * const self);
+
+#ifdef __cplusplus
+}
+#endif

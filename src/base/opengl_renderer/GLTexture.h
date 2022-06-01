@@ -24,14 +24,50 @@ SOFTWARE.
 
 #pragma once
 
-#include "SceneGameRect.h"
-#include "board/board_util.h"
+#include "GL.h"
+#include "../TextureFilter.h"
 
-typedef struct Header Header;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-Header *Header_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect);
-void Header_Delete(Header * const self);
-void Header_ProcessEvent(Header * const self, const SDL_Event *event);
-void Header_Update(Header * const self, double deltaTime);
-void Header_Draw(Header * const self);
-void Header_SetCurrentPlayer(Header * const self, Player currentPlayer, Player gameResult);
+#ifdef RENDERER_GLES
+typedef enum Texture2DFormat
+{
+    RGBA,
+    BGRA,
+} Texture2DFormat;
+#endif
+
+typedef struct Texture2D
+{
+    GLuint id;
+    float width;
+    float height;
+#ifdef RENDERER_GLES
+    Texture2DFormat format;
+#endif
+} Texture2D;
+
+typedef struct Image
+{
+    int width;
+    int height;
+    int bytesPerPixel;
+    uint32_t rmask;
+    unsigned char *pixels;
+} Image;
+
+typedef struct GLTexture GLTexture;
+
+GLTexture *GLTexture_New();
+void GLTexture_Delete(GLTexture * const self);
+
+void GLTexture_Init(GLTexture * const self);
+
+Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, TextureFilter filter);
+void GLTexture_DestroyTexture(GLTexture * const self, Texture2D *texture);
+
+#ifdef __cplusplus
+}
+#endif

@@ -28,19 +28,18 @@ SOFTWARE.
 
 #include <stdbool.h>
 
-#include <SDL2/SDL.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct Texture Texture;
+typedef union SDL_Event SDL_Event;
 
+typedef struct Texture Texture;
 typedef struct Button Button;
 
 typedef void (*Button_OnPressEvent)(Button * const button, void *user);
 
-Button *Button_New(SDL_Renderer *renderer);
+Button *Button_New(OpenGLRenderer *renderer);
 void Button_Delete(Button * const self);
 void Button_SetBackgroundColorRGB(Button * const self, uint8_t r, uint8_t g, uint8_t b);
 void Button_SetBackgroundColorRGBA(Button * const self, uint8_t r, uint8_t g, uint8_t b, uint8_t a);

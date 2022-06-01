@@ -24,12 +24,14 @@ SOFTWARE.
 
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef union SDL_Event SDL_Event;
 
 typedef struct Window Window;
 typedef struct Graphics Graphics;
@@ -55,7 +57,7 @@ typedef struct SceneManager_CurrentScene
 SceneManager *SceneManager_New(Window *window, Graphics *graphics);
 void SceneManager_Delete(SceneManager * const self);
 void SceneManager_GoTo(SceneManager * const self, const SceneManager_CurrentScene *scene);
-void SceneManager_AddTimer(SceneManager * const self, Uint32 interval, SceneManager_TimerCallback callback, void *userdata);
+void SceneManager_AddTimer(SceneManager * const self, uint32_t interval, SceneManager_TimerCallback callback, void *userdata);
 void SceneManager_ClearTimers(SceneManager * const self);
 void SceneManager_Run(SceneManager * const self);
 Window *SceneManager_Window(SceneManager * const self);

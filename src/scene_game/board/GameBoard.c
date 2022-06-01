@@ -27,7 +27,10 @@ SOFTWARE.
 #include "../../base/Texture.h"
 #include "../../base/Rectangle.h"
 #include "../../base/Box.h"
+#include "../../base/rect.h"
 #include "board_util.h"
+
+#include <malloc.h>
 
 typedef struct GameEvent
 {
@@ -37,7 +40,7 @@ typedef struct GameEvent
 
 struct GameBoard
 {
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
     Rectangle *background;
 
     Player player;
@@ -46,7 +49,7 @@ struct GameBoard
 
     struct Board
     {
-        SDL_Rect rect;
+        IRect rect;
         int item_size;
         int space;
         BoardItem items[3][3];
@@ -65,7 +68,7 @@ void GameBoard_OnItemPress(Button * const button, void *user);
 void GameBoard_Check(GameBoard * const self, BoardItem *item);
 Player GameBoard_CheckWinner(GameBoard * const self);
 
-GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
+GameBoard *GameBoard_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect)
 {
     GameBoard * const self = malloc(sizeof (GameBoard));
 
@@ -75,7 +78,7 @@ GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
 
     self->board.item_size = 98;
     self->board.space = 5;
-    self->board.rect = (SDL_Rect) {board_x, board_y, board_size, board_size};
+    self->board.rect = (IRect) {board_x, board_y, board_size, board_size};
 
     self->renderer = renderer;
     self->background = Rectangle_New(self->renderer, board_size, board_size);
@@ -90,8 +93,8 @@ GameBoard *GameBoard_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
     Box_SetPosition(Rectangle_Box(self->background), self->board.rect.x, self->board.rect.y);
     Rectangle_SetColorRGBA(self->background, 80, 160, 160, 255);
 
-    Texture_LoadImageFromFile(self->player1Texture, "images/player_1.png");
-    Texture_LoadImageFromFile(self->player2Texture, "images/player_2.png");
+    Texture_LoadImageFromFile(self->player1Texture, "images/player_1.png", Nearest);
+    Texture_LoadImageFromFile(self->player2Texture, "images/player_2.png", Nearest);
 
     GameBoard_SetupBoard(self);
 

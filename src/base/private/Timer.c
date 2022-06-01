@@ -34,6 +34,8 @@ SOFTWARE.
   #include <SDL2/SDL_timer.h>
 #endif
 
+#include <SDL2/SDL.h>
+
 typedef struct TimerData
 {
     SceneManager_TimerCallback callback;
@@ -108,7 +110,7 @@ void Timer_Clear(Timer * const self)
     LinkedList_Clear(self->timers);
 }
 
-void Timer_Add(Timer * const self, Uint32 interval, Timer_TimerCallback callback, void *userdata)
+void Timer_Add(Timer * const self, uint32_t interval, Timer_TimerCallback callback, void *userdata)
 {
     TimerData *data = malloc(sizeof (TimerData));
 

@@ -24,7 +24,7 @@ SOFTWARE.
 
 #pragma once
 
-#include <SDL2/SDL.h>
+typedef union SDL_Event SDL_Event;
 
 typedef struct SceneManager SceneManager;
 

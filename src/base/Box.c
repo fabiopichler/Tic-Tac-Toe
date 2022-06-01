@@ -23,6 +23,9 @@ SOFTWARE.
 -------------------------------------------------------------------------------*/
 
 #include "Box.h"
+#include "rect.h"
+
+#include <malloc.h>
 
 typedef struct Box_UpdatedEvent
 {
@@ -32,7 +35,7 @@ typedef struct Box_UpdatedEvent
 
 struct Box
 {
-    SDL_FRect rect;
+    Rect rect;
     Box_UpdatedEvent updatedEvent;
 };
 
@@ -42,7 +45,7 @@ Box *Box_New(float x, float y, float width, float height)
 {
     Box * const self = malloc(sizeof (Box));
 
-    self->rect = (SDL_FRect) {x, y, width, height};
+    self->rect = (Rect) {x, y, width, height};
     self->updatedEvent = (Box_UpdatedEvent) {NULL, NULL};
 
     return self;
@@ -145,7 +148,7 @@ float Box_Height(Box * const self)
     return self->rect.h;
 }
 
-const SDL_FRect *Box_Rect(Box * const self)
+const Rect *Box_Rect(Box * const self)
 {
     return &self->rect;
 }

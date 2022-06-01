@@ -26,17 +26,16 @@ SOFTWARE.
 
 #include "Window.h"
 
-#include <SDL2/SDL.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+typedef struct OpenGLRenderer OpenGLRenderer;
 typedef struct Graphics Graphics;
 
 Graphics *Graphics_New(Window *window);
 void Graphics_Delete(Graphics * const self);
-SDL_Renderer *Graphics_GetRenderer(Graphics * const self);
+OpenGLRenderer *Graphics_GetRenderer(Graphics * const self);
 int SetRenderLogicalSize(Graphics * const self, int w, int h);
 
 #ifdef __cplusplus

@@ -24,14 +24,36 @@ SOFTWARE.
 
 #pragma once
 
-#include "SceneGameRect.h"
-#include "board/board_util.h"
+#include "GL.h"
+#include "GLProgram.h"
+#include "GLBuffer.h"
+#include "GLTexture.h"
 
-typedef struct Header Header;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-Header *Header_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect);
-void Header_Delete(Header * const self);
-void Header_ProcessEvent(Header * const self, const SDL_Event *event);
-void Header_Update(Header * const self, double deltaTime);
-void Header_Draw(Header * const self);
-void Header_SetCurrentPlayer(Header * const self, Player currentPlayer, Player gameResult);
+typedef struct Rect Rect;
+typedef struct IRect IRect;
+typedef struct Color Color;
+
+typedef struct OpenGLRenderer OpenGLRenderer;
+
+OpenGLRenderer *OpenGLRenderer_New();
+void OpenGLRenderer_Delete(OpenGLRenderer * const self);
+
+void OpenGLRenderer_InitGL(OpenGLRenderer * const self);
+
+Texture2D *OpenGLRenderer_CreateTexture(OpenGLRenderer * const self, const Image *image, TextureFilter filter);
+void OpenGLRenderer_DestroyTexture(OpenGLRenderer * const self, Texture2D *texture);
+void OpenGLRenderer_Clear(OpenGLRenderer * const self);
+
+void OpenGLRenderer_Draw(OpenGLRenderer * const self, const Texture2D *texture, const IRect *srcrect, const Rect *dstrect, const float angle);
+void OpenGLRenderer_FillRect(OpenGLRenderer * const self, const Rect *rect, const Color *color);
+
+void OpenGLRenderer_SetViewportSize(OpenGLRenderer * const self, int w, int h);
+void OpenGLRenderer_SetLogicalSize(OpenGLRenderer * const self, int w, int h);
+
+#ifdef __cplusplus
+}
+#endif

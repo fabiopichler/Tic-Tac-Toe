@@ -24,12 +24,13 @@ SOFTWARE.
 
 #pragma once
 
-#include <SDL2/SDL.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+typedef struct SDL_Window SDL_Window;
+
+typedef struct IRect IRect;
 typedef struct Window Window;
 
 Window *Window_New(int width, int height, const char *title);
@@ -37,7 +38,8 @@ void Window_Delete(Window * const self);
 void Window_SetWindowIcon(Window * const self, const char *filename);
 void Window_SetWindowTitle(Window * const self, const char *title);
 SDL_Window *Window_GetSDLWindow(Window * const self);
-SDL_Rect Window_GetRect(Window * const self);
+IRect Window_GetRect(Window * const self);
+void Window_SwapWindow(Window * const self);
 
 #ifdef __cplusplus
 }

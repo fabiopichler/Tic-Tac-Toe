@@ -26,13 +26,14 @@ SOFTWARE.
 #include "../base/Texture.h"
 #include "../base/Rectangle.h"
 #include "../base/Box.h"
+#include "../base/rect.h"
 
 #include <malloc.h>
 #include <stdio.h>
 
 struct Sidebar
 {
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
     const SceneGameRect *sceneGameRect;
     int width;
     int player1_y;
@@ -46,7 +47,7 @@ struct Sidebar
     Rectangle *verticalLine;
     Rectangle *horizontalLine1;
     Rectangle *horizontalLine2;
-    SDL_Color textColor;
+    Color textColor;
 
     Texture *player1Text;
     Texture *player1WinText;
@@ -61,13 +62,13 @@ void Sidebar_CreateTextures(Sidebar * const self);
 void Sidebar_UpdateTextRect(Sidebar * const self, Texture *texture, int y);
 void Sidebar_UpdateText(Sidebar * const self, Texture *texture, int pos_y, int count);
 
-Sidebar *Sidebar_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
+Sidebar *Sidebar_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect)
 {
     Sidebar * const self = malloc(sizeof (Sidebar));
 
     self->renderer = renderer;
     self->sceneGameRect = sceneGameRect;
-    self->textColor = (SDL_Color) {50, 140, 140, 255};
+    self->textColor = (Color) {50, 140, 140, 255};
 
     Sidebar_SetupSizes(self);
     Sidebar_CreateTextures(self);

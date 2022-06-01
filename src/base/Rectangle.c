@@ -24,21 +24,25 @@ SOFTWARE.
 
 #include "Rectangle.h"
 #include "Box.h"
+#include "rect.h"
+#include "opengl_renderer/OpenGLRenderer.h"
+
+#include <malloc.h>
 
 struct Rectangle
 {
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
     Box *box;
-    SDL_Color color;
+    Color color;
 };
 
-Rectangle *Rectangle_New(SDL_Renderer *renderer, float width, float height)
+Rectangle *Rectangle_New(OpenGLRenderer *renderer, float width, float height)
 {
     Rectangle * const self = malloc(sizeof (Rectangle));
 
     self->renderer = renderer;
     self->box = Box_New(0.f, 0.f, width, height);
-    self->color = (SDL_Color) {0, 0, 0, 0};
+    self->color = (Color) {0, 0, 0, 0};
 
     return self;
 }
@@ -54,11 +58,10 @@ void Rectangle_Delete(Rectangle * const self)
 
 void Rectangle_Draw(Rectangle * const self)
 {
-    SDL_SetRenderDrawColor(self->renderer, self->color.r, self->color.g, self->color.b, self->color.a);
-    SDL_RenderFillRectF(self->renderer, Box_Rect(self->box));
+    OpenGLRenderer_FillRect(self->renderer, Box_Rect(self->box), &self->color);
 }
 
-void Rectangle_SetColor(Rectangle * const self, SDL_Color color)
+void Rectangle_SetColor(Rectangle * const self, Color color)
 {
     self->color = color;
 }
@@ -79,7 +82,7 @@ void Rectangle_SetColorRGBA(Rectangle * const self, uint8_t r, uint8_t g, uint8_
     self->color.a = a;
 }
 
-SDL_Color Rectangle_Color(Rectangle * const self)
+Color Rectangle_Color(Rectangle * const self)
 {
     return self->color;
 }

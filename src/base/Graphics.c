@@ -23,22 +23,23 @@ SOFTWARE.
 -------------------------------------------------------------------------------*/
 
 #include "Graphics.h"
+#include "rect.h"
+#include "opengl_renderer/OpenGLRenderer.h"
 
 #include <stdio.h>
 
+#include <SDL2/SDL.h>
+
 struct Graphics
 {
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
 };
 
 Graphics *Graphics_New(Window *window)
 {
     Graphics * const self = malloc(sizeof (Graphics));
 
-    self->renderer = SDL_CreateRenderer(
-                Window_GetSDLWindow(window),
-                -1,
-                SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    self->renderer = OpenGLRenderer_New();
 
     if (!self->renderer)
     {
@@ -48,7 +49,7 @@ Graphics *Graphics_New(Window *window)
         exit(-1);
     }
 
-    SDL_Rect rect = Window_GetRect(window);
+    IRect rect = Window_GetRect(window);
     SetRenderLogicalSize(self, rect.w, rect.h);
 
     return self;
@@ -59,17 +60,20 @@ void Graphics_Delete(Graphics * const self)
     if (!self)
         return;
 
-    SDL_DestroyRenderer(self->renderer);
+    OpenGLRenderer_Delete(self->renderer);
 
     free(self);
 }
 
-SDL_Renderer *Graphics_GetRenderer(Graphics * const self)
+OpenGLRenderer *Graphics_GetRenderer(Graphics * const self)
 {
     return self->renderer;
 }
 
 int SetRenderLogicalSize(Graphics * const self, int w, int h)
 {
-    return SDL_RenderSetLogicalSize(self->renderer, w, h);
+    OpenGLRenderer_SetLogicalSize(self->renderer, w, h);
+    OpenGLRenderer_SetViewportSize(self->renderer, w, h);
+
+    return 1;
 }

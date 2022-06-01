@@ -31,7 +31,7 @@ SOFTWARE.
 
 struct Footer
 {
-    SDL_Renderer *renderer;
+    OpenGLRenderer *renderer;
     SceneGameRect *sceneGameRect;
 
     Button *restartButton;
@@ -41,7 +41,7 @@ struct Footer
 void Footer_CreateRestartButton(Footer * const self);
 void Footer_CreateCopyrightText(Footer * const self);
 
-Footer *Footer_New(SDL_Renderer *renderer, SceneGameRect *sceneGameRect)
+Footer *Footer_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect)
 {
     Footer * const self = malloc(sizeof (Footer));
 

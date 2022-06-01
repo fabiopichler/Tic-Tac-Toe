@@ -24,14 +24,12 @@ SOFTWARE.
 
 #pragma once
 
-#include "SceneGameRect.h"
-#include "board/board_util.h"
-
-typedef struct Header Header;
-
-Header *Header_New(OpenGLRenderer *renderer, SceneGameRect *sceneGameRect);
-void Header_Delete(Header * const self);
-void Header_ProcessEvent(Header * const self, const SDL_Event *event);
-void Header_Update(Header * const self, double deltaTime);
-void Header_Draw(Header * const self);
-void Header_SetCurrentPlayer(Header * const self, Player currentPlayer, Player gameResult);
+#if defined(RENDERER_GLES2)
+  #include "glad/gles2.h"
+#elif defined(RENDERER_GLES3)
+  #include "glad/gles3.h"
+#elif defined(RENDERER_GL2)
+  #include "glad/gl2.h"
+#else
+  #include "glad/gl3.h"
+#endif
