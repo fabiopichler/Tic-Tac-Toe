@@ -119,11 +119,11 @@ const GLProgramLocation *GLProgram_InitProgram(GLProgram * const self, GLProgram
     {
         self->m_programs[type].aUV = glGetAttribLocation(program, "aUV");
         self->m_programs[type].uSourcePosition = glGetUniformLocation(program, "uSourcePosition");
+        self->m_programs[type].uSampler = glGetUniformLocation(program, "uSampler");
     }
     else
     {
         self->m_programs[type].aColor = glGetAttribLocation(program, "aColor");
-        self->m_programs[type].uSampler = glGetUniformLocation(program, "uSampler");
     }
 
     return &self->m_programs[type];
