@@ -28,6 +28,7 @@ SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 
+static void GetFormat(const Image *image, Texture2D *texture, int *mode, uint32_t *format);
 static void SetTextureFilter(TextureFilter filter);
 
 struct GLTexture
@@ -56,100 +57,91 @@ void GLTexture_Init(GLTexture * const self)
 
 Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, TextureFilter filter)
 {
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
     int mode;
     uint32_t format;
+    const int rowLength = image->pitch / image->bytesPerPixel;
+    Texture2D *texture = malloc(sizeof (Texture2D));
 
+    texture->width = image->width;
+    texture->height = image->height;
 #ifdef RENDERER_GLES
-    Texture2DFormat texformat = RGBA;
+    texture->format = RGBA;
 #endif
 
-    if (image->bytesPerPixel == 4)
-    {
-        mode = GL_RGBA;
+    glGenTextures(1, &texture->id);
+    glBindTexture(GL_TEXTURE_2D, texture->id);
 
-        if (image->rmask == 0x000000ff)
-        {
-            format = GL_RGBA;
-        }
-        else
-        {
-#ifndef RENDERER_GLES
-            format = GL_BGRA;
-#else
-            format = GL_RGBA;
-            texformat = BGRA;
-#endif
-        }
-    }
-    else
-    {
-        mode = GL_RGB;
+    GetFormat(image, texture, &mode, &format);
 
-        if (image->rmask == 0x000000ff)
-        {
-            format = GL_RGB;
-        }
-        else
-        {
-#ifndef RENDERER_GLES
-            format = GL_BGR;
-#else
-            format = GL_RGB;
-            texformat = BGRA;
-#endif
-        }
-    }
-
+    if (rowLength != image->width)
 #ifdef GL_UNPACK_ROW_LENGTH
-    if (image->pitch / image->bytesPerPixel != image->width)
-        glPixelStorei(GL_UNPACK_ROW_LENGTH, image->pitch / image->bytesPerPixel);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->pixels);
-
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, rowLength);
 #else
-    if (image->pitch / image->bytesPerPixel != image->width)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, NULL);
 
         for (int y = 0; y < image->height; y++)
         {
-            unsigned char *row = image->pixels + (y * (image->pitch / image->bytesPerPixel)) * 4;
+            unsigned char *row = image->pixels + (y * rowLength) * 4;
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, image->width, 1, format, GL_UNSIGNED_BYTE, row);
         }
     }
     else
     {
+#endif
         glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->pixels);
+#ifdef GL_UNPACK_ROW_LENGTH
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#else
     }
 #endif
 
     if (glGetError() != GL_NO_ERROR)
     {
         puts("Texture error");
+        free(texture);
         exit(EXIT_FAILURE);
     }
 
+    SetTextureFilter(filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    SetTextureFilter(filter);
-
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    Texture2D *texture2D = malloc(sizeof (Texture2D));
-    texture2D->id = texture;
-    texture2D->width = image->width;
-    texture2D->height = image->height;
-#ifdef RENDERER_GLES
-    texture2D->format = texformat;
-#endif
+    return texture;
+}
 
-    return texture2D;
+void GetFormat(const Image *image, Texture2D *texture, int *mode, uint32_t *format)
+{
+    if (image->bytesPerPixel == 4)
+    {
+        *mode = GL_RGBA;
+        *format = GL_RGBA;
+
+        if (image->rmask != 0x000000ff)
+        {
+#ifndef RENDERER_GLES
+            *format = GL_BGRA;
+#else
+            texture->format = BGRA;
+#endif
+        }
+    }
+    else
+    {
+        *mode = GL_RGB;
+        *format = GL_RGB;
+
+        if (image->rmask != 0x000000ff)
+        {
+#ifndef RENDERER_GLES
+            *format = GL_BGR;
+#else
+            texture->format = BGRA;
+#endif
+        }
+    }
 }
 
 void GLTexture_DestroyTexture(GLTexture * const self, Texture2D *texture)
