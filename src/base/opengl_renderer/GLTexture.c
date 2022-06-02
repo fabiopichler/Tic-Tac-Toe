@@ -104,10 +104,29 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
         }
     }
 
+#ifdef GL_UNPACK_ROW_LENGTH
     if (image->pitch / image->bytesPerPixel != image->width)
         glPixelStorei(GL_UNPACK_ROW_LENGTH, image->pitch / image->bytesPerPixel);
 
     glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->pixels);
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#else
+    if (image->pitch / image->bytesPerPixel != image->width)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, NULL);
+
+        for (int y = 0; y < image->height; y++)
+        {
+            unsigned char *row = image->pixels + (y * (image->pitch / image->bytesPerPixel)) * 4;
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, image->width, 1, format, GL_UNSIGNED_BYTE, row);
+        }
+    }
+    else
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->pixels);
+    }
+#endif
 
     if (glGetError() != GL_NO_ERROR)
     {
@@ -120,7 +139,6 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
 
     SetTextureFilter(filter);
 
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     Texture2D *texture2D = malloc(sizeof (Texture2D));
