@@ -39,16 +39,33 @@ struct Window
     IRect rect;
 };
 
-static void SetupAttributes();
-static bool CreateContext(Window * const self);
+typedef struct OpenGLList
+{
+    const char *name;
+    int profile;
+    int majorVersion;
+    int minorVersion;
+} OpenGLList;
+
+static const OpenGLList glList[] = {
+#ifdef RENDERER_GLES
+    { "OpenGL ES 3.0", SDL_GL_CONTEXT_PROFILE_ES, 3, 0 },
+    { "OpenGL ES 2.0", SDL_GL_CONTEXT_PROFILE_ES, 2, 0 },
+#else
+    { "OpenGL 3.3 (Core Profile)", SDL_GL_CONTEXT_PROFILE_CORE, 3, 3 },
+    { "OpenGL 2.1", SDL_GL_CONTEXT_PROFILE_COMPATIBILITY, 2, 1 },
+#endif
+    { NULL, 0, 0, 0 },
+};
+
+static bool CreateGLContext(Window * const self);
 
 Window *Window_New(int width, int height, const char *title)
 {
-    SetupAttributes();
-
     Window * const self = malloc(sizeof (Window));
 
     self->rect = (IRect) { .x = 0, .y = 0, .w = width, .h = height };
+    self->context = NULL;
 
     self->window = SDL_CreateWindow(title,
                                 SDL_WINDOWPOS_UNDEFINED,
@@ -64,8 +81,11 @@ Window *Window_New(int width, int height, const char *title)
         exit(-1);
     }
 
-    if (!CreateContext(self))
+    if (!CreateGLContext(self))
+    {
+        Window_Delete(self);
         return NULL;
+    }
 
     return self;
 }
@@ -81,46 +101,34 @@ void Window_Delete(Window * const self)
     free(self);
 }
 
-void SetupAttributes()
+bool CreateGLContext(Window * const self)
 {
-#ifdef RENDERER_GL3 // OpenGL 3.3
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-
-#elif defined(RENDERER_GL2) // OpenGL 2.1
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-
-#elif defined(RENDERER_GLES2) // OpenGL ES 2.0
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-
-#elif defined(RENDERER_GLES3) // OpenGL ES 3.0
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#endif
-
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-}
-
-bool CreateContext(Window * const self)
-{
-    self->context = SDL_GL_CreateContext(self->window);
-
-    if (!self->context)
+    for (const OpenGLList *gl = glList; gl->name != NULL; ++gl)
     {
-        SDL_Log("Unable to create GL context");
-        exit(-1);
-        return false;
+        printf("Creating the %s context... ", gl->name);
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, gl->profile);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, gl->majorVersion);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, gl->minorVersion);
+
+        self->context = SDL_GL_CreateContext(self->window);
+
+        if (self->context)
+        {
+            printf("Ok.\n");
+
+            SDL_GL_MakeCurrent(self->window, self->context);
+            SDL_GL_SetSwapInterval(1);
+
+            return true;
+        }
+        else
+        {
+            printf("Error.\nUnable to create %s context.\n", gl->name);
+        }
     }
 
-    SDL_GL_MakeCurrent(self->window, self->context);
-    SDL_GL_SetSwapInterval(1);
-
-    return true;
+    return false;
 }
 
 void Window_SetWindowIcon(Window * const self, const char *filename)

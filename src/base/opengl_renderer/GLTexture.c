@@ -73,28 +73,34 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
 
     GetFormat(image, texture, &mode, &format);
 
-    if (rowLength != image->width)
-#ifdef GL_UNPACK_ROW_LENGTH
-        glPixelStorei(GL_UNPACK_ROW_LENGTH, rowLength);
-#else
+#ifdef RENDERER_GLES
+    if (GLAD_GL_ES_VERSION_3_0 == 0)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, NULL);
-
-        for (int y = 0; y < image->height; y++)
+        if (rowLength != image->width)
         {
-            unsigned char *row = image->pixels + (y * rowLength) * 4;
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, image->width, 1, format, GL_UNSIGNED_BYTE, row);
+            glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, NULL);
+
+            for (int y = 0; y < image->height; y++)
+            {
+                unsigned char *row = image->pixels + (y * rowLength) * 4;
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, image->width, 1, format, GL_UNSIGNED_BYTE, row);
+            }
+        }
+        else
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->pixels);
         }
     }
     else
+#endif
     {
-#endif
+        if (rowLength != image->width)
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, rowLength);
+
         glTexImage2D(GL_TEXTURE_2D, 0, mode, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->pixels);
-#ifdef GL_UNPACK_ROW_LENGTH
+
         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-#else
     }
-#endif
 
     if (glGetError() != GL_NO_ERROR)
     {
@@ -160,14 +166,16 @@ void SetTextureFilter(TextureFilter filter)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
-#ifndef RENDERER_GL2
-    else if (filter == Mipmap)
+    else if (filter == Mipmap
+#ifndef RENDERER_GLES
+             && GLAD_GL_VERSION_3_0 == 1
+#endif
+             )
     {
         glGenerateMipmap(GL_TEXTURE_2D);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
-#endif
     else
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

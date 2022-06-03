@@ -24,12 +24,8 @@ SOFTWARE.
 
 #pragma once
 
-#if defined(RENDERER_GLES2)
+#ifdef RENDERER_GLES
   #include "glad/gles2.h"
-#elif defined(RENDERER_GLES3)
-  #include "glad/gles3.h"
-#elif defined(RENDERER_GL2)
-  #include "glad/gl2.h"
 #else
-  #include "glad/gl3.h"
+  #include "glad/gl.h"
 #endif
