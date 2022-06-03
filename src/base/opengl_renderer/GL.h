@@ -24,7 +24,7 @@ SOFTWARE.
 
 #pragma once
 
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
   #include "glad/gles2.h"
 #else
   #include "glad/gl.h"

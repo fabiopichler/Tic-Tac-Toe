@@ -31,7 +31,7 @@ SOFTWARE.
 extern "C" {
 #endif
 
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
 typedef enum Texture2DFormat
 {
     RGBA,
@@ -44,7 +44,7 @@ typedef struct Texture2D
     GLuint id;
     float width;
     float height;
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
     Texture2DFormat format;
 #endif
 } Texture2D;

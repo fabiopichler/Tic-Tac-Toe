@@ -77,7 +77,7 @@ void OpenGLRenderer_Delete(OpenGLRenderer * const self)
 
 void OpenGLRenderer_InitGL(OpenGLRenderer * const self)
 {
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
     int version = gladLoadGLES2((GLADloadfunc) SDL_GL_GetProcAddress);
 #else
     int version = gladLoadGL((GLADloadfunc) SDL_GL_GetProcAddress);
@@ -89,7 +89,7 @@ void OpenGLRenderer_InitGL(OpenGLRenderer * const self)
         exit(1);
     }
 
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
     printf("Game renderer: OpenGL ES ");
 #else
     printf("Game renderer: OpenGL ");
@@ -153,7 +153,7 @@ void OpenGLRenderer_Draw(OpenGLRenderer * const self, const Texture2D *texture, 
 
     glm_scale(matrix, (vec3) { dstrect->w, dstrect->h, 0.0f });
 
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
     const GLProgramLocation *program = GLProgram_GetProgram(self->m_program,
                                                             texture->format == BGRA ? Type_TextureBGRA : Type_Texture);
 #else
@@ -253,12 +253,12 @@ void UpdateProjection(OpenGLRenderer * const self, GLint uProjection)
 
 void ColorToArray(const Color *color, vec4 array[4])
 {
-    vec4 array2[4] = {
+    vec4 _array[4] = {
         { color->r, color->g, color->b, color->a },
         { color->r, color->g, color->b, color->a },
         { color->r, color->g, color->b, color->a },
         { color->r, color->g, color->b, color->a },
     };
 
-    memcpy(array, array2, sizeof (vec4[4]));
+    memcpy(array, _array, sizeof (vec4[4]));
 }

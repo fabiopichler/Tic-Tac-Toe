@@ -55,7 +55,7 @@ void GLBuffer_Delete(GLBuffer * const self)
     glDeleteBuffers(1, &self->m_positionVBO);
     glDeleteBuffers(1, &self->m_elementBuffer);
 
-#ifndef RENDERER_GLES
+#ifndef RENDERER_GL_ES
     if (GLAD_GL_VERSION_3_0 == 1)
         glDeleteVertexArrays(1, &self->m_vao);
 #endif
@@ -65,7 +65,7 @@ void GLBuffer_Delete(GLBuffer * const self)
 
 void GLBuffer_Init(GLBuffer * const self)
 {
-#ifndef RENDERER_GLES
+#ifndef RENDERER_GL_ES
     if (GLAD_GL_VERSION_3_0 == 1)
     {
         glGenVertexArrays(1, &self->m_vao);

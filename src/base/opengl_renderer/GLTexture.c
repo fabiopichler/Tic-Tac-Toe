@@ -64,7 +64,7 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
 
     texture->width = image->width;
     texture->height = image->height;
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
     texture->format = RGBA;
 #endif
 
@@ -73,7 +73,7 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
 
     GetFormat(image, texture, &mode, &format);
 
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
     if (GLAD_GL_ES_VERSION_3_0 == 0)
     {
         if (rowLength != image->width)
@@ -127,7 +127,7 @@ void GetFormat(const Image *image, Texture2D *texture, int *mode, uint32_t *form
 
         if (image->rmask != 0x000000ff)
         {
-#ifndef RENDERER_GLES
+#ifndef RENDERER_GL_ES
             *format = GL_BGRA;
 #else
             texture->format = BGRA;
@@ -141,7 +141,7 @@ void GetFormat(const Image *image, Texture2D *texture, int *mode, uint32_t *form
 
         if (image->rmask != 0x000000ff)
         {
-#ifndef RENDERER_GLES
+#ifndef RENDERER_GL_ES
             *format = GL_BGR;
 #else
             texture->format = BGRA;
@@ -167,7 +167,7 @@ void SetTextureFilter(TextureFilter filter)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
     else if (filter == Mipmap
-#ifndef RENDERER_GLES
+#ifndef RENDERER_GL_ES
              && GLAD_GL_VERSION_3_0 == 1
 #endif
              )

@@ -48,7 +48,7 @@ typedef struct OpenGLList
 } OpenGLList;
 
 static const OpenGLList glList[] = {
-#ifdef RENDERER_GLES
+#ifdef RENDERER_GL_ES
     { "OpenGL ES 3.0", SDL_GL_CONTEXT_PROFILE_ES, 3, 0 },
     { "OpenGL ES 2.0", SDL_GL_CONTEXT_PROFILE_ES, 2, 0 },
 #else
