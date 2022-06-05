@@ -24,7 +24,9 @@ SOFTWARE.
 
 #include "App.h"
 
-#include "SDL2/SDL_main.h"
+#ifndef __MINGW32__
+  #include "SDL2/SDL_main.h"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

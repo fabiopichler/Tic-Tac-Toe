@@ -28,6 +28,7 @@ SOFTWARE.
 #include "GLTexture.h"
 #include "../rect.h"
 
+#include <stdio.h>
 #include <math.h>
 #include <string.h>
 
@@ -86,7 +87,16 @@ void OpenGLRenderer_InitGL(OpenGLRenderer * const self)
     if (!version)
     {
         puts("Failed to initialize the OpenGL context.");
-        exit(1);
+        exit(EXIT_FAILURE);
+    }
+
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR)
+    {
+        printf("OpenGL Error: %d\n", error);
+
+        if (error != 1280)
+            exit(EXIT_FAILURE);
     }
 
 #ifdef RENDERER_GL_ES

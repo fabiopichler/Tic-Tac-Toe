@@ -56,7 +56,7 @@ void GLBuffer_Delete(GLBuffer * const self)
     glDeleteBuffers(1, &self->m_elementBuffer);
 
 #ifndef RENDERER_GL_ES
-    if (GLAD_GL_VERSION_3_0 == 1)
+    if (IsOpenGL_3())
         glDeleteVertexArrays(1, &self->m_vao);
 #endif
 
@@ -66,7 +66,7 @@ void GLBuffer_Delete(GLBuffer * const self)
 void GLBuffer_Init(GLBuffer * const self)
 {
 #ifndef RENDERER_GL_ES
-    if (GLAD_GL_VERSION_3_0 == 1)
+    if (IsOpenGL_3())
     {
         glGenVertexArrays(1, &self->m_vao);
         glBindVertexArray(self->m_vao);
@@ -102,17 +102,24 @@ void GLBuffer_Init(GLBuffer * const self)
 
 void GLBuffer_EnablePositionVBO(GLBuffer * const self, const GLProgramLocation *program)
 {
-    glEnableVertexAttribArray(program->aPosition);
-    glEnableVertexAttribArray(program->aUV);
     glBindBuffer(GL_ARRAY_BUFFER, self->m_positionVBO);
+
+    glEnableVertexAttribArray(program->aPosition);
     glVertexAttribPointer(program->aPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
-    glVertexAttribPointer(program->aUV, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, UV));
+
+    if (program->aUV != -1)
+    {
+        glEnableVertexAttribArray(program->aUV);
+        glVertexAttribPointer(program->aUV, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, UV));
+    }
 }
 
 void GLBuffer_DisablePositionVBO(GLBuffer * const self, const GLProgramLocation *program)
 {
     glDisableVertexAttribArray(program->aPosition);
-    glDisableVertexAttribArray(program->aUV);
+
+    if (program->aUV != -1)
+        glDisableVertexAttribArray(program->aUV);
 }
 
 void GLBuffer_EnableColorVBO(GLBuffer * const self, const GLProgramLocation *program, const vec4 colors[4])

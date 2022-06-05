@@ -24,8 +24,16 @@ SOFTWARE.
 
 #pragma once
 
+#include <stdbool.h>
+
 #ifdef RENDERER_GL_ES
   #include "glad/gles2.h"
 #else
   #include "glad/gl.h"
+#endif
+
+#ifdef RENDERER_GL_ES
+static inline bool IsOpenGL_ES_3() { return GLAD_GL_ES_VERSION_3_0 == 1; }
+#else
+static inline bool IsOpenGL_3() { return GLAD_GL_VERSION_3_3 == 1; }
 #endif

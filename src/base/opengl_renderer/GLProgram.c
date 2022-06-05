@@ -44,7 +44,7 @@ static char *GetShaderSource(GLProgramLocation_Type type, const char *source)
 {
     char src[1024];
 
-    strcpy(src, "#version 100\n");
+    strcpy(src, "#version 100\n"); // OpenGL ES 2.0 / WebGL 1.0
 
     if (type == Type_Texture)
         strcat(src, "#define hasTexture 1\n");
@@ -107,11 +107,11 @@ const GLProgramLocation *GLProgram_InitProgram(GLProgram * const self, GLProgram
     self->m_programs[type] = (GLProgramLocation) {
         .program = program,
         .aPosition = glGetAttribLocation(program, "aPosition"),
-        .aUV = 0,
-        .aColor = 0,
+        .aUV = -1,
+        .aColor = -1,
         .uProjection = glGetUniformLocation(program, "uProjection"),
-        .uSampler = 0,
-        .uSourcePosition = 0,
+        .uSampler = -1,
+        .uSourcePosition = -1,
         .uTransform = glGetUniformLocation(program, "uTransform"),
     };
 

@@ -74,7 +74,7 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
     GetFormat(image, texture, &mode, &format);
 
 #ifdef RENDERER_GL_ES
-    if (GLAD_GL_ES_VERSION_3_0 == 0)
+    if (!IsOpenGL_ES_3())
     {
         if (rowLength != image->width)
         {
@@ -168,7 +168,7 @@ void SetTextureFilter(TextureFilter filter)
     }
     else if (filter == Mipmap
 #ifndef RENDERER_GL_ES
-             && GLAD_GL_VERSION_3_0 == 1
+             && IsOpenGL_3()
 #endif
              )
     {
