@@ -54,6 +54,7 @@ void GLBuffer_Delete(GLBuffer * const self)
 
     glDeleteBuffers(1, &self->m_positionVBO);
     glDeleteBuffers(1, &self->m_elementBuffer);
+    glDeleteBuffers(1, &self->m_colorVBO);
 
 #ifndef RENDERER_GL_ES
     if (IsOpenGL_3())

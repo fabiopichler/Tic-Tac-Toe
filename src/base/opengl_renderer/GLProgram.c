@@ -93,7 +93,6 @@ void GLProgram_Delete(GLProgram * const self)
     {
         GLProgramLocation program = self->m_programs[i];
 
-        glDisableVertexAttribArray(program.aPosition);
         glDeleteProgram(program.program);
     }
 
