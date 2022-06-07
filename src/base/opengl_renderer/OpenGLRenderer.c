@@ -253,7 +253,7 @@ void UpdateProjection(OpenGLRenderer * const self, GLint uProjection)
 {
     mat4 proj, view, model, mvp;
 
-    glm_ortho(0.0f, self->m_logical.x, self->m_logical.y, 0.0f, 1.0f, 0.0f, proj);
+    glm_ortho(0.0f, self->m_logical.x, self->m_logical.y, 0.0f, -1.0f, 1.0f, proj);
     glm_lookat((vec3) { 0.0f, 0.0f, 1.0f }, (vec3) {0.0f, 0.0f, 0.0f }, (vec3) {0.0f, 1.0f, 0.0f }, view);
     glm_mat4_identity(model);
     glm_mat4_mulN((mat4 *[]) { &proj, &view, &model }, 3, mvp);
