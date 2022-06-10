@@ -49,13 +49,13 @@ typedef struct OpenGLList
 
 static const OpenGLList glList[] = {
 #ifdef RENDERER_GL_ES
-    { "OpenGL ES 3.0", SDL_GL_CONTEXT_PROFILE_ES, 3, 0 },
-    { "OpenGL ES 2.0", SDL_GL_CONTEXT_PROFILE_ES, 2, 0 },
+    {"OpenGL ES 3.0", SDL_GL_CONTEXT_PROFILE_ES, 3, 0},
+    {"OpenGL ES 2.0", SDL_GL_CONTEXT_PROFILE_ES, 2, 0},
 #else
-    { "OpenGL 3.3 (Core Profile)", SDL_GL_CONTEXT_PROFILE_CORE, 3, 3 },
-    { "OpenGL 2.1", SDL_GL_CONTEXT_PROFILE_COMPATIBILITY, 2, 1 },
+    {"OpenGL 3.3 (Core Profile)", SDL_GL_CONTEXT_PROFILE_CORE, 3, 3},
+    {"OpenGL 2.1", SDL_GL_CONTEXT_PROFILE_COMPATIBILITY, 2, 1},
 #endif
-    { NULL, 0, 0, 0 },
+    {NULL, 0, 0, 0},
 };
 
 static bool CreateGLContext(Window * const self);
@@ -64,7 +64,7 @@ Window *Window_New(int width, int height, const char *title)
 {
     Window * const self = malloc(sizeof (Window));
 
-    self->rect = (IRect) { .x = 0, .y = 0, .w = width, .h = height };
+    self->rect = (IRect) {.x = 0, .y = 0, .w = width, .h = height};
     self->context = NULL;
 
     self->window = SDL_CreateWindow(title,

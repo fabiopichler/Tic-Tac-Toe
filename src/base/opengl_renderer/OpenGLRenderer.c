@@ -56,8 +56,8 @@ OpenGLRenderer *OpenGLRenderer_New()
     self->m_buffer = GLBuffer_New();
     self->m_texture = GLTexture_New();
 
-    self->m_viewport = (Vec2) { 0.0f, 0.0f };
-    self->m_logical = (Vec2) { 0.0f, 0.0f };
+    self->m_viewport = (Vec2) {0.0f, 0.0f};
+    self->m_logical = (Vec2) {0.0f, 0.0f};
 
     OpenGLRenderer_InitGL(self);
 
@@ -150,18 +150,18 @@ void OpenGLRenderer_Draw(OpenGLRenderer * const self, const Texture2D *texture, 
 
     if (angle == 0.0f)
     {
-        glm_translate(matrix, (vec3) { dstrect->x, dstrect->y, 0.0f });
+        glm_translate(matrix, (vec3) {dstrect->x, dstrect->y, 0.0f});
     }
     else
     {
-        const Vec2 center = { dstrect->w / 2.0f, dstrect->h / 2.0f };
+        const Vec2 center = {dstrect->w / 2.0f, dstrect->h / 2.0f};
 
-        glm_translate(matrix, (vec3) { dstrect->x + center.x, dstrect->y + center.y, 0.0f });
-        glm_rotate(matrix, glm_rad(angle), (vec3) { 0.0f, 0.0f, 1.0f });
-        glm_translate(matrix, (vec3) { -center.x, -center.y, 0.0f });
+        glm_translate(matrix, (vec3) {dstrect->x + center.x, dstrect->y + center.y, 0.0f});
+        glm_rotate(matrix, glm_rad(angle), (vec3) {0.0f, 0.0f, 1.0f});
+        glm_translate(matrix, (vec3) {-center.x, -center.y, 0.0f});
     }
 
-    glm_scale(matrix, (vec3) { dstrect->w, dstrect->h, 0.0f });
+    glm_scale(matrix, (vec3) {dstrect->w, dstrect->h, 0.0f});
 
 #ifdef RENDERER_GL_ES
     const GLProgramLocation *program = GLProgram_GetProgram(self->m_program,
@@ -192,8 +192,8 @@ void OpenGLRenderer_FillRect(OpenGLRenderer * const self, const Rect *rect, cons
 {
     mat4 matrix;
     glm_mat4_identity(matrix);
-    glm_translate(matrix, (vec3) { rect->x, rect->y, 0.0f });
-    glm_scale(matrix, (vec3) { rect->w, rect->h, 0.0f });
+    glm_translate(matrix, (vec3) {rect->x, rect->y, 0.0f});
+    glm_scale(matrix, (vec3) {rect->w, rect->h, 0.0f});
 
     const GLProgramLocation *program = GLProgram_GetProgram(self->m_program, Type_Color);
 
@@ -254,9 +254,9 @@ void UpdateProjection(OpenGLRenderer * const self, GLint uProjection)
     mat4 proj, view, model, mvp;
 
     glm_ortho(0.0f, self->m_logical.x, self->m_logical.y, 0.0f, -1.0f, 1.0f, proj);
-    glm_lookat((vec3) { 0.0f, 0.0f, 1.0f }, (vec3) {0.0f, 0.0f, 0.0f }, (vec3) {0.0f, 1.0f, 0.0f }, view);
+    glm_lookat((vec3) {0.0f, 0.0f, 1.0f }, (vec3) {0.0f, 0.0f, 0.0f }, (vec3) {0.0f, 1.0f, 0.0f}, view);
     glm_mat4_identity(model);
-    glm_mat4_mulN((mat4 *[]) { &proj, &view, &model }, 3, mvp);
+    glm_mat4_mulN((mat4 *[]) {&proj, &view, &model}, 3, mvp);
 
     glUniformMatrix4fv(uProjection, 1, GL_FALSE, mvp[0]);
 }
@@ -264,10 +264,10 @@ void UpdateProjection(OpenGLRenderer * const self, GLint uProjection)
 void ColorToArray(const Color *color, vec4 array[4])
 {
     vec4 _array[4] = {
-        { color->r, color->g, color->b, color->a },
-        { color->r, color->g, color->b, color->a },
-        { color->r, color->g, color->b, color->a },
-        { color->r, color->g, color->b, color->a },
+        {color->r, color->g, color->b, color->a},
+        {color->r, color->g, color->b, color->a},
+        {color->r, color->g, color->b, color->a},
+        {color->r, color->g, color->b, color->a},
     };
 
     memcpy(array, _array, sizeof (vec4[4]));

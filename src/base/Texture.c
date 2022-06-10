@@ -121,7 +121,7 @@ bool Texture_MakeText(Texture * const self)
         self->reloadFont = false;
     }
 
-    SDL_Color color = { self->textColor.r, self->textColor.g, self->textColor.b, self->textColor.a };
+    SDL_Color color = {self->textColor.r, self->textColor.g, self->textColor.b, self->textColor.a};
     SDL_Surface *surface = TTF_RenderUTF8_Blended(self->font, self->text, color);
 
     return Texture_CreateTexture(self, surface, Nearest);

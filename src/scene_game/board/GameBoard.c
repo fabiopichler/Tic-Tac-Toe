@@ -175,7 +175,7 @@ void GameBoard_SetupBoard(GameBoard * const self)
         for (int col = 0; col < 3; ++col)
         {
             BoardItem *item = &self->board.items[row][col];
-            *item = (BoardItem) { .player = 0, .button = Button_New(self->renderer) };
+            *item = (BoardItem) {.player = 0, .button = Button_New(self->renderer)};
 
             Box_SetSize(Button_Box(item->button), self->board.item_size, self->board.item_size);
             Box_SetPosition(Button_Box(item->button),

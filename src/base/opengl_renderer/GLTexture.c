@@ -118,6 +118,15 @@ Texture2D *GLTexture_CreateTexture(GLTexture * const self, const Image *image, T
     return texture;
 }
 
+void GLTexture_DestroyTexture(GLTexture * const self, Texture2D *texture)
+{
+    if (texture)
+    {
+        glDeleteTextures(1, &texture->id);
+        free(texture);
+    }
+}
+
 void GetFormat(const Image *image, Texture2D *texture, int *mode, uint32_t *format)
 {
     if (image->bytesPerPixel == 4)
@@ -147,15 +156,6 @@ void GetFormat(const Image *image, Texture2D *texture, int *mode, uint32_t *form
             texture->format = BGRA;
 #endif
         }
-    }
-}
-
-void GLTexture_DestroyTexture(GLTexture * const self, Texture2D *texture)
-{
-    if (texture)
-    {
-        glDeleteTextures(1, &texture->id);
-        free(texture);
     }
 }
 

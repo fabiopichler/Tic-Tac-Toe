@@ -75,15 +75,15 @@ void GLBuffer_Init(GLBuffer * const self)
 #endif
 
     const Vertex vertices[4] = {
-        { { 0.0f, 1.0f }, { 0.0f, 1.0f } },
-        { { 1.0f, 1.0f }, { 1.0f, 1.0f } },
-        { { 1.0f, 0.0f }, { 1.0f, 0.0f } },
-        { { 0.0f, 0.0f }, { 0.0f, 0.0f } },
+        {{0.0f, 1.0f}, {0.0f, 1.0f}},
+        {{1.0f, 1.0f}, {1.0f, 1.0f}},
+        {{1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.0f, 0.0f}, {0.0f, 0.0f}},
     };
 
     const ivec3 indices[2] = {
-        { 0, 1, 2 },
-        { 0, 2, 3 },
+        {0, 1, 2},
+        {0, 2, 3},
     };
 
     self->m_indicesSize = 6;
@@ -99,6 +99,9 @@ void GLBuffer_Init(GLBuffer * const self)
     glGenBuffers(1, &self->m_colorVBO);
     glBindBuffer(GL_ARRAY_BUFFER, self->m_colorVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vec4[4]), NULL, GL_DYNAMIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void GLBuffer_EnablePositionVBO(GLBuffer * const self, const GLProgramLocation *program)
@@ -140,4 +143,5 @@ void GLBuffer_DrawElements(GLBuffer * const self)
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self->m_elementBuffer);
     glDrawElements(GL_TRIANGLES, self->m_indicesSize, GL_UNSIGNED_INT, NULL);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
