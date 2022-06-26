@@ -28,7 +28,7 @@ attribute vec2 aPosition;                                                       
 attribute vec2 aUV;                                                                                                  \n\
 attribute vec4 aColor;                                                                                               \n\
                                                                                                                      \n\
-uniform mat4 uTransform;                                                                                             \n\
+uniform mat3 uTransform;                                                                                             \n\
 uniform mat4 uProjection;                                                                                            \n\
 uniform vec4 uSourcePosition;                                                                                        \n\
                                                                                                                      \n\
@@ -38,7 +38,7 @@ varying vec4 vColor;                                                            
 void main()                                                                                                          \n\
 {                                                                                                                    \n\
     vColor = aColor;                                                                                                 \n\
-    gl_Position = uProjection * uTransform * vec4(aPosition, 0, 1.0);                                                \n\
+    gl_Position = uProjection * vec4(uTransform * vec3(aPosition, 1.0), 1.0);                                        \n\
                                                                                                                      \n\
 #if hasTexture                                                                                                       \n\
     vUV = uSourcePosition.xy + vec2(aUV.x * uSourcePosition.z, aUV.y * uSourcePosition.w);                           \n\

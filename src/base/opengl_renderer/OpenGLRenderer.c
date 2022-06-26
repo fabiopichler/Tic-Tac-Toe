@@ -32,6 +32,11 @@ SOFTWARE.
 #include <math.h>
 #include <string.h>
 
+#include <cglm/vec2.h>
+#include <cglm/vec3.h>
+#include <cglm/mat3.h>
+#include <cglm/mat4.h>
+#include <cglm/affine2d.h>
 #include <cglm/cam.h>
 
 #include <SDL2/SDL_video.h>
@@ -145,23 +150,23 @@ void OpenGLRenderer_Draw(OpenGLRenderer * const self, const Texture2D *texture, 
     if (!texture)
         return;
 
-    mat4 matrix;
-    glm_mat4_identity(matrix);
+    mat3 matrix;
+    glm_mat3_identity(matrix);
 
     if (angle == 0.0f)
     {
-        glm_translate(matrix, (vec3) {dstrect->x, dstrect->y, 0.0f});
+        glm_translate2d(matrix, (vec3) {dstrect->x, dstrect->y});
     }
     else
     {
         const Vec2 center = {dstrect->w / 2.0f, dstrect->h / 2.0f};
 
-        glm_translate(matrix, (vec3) {dstrect->x + center.x, dstrect->y + center.y, 0.0f});
-        glm_rotate(matrix, glm_rad(angle), (vec3) {0.0f, 0.0f, 1.0f});
-        glm_translate(matrix, (vec3) {-center.x, -center.y, 0.0f});
+        glm_translate2d(matrix, (vec2) {dstrect->x + center.x, dstrect->y + center.y});
+        glm_rotate2d(matrix, glm_rad(angle));
+        glm_translate2d(matrix, (vec2) {-center.x, -center.y});
     }
 
-    glm_scale(matrix, (vec3) {dstrect->w, dstrect->h, 0.0f});
+    glm_scale2d(matrix, (vec2) {dstrect->w, dstrect->h});
 
 #ifdef RENDERER_GL_ES
     const GLProgramLocation *program = GLProgram_GetProgram(self->m_program,
@@ -180,7 +185,7 @@ void OpenGLRenderer_Draw(OpenGLRenderer * const self, const Texture2D *texture, 
                     srcrect->w / texture->width, srcrect->h / texture->height);
     }
 
-    glUniformMatrix4fv(program->uTransform, 1, false, matrix[0]);
+    glUniformMatrix3fv(program->uTransform, 1, false, matrix[0]);
     glUniform1i(program->uSampler, 0);
 
     GLBuffer_EnablePositionVBO(self->m_buffer, program);
@@ -190,14 +195,14 @@ void OpenGLRenderer_Draw(OpenGLRenderer * const self, const Texture2D *texture, 
 
 void OpenGLRenderer_FillRect(OpenGLRenderer * const self, const Rect *rect, const Color *color)
 {
-    mat4 matrix;
-    glm_mat4_identity(matrix);
-    glm_translate(matrix, (vec3) {rect->x, rect->y, 0.0f});
-    glm_scale(matrix, (vec3) {rect->w, rect->h, 0.0f});
+    mat3 matrix;
+    glm_mat3_identity(matrix);
+    glm_translate2d(matrix, (vec2) {rect->x, rect->y});
+    glm_scale2d(matrix, (vec2) {rect->w, rect->h});
 
     const GLProgramLocation *program = GLProgram_GetProgram(self->m_program, Type_Color);
 
-    glUniformMatrix4fv(program->uTransform, 1, false, matrix[0]);
+    glUniformMatrix3fv(program->uTransform, 1, false, matrix[0]);
 
     vec4 colorArray[4];
     ColorToArray(color, colorArray);
