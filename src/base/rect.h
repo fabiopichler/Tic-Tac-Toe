@@ -6,8 +6,15 @@ extern "C" {
 
 typedef struct Vec2
 {
-    float x, y;
+    union { float x, w; };
+    union { float y, h; };
 } Vec2;
+
+typedef struct IVec2
+{
+    union { int x, w; };
+    union { int y, h; };
+} IVec2;
 
 typedef struct Rect
 {

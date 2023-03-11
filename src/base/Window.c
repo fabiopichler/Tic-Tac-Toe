@@ -36,7 +36,7 @@ struct Window
 {
     SDL_Window *window;
     SDL_GLContext context;
-    IRect rect;
+    IVec2 size;
 };
 
 typedef struct OpenGLList
@@ -64,14 +64,14 @@ Window *Window_New(int width, int height, const char *title)
 {
     Window * const self = malloc(sizeof (Window));
 
-    self->rect = (IRect) {.x = 0, .y = 0, .w = width, .h = height};
+    self->size = (IVec2) {.w = width, .h = height};
     self->context = NULL;
 
     self->window = SDL_CreateWindow(title,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
-                                self->rect.w,
-                                self->rect.h,
+                                self->size.w,
+                                self->size.h,
                                 SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
     if (!self->window)
@@ -152,9 +152,9 @@ SDL_Window *Window_GetSDLWindow(Window * const self)
     return self->window;
 }
 
-IRect Window_GetRect(Window * const self)
+IVec2 Window_GetSize(Window * const self)
 {
-    return self->rect;
+    return self->size;
 }
 
 void Window_SwapWindow(Window * const self)

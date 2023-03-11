@@ -65,14 +65,14 @@ SceneGame *SceneGame_OnNew(SceneManager *sceneManager)
 
     Window *window = SceneManager_Window(sceneManager);
     Graphics *graphics = SceneManager_Graphics(sceneManager);
-    IRect windowRect = Window_GetRect(window);
+    IVec2 windowSize = Window_GetSize(window);
 
-    self->sceneGameRect.window_w = windowRect.w;
-    self->sceneGameRect.window_h = windowRect.h;
+    self->sceneGameRect.window_w = windowSize.w;
+    self->sceneGameRect.window_h = windowSize.h;
     self->sceneGameRect.sidebar_w = 200;
-    self->sceneGameRect.sidebar_h = windowRect.h;
-    self->sceneGameRect.content_w = windowRect.w - self->sceneGameRect.sidebar_w;
-    self->sceneGameRect.content_h = windowRect.h;
+    self->sceneGameRect.sidebar_h = windowSize.h;
+    self->sceneGameRect.content_w = windowSize.w - self->sceneGameRect.sidebar_w;
+    self->sceneGameRect.content_h = windowSize.h;
 
     self->renderer = Graphics_GetRenderer(graphics);
 

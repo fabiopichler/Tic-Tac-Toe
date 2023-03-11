@@ -24,6 +24,7 @@ SOFTWARE.
 
 #pragma once
 
+#include "rect.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -38,7 +39,7 @@ void Window_Delete(Window * const self);
 void Window_SetWindowIcon(Window * const self, const char *filename);
 void Window_SetWindowTitle(Window * const self, const char *title);
 SDL_Window *Window_GetSDLWindow(Window * const self);
-IRect Window_GetRect(Window * const self);
+IVec2 Window_GetSize(Window * const self);
 void Window_SwapWindow(Window * const self);
 
 #ifdef __cplusplus

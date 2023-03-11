@@ -49,8 +49,8 @@ Graphics *Graphics_New(Window *window)
         exit(-1);
     }
 
-    IRect rect = Window_GetRect(window);
-    SetRenderLogicalSize(self, rect.w, rect.h);
+    IVec2 size = Window_GetSize(window);
+    SetRenderLogicalSize(self, size.w, size.h);
 
     return self;
 }
