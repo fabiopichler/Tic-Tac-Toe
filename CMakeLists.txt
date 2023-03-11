@@ -42,9 +42,9 @@ else()
     add_executable(${PROJECT_NAME})
 endif()
 
-include_directories(${SDL2_INC_DIR} "thirdparty/glad/include")
+include_directories(${SDL2_INC_DIR} "third_party/glad/include" "third_party/cglm/include")
 
-add_subdirectory(thirdparty)
+add_subdirectory(third_party)
 
 include(src/sources.cmake)
 
