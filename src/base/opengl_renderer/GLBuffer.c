@@ -31,7 +31,7 @@ struct GLBuffer
 {
     GLuint vao;
     GLuint positionVBO, colorVBO, elementBuffer;
-    int indicesSize;
+    int indicesCount;
 };
 
 GLBuffer *GLBuffer_New()
@@ -42,7 +42,7 @@ GLBuffer *GLBuffer_New()
     self->positionVBO = 0;
     self->colorVBO = 0;
     self->elementBuffer = 0;
-    self->indicesSize = 0;
+    self->indicesCount = 0;
 
     return self;
 }
@@ -79,7 +79,7 @@ void GLBuffer_Init(GLBuffer * const self)
         {0, 2, 3},
     };
 
-    self->indicesSize = sizeof (indices) / sizeof (int);
+    self->indicesCount = sizeof (indices) / sizeof (int);
 
     const Vertex vertices[4] = {
         {{0.0f, 1.0f}, {0.0f, 1.0f}},
@@ -138,5 +138,5 @@ void GLBuffer_DisableColorVBO(GLBuffer * const self, const GLProgramLocation *pr
 
 void GLBuffer_DrawElements(GLBuffer * const self)
 {
-    glDrawElements(GL_TRIANGLES, self->indicesSize, GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, self->indicesCount, GL_UNSIGNED_INT, NULL);
 }
