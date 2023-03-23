@@ -29,20 +29,20 @@ SOFTWARE.
 
 struct GLBuffer
 {
-    GLuint m_vao;
-    GLuint m_positionVBO, m_colorVBO, m_elementBuffer;
-    int m_indicesSize;
+    GLuint vao;
+    GLuint positionVBO, colorVBO, elementBuffer;
+    int indicesSize;
 };
 
 GLBuffer *GLBuffer_New()
 {
     GLBuffer * const self = malloc(sizeof (GLBuffer));
 
-    self->m_vao = 0;
-    self->m_positionVBO = 0;
-    self->m_colorVBO = 0;
-    self->m_elementBuffer = 0;
-    self->m_indicesSize = 0;
+    self->vao = 0;
+    self->positionVBO = 0;
+    self->colorVBO = 0;
+    self->elementBuffer = 0;
+    self->indicesSize = 0;
 
     return self;
 }
@@ -52,13 +52,13 @@ void GLBuffer_Delete(GLBuffer * const self)
     if (!self)
         return;
 
-    glDeleteBuffers(1, &self->m_positionVBO);
-    glDeleteBuffers(1, &self->m_elementBuffer);
-    glDeleteBuffers(1, &self->m_colorVBO);
+    glDeleteBuffers(1, &self->positionVBO);
+    glDeleteBuffers(1, &self->elementBuffer);
+    glDeleteBuffers(1, &self->colorVBO);
 
 #ifndef RENDERER_GL_ES
     if (IsOpenGL_3())
-        glDeleteVertexArrays(1, &self->m_vao);
+        glDeleteVertexArrays(1, &self->vao);
 #endif
 
     free(self);
@@ -69,8 +69,8 @@ void GLBuffer_Init(GLBuffer * const self)
 #ifndef RENDERER_GL_ES
     if (IsOpenGL_3())
     {
-        glGenVertexArrays(1, &self->m_vao);
-        glBindVertexArray(self->m_vao);
+        glGenVertexArrays(1, &self->vao);
+        glBindVertexArray(self->vao);
     }
 #endif
 
@@ -79,7 +79,7 @@ void GLBuffer_Init(GLBuffer * const self)
         {0, 2, 3},
     };
 
-    self->m_indicesSize = 6;
+    self->indicesSize = sizeof (indices) / sizeof (int);
 
     const Vertex vertices[4] = {
         {{0.0f, 1.0f}, {0.0f, 1.0f}},
@@ -88,30 +88,30 @@ void GLBuffer_Init(GLBuffer * const self)
         {{0.0f, 0.0f}, {0.0f, 0.0f}},
     };
 
-    glGenBuffers(1, &self->m_elementBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self->m_elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glGenBuffers(1, &self->elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self->elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof (indices), indices, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &self->m_positionVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, self->m_positionVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glGenBuffers(1, &self->positionVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, self->positionVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof (vertices), vertices, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &self->m_colorVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, self->m_colorVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vec4[4]), NULL, GL_DYNAMIC_DRAW);
+    glGenBuffers(1, &self->colorVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, self->colorVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof (vec4[4]), NULL, GL_DYNAMIC_DRAW);
 }
 
 void GLBuffer_EnablePositionVBO(GLBuffer * const self, const GLProgramLocation *program)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, self->m_positionVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, self->positionVBO);
 
     glEnableVertexAttribArray(program->aPosition);
-    glVertexAttribPointer(program->aPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
+    glVertexAttribPointer(program->aPosition, 2, GL_FLOAT, GL_FALSE, sizeof (Vertex), NULL);
 
     if (program->aUV != -1)
     {
         glEnableVertexAttribArray(program->aUV);
-        glVertexAttribPointer(program->aUV, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, UV));
+        glVertexAttribPointer(program->aUV, 2, GL_FLOAT, GL_FALSE, sizeof (Vertex), (void *) offsetof(Vertex, UV));
     }
 }
 
@@ -126,8 +126,8 @@ void GLBuffer_DisablePositionVBO(GLBuffer * const self, const GLProgramLocation 
 void GLBuffer_EnableColorVBO(GLBuffer * const self, const GLProgramLocation *program, const vec4 colors[4])
 {
     glEnableVertexAttribArray(program->aColor);
-    glBindBuffer(GL_ARRAY_BUFFER, self->m_colorVBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vec4[4]), colors);
+    glBindBuffer(GL_ARRAY_BUFFER, self->colorVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof (vec4[4]), colors);
     glVertexAttribPointer(program->aColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
@@ -138,5 +138,5 @@ void GLBuffer_DisableColorVBO(GLBuffer * const self, const GLProgramLocation *pr
 
 void GLBuffer_DrawElements(GLBuffer * const self)
 {
-    glDrawElements(GL_TRIANGLES, self->m_indicesSize, GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, self->indicesSize, GL_UNSIGNED_INT, NULL);
 }

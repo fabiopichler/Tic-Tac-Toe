@@ -31,8 +31,8 @@ SOFTWARE.
 
 struct GLProgram
 {
-    GLuint m_lastProgram;
-    GLProgramLocation m_programs[_Type_size];
+    GLuint lastProgram;
+    GLProgramLocation programs[_Type_size];
 };
 
 static void CheckProgram(GLuint obj);
@@ -79,7 +79,7 @@ GLProgram *GLProgram_New()
 {
     GLProgram * const self = malloc(sizeof (GLProgram));
 
-    self->m_lastProgram = 0;
+    self->lastProgram = 0;
 
     return self;
 }
@@ -91,7 +91,7 @@ void GLProgram_Delete(GLProgram * const self)
 
     for (size_t i = 0; i < _Type_size; ++i)
     {
-        GLProgramLocation program = self->m_programs[i];
+        GLProgramLocation program = self->programs[i];
 
         glDeleteProgram(program.program);
     }
@@ -103,7 +103,7 @@ const GLProgramLocation *GLProgram_InitProgram(GLProgram * const self, GLProgram
 {
     GLuint program = CreateProgram(type);
 
-    self->m_programs[type] = (GLProgramLocation) {
+    self->programs[type] = (GLProgramLocation) {
         .program = program,
         .aPosition = glGetAttribLocation(program, "aPosition"),
         .aUV = -1,
@@ -116,26 +116,26 @@ const GLProgramLocation *GLProgram_InitProgram(GLProgram * const self, GLProgram
 
     if (type == Type_Texture || type == Type_TextureBGRA)
     {
-        self->m_programs[type].aUV = glGetAttribLocation(program, "aUV");
-        self->m_programs[type].uSourcePosition = glGetUniformLocation(program, "uSourcePosition");
-        self->m_programs[type].uSampler = glGetUniformLocation(program, "uSampler");
+        self->programs[type].aUV = glGetAttribLocation(program, "aUV");
+        self->programs[type].uSourcePosition = glGetUniformLocation(program, "uSourcePosition");
+        self->programs[type].uSampler = glGetUniformLocation(program, "uSampler");
     }
     else
     {
-        self->m_programs[type].aColor = glGetAttribLocation(program, "aColor");
+        self->programs[type].aColor = glGetAttribLocation(program, "aColor");
     }
 
-    return &self->m_programs[type];
+    return &self->programs[type];
 }
 
 const GLProgramLocation *GLProgram_GetProgram(GLProgram * const self, GLProgramLocation_Type type)
 {
-    const GLProgramLocation *program = &self->m_programs[type];
+    const GLProgramLocation *program = &self->programs[type];
 
-    if (program->program != self->m_lastProgram)
+    if (program->program != self->lastProgram)
     {
         glUseProgram(program->program);
-        self->m_lastProgram = program->program;
+        self->lastProgram = program->program;
     }
 
     return program;
@@ -184,7 +184,7 @@ void CheckProgram(GLuint obj)
     if (status == GL_TRUE)
         return;
 
-    glGetProgramInfoLog(obj, sizeof(log), NULL, log);
+    glGetProgramInfoLog(obj, sizeof (log), NULL, log);
 
     puts(log);
     exit(EXIT_FAILURE);
@@ -200,7 +200,7 @@ void CheckShader(GLuint obj)
     if (status == GL_TRUE)
         return;
 
-    glGetShaderInfoLog(obj, sizeof(log), NULL, log);
+    glGetShaderInfoLog(obj, sizeof (log), NULL, log);
 
     puts(log);
     exit(EXIT_FAILURE);

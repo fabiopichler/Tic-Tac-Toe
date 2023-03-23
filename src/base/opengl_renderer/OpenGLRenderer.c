@@ -43,11 +43,11 @@ SOFTWARE.
 
 struct OpenGLRenderer
 {
-    GLProgram *m_program;
-    GLBuffer *m_buffer;
-    GLTexture *m_texture;
-    Vec2 m_viewport;
-    Vec2 m_logical;
+    GLProgram *program;
+    GLBuffer *buffer;
+    GLTexture *texture;
+    Vec2 viewport;
+    Vec2 logical;
 };
 
 static void UpdateProjection(OpenGLRenderer * const self, GLint uProjection);
@@ -57,12 +57,12 @@ OpenGLRenderer *OpenGLRenderer_New()
 {
     OpenGLRenderer * const self = malloc(sizeof (OpenGLRenderer));
 
-    self->m_program = GLProgram_New();
-    self->m_buffer = GLBuffer_New();
-    self->m_texture = GLTexture_New();
+    self->program = GLProgram_New();
+    self->buffer = GLBuffer_New();
+    self->texture = GLTexture_New();
 
-    self->m_viewport = (Vec2) {0.0f, 0.0f};
-    self->m_logical = (Vec2) {0.0f, 0.0f};
+    self->viewport = (Vec2) {0.0f, 0.0f};
+    self->logical = (Vec2) {0.0f, 0.0f};
 
     OpenGLRenderer_InitGL(self);
 
@@ -74,9 +74,9 @@ void OpenGLRenderer_Delete(OpenGLRenderer * const self)
     if (!self)
         return;
 
-    GLBuffer_Delete(self->m_buffer);
-    GLProgram_Delete(self->m_program);
-    GLTexture_Delete(self->m_texture);
+    GLBuffer_Delete(self->buffer);
+    GLProgram_Delete(self->program);
+    GLTexture_Delete(self->texture);
 
     free(self);
 }
@@ -120,24 +120,24 @@ void OpenGLRenderer_InitGL(OpenGLRenderer * const self)
     glCullFace(GL_BACK);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    GLBuffer_Init(self->m_buffer);
-    GLTexture_Init(self->m_texture);
+    GLBuffer_Init(self->buffer);
+    GLTexture_Init(self->texture);
 
     for (size_t i = 0; i < _Type_size; ++i)
     {
-        const GLProgramLocation *program = GLProgram_InitProgram(self->m_program, i);
+        const GLProgramLocation *program = GLProgram_InitProgram(self->program, i);
         UpdateProjection(self, program->uProjection);
     }
 }
 
 Texture2D *OpenGLRenderer_CreateTexture(OpenGLRenderer * const self, const Image *image, TextureFilter filter)
 {
-    return GLTexture_CreateTexture(self->m_texture, image, filter);
+    return GLTexture_CreateTexture(self->texture, image, filter);
 }
 
 void OpenGLRenderer_DestroyTexture(OpenGLRenderer * const self, Texture2D *texture)
 {
-    GLTexture_DestroyTexture(self->m_texture, texture);
+    GLTexture_DestroyTexture(self->texture, texture);
 }
 
 void OpenGLRenderer_Clear(OpenGLRenderer * const self)
@@ -169,10 +169,10 @@ void OpenGLRenderer_Draw(OpenGLRenderer * const self, const Texture2D *texture, 
     glm_scale2d(matrix, (vec2) {dstrect->w, dstrect->h});
 
 #ifdef RENDERER_GL_ES
-    const GLProgramLocation *program = GLProgram_GetProgram(self->m_program,
+    const GLProgramLocation *program = GLProgram_GetProgram(self->program,
                                                             texture->format == BGRA ? Type_TextureBGRA : Type_Texture);
 #else
-    const GLProgramLocation *program = GLProgram_GetProgram(self->m_program, Type_Texture);
+    const GLProgramLocation *program = GLProgram_GetProgram(self->program, Type_Texture);
 #endif
 
     glActiveTexture(GL_TEXTURE0);
@@ -188,9 +188,9 @@ void OpenGLRenderer_Draw(OpenGLRenderer * const self, const Texture2D *texture, 
     glUniformMatrix3fv(program->uTransform, 1, false, matrix[0]);
     glUniform1i(program->uSampler, 0);
 
-    GLBuffer_EnablePositionVBO(self->m_buffer, program);
-    GLBuffer_DrawElements(self->m_buffer);
-    GLBuffer_DisablePositionVBO(self->m_buffer, program);
+    GLBuffer_EnablePositionVBO(self->buffer, program);
+    GLBuffer_DrawElements(self->buffer);
+    GLBuffer_DisablePositionVBO(self->buffer, program);
 }
 
 void OpenGLRenderer_FillRect(OpenGLRenderer * const self, const Rect *rect, const Color *color)
@@ -200,46 +200,46 @@ void OpenGLRenderer_FillRect(OpenGLRenderer * const self, const Rect *rect, cons
     glm_translate2d(matrix, (vec2) {rect->x, rect->y});
     glm_scale2d(matrix, (vec2) {rect->w, rect->h});
 
-    const GLProgramLocation *program = GLProgram_GetProgram(self->m_program, Type_Color);
+    const GLProgramLocation *program = GLProgram_GetProgram(self->program, Type_Color);
 
     glUniformMatrix3fv(program->uTransform, 1, false, matrix[0]);
 
     vec4 colorArray[4];
     ColorToArray(color, colorArray);
 
-    GLBuffer_EnablePositionVBO(self->m_buffer, program);
-    GLBuffer_EnableColorVBO(self->m_buffer, program, colorArray);
+    GLBuffer_EnablePositionVBO(self->buffer, program);
+    GLBuffer_EnableColorVBO(self->buffer, program, colorArray);
 
-    GLBuffer_DrawElements(self->m_buffer);
+    GLBuffer_DrawElements(self->buffer);
 
-    GLBuffer_DisableColorVBO(self->m_buffer, program);
-    GLBuffer_DisablePositionVBO(self->m_buffer, program);
+    GLBuffer_DisableColorVBO(self->buffer, program);
+    GLBuffer_DisablePositionVBO(self->buffer, program);
 }
 
 void OpenGLRenderer_SetViewportSize(OpenGLRenderer * const self, int w, int h)
 {
-    self->m_viewport.x = w;
-    self->m_viewport.y = h;
+    self->viewport.x = w;
+    self->viewport.y = h;
 
     int new_x, new_y, new_w, new_h;
-    float want_aspect = self->m_logical.x / self->m_logical.y;
-    float real_aspect = self->m_viewport.x / self->m_viewport.y;
+    float want_aspect = self->logical.x / self->logical.y;
+    float real_aspect = self->viewport.x / self->viewport.y;
 
     if (want_aspect > real_aspect)
     {
-        float scale = self->m_viewport.x / self->m_logical.x;
+        float scale = self->viewport.x / self->logical.x;
         new_x = 0;
-        new_w = self->m_viewport.x;
-        new_h = floor(self->m_logical.y * scale);
-        new_y = (self->m_viewport.y - new_h) / 2;
+        new_w = self->viewport.x;
+        new_h = floor(self->logical.y * scale);
+        new_y = (self->viewport.y - new_h) / 2;
     }
     else
     {
-        float scale = self->m_viewport.y / self->m_logical.y;
+        float scale = self->viewport.y / self->logical.y;
         new_y = 0;
-        new_h = self->m_viewport.y;
-        new_w = floor(self->m_logical.x * scale);
-        new_x = (self->m_viewport.x - new_w) / 2;
+        new_h = self->viewport.y;
+        new_w = floor(self->logical.x * scale);
+        new_x = (self->viewport.x - new_w) / 2;
     }
 
     glViewport(new_x, new_y, new_w, new_h);
@@ -247,18 +247,18 @@ void OpenGLRenderer_SetViewportSize(OpenGLRenderer * const self, int w, int h)
 
 void OpenGLRenderer_SetLogicalSize(OpenGLRenderer * const self, int w, int h)
 {
-    self->m_logical.x = w;
-    self->m_logical.y = h;
+    self->logical.x = w;
+    self->logical.y = h;
 
     for (size_t i = 0; i < _Type_size; ++i)
-        UpdateProjection(self, GLProgram_GetProgram(self->m_program, i)->uProjection);
+        UpdateProjection(self, GLProgram_GetProgram(self->program, i)->uProjection);
 }
 
 void UpdateProjection(OpenGLRenderer * const self, GLint uProjection)
 {
     mat4 proj, view, model, mvp;
 
-    glm_ortho(0.0f, self->m_logical.x, self->m_logical.y, 0.0f, -1.0f, 1.0f, proj);
+    glm_ortho(0.0f, self->logical.x, self->logical.y, 0.0f, -1.0f, 1.0f, proj);
     glm_lookat((vec3) {0.0f, 0.0f, 1.0f}, (vec3) {0.0f, 0.0f, 0.0f}, (vec3) {0.0f, 1.0f, 0.0f}, view);
     glm_mat4_identity(model);
     glm_mat4_mulN((mat4 *[]) {&proj, &view, &model}, 3, mvp);
