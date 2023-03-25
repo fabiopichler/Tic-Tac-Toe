@@ -29,7 +29,7 @@ SOFTWARE.
 
 typedef struct Box_UpdatedEvent
 {
-    Box_OnUpdateEvent function;
+    Box_UpdateEventHandler function;
     void *userdata;
 } Box_UpdatedEvent;
 
@@ -59,7 +59,7 @@ void Box_Delete(Box * const self)
     free(self);
 }
 
-void Box_SetOnPressEvent(Box * const self, Box_OnUpdateEvent callback, void *userdata)
+void Box_SetOnUpdateEvent(Box * const self, Box_UpdateEventHandler callback, void *userdata)
 {
     self->updatedEvent.function = callback;
     self->updatedEvent.userdata = userdata;

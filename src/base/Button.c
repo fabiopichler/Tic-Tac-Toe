@@ -91,7 +91,7 @@ Button *Button_New(OpenGLRenderer *renderer)
 
     self->background = Rectangle_New(self->renderer, Box_Width(self->box), Box_Height(self->box));
 
-    Box_SetOnPressEvent(self->box, Button_BoxOnUpdateEvent, self);
+    Box_SetOnUpdateEvent(self->box, Button_BoxOnUpdateEvent, self);
 
     return self;
 }

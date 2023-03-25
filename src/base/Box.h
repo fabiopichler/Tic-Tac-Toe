@@ -30,12 +30,12 @@ extern "C" {
 
 typedef struct Rect Rect;
 typedef struct Box Box;
-typedef void (*Box_OnUpdateEvent)(Box * const box, void *userdata);
+typedef void (*Box_UpdateEventHandler)(Box * const box, void *userdata);
 
 Box *Box_New(float x, float y, float width, float height);
 void Box_Delete(Box * const self);
 
-void Box_SetOnPressEvent(Box * const self, Box_OnUpdateEvent callback, void *userdata);
+void Box_SetOnUpdateEvent(Box * const self, Box_UpdateEventHandler callback, void *userdata);
 void *Box_GetEventUserData(Box * const self);
 
 void Box_SetSize(Box * const self, float w, float h);
